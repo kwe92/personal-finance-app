@@ -1,7 +1,13 @@
 .App {
-  text-align: center;
+  /* text-align: center; centers content as well as text?? */
+  width: 100vw;
+  height: 100vh;
+  background-color: #F2F3F7;
+  display: flex;
+  box-sizing: border-box;
 }
 
+/* 
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -35,4 +41,4 @@
   to {
     transform: rotate(360deg);
   }
-}
+} */
