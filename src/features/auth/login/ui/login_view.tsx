@@ -1,19 +1,15 @@
-import AuthImage from "./components/auth_image";
 import AuthForm from "../../shared/components/auth_form";
+import AuthImage from "../../shared/components/auth_image";
 
 const LoginView = (): JSX.Element => {
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        width: "100%",
-      }}
-    >
+    <>
       <AuthImage />
-      <AuthForm />
-    </div>
+      {/* <AuthForm /> */}
+    </>
   );
 };
+
+// export default transitionSlide(LoginView);
 
 export default LoginView;

@@ -1,7 +1,16 @@
 import { useState } from "react";
 import TextFormField from "../../../shared/components/text_form_field";
+import { Transitions } from "../../../../App";
 
-const AuthForm = (): JSX.Element => {
+//!! TODO: remove inline css and figure out where state should live
+
+const AuthForm = ({
+  isLogin = true,
+  textButtonCallback,
+}: {
+  isLogin?: boolean;
+  textButtonCallback: React.MouseEventHandler<HTMLAnchorElement>;
+}): JSX.Element => {
   const [showPassword, setShowPassword] = useState("password");
 
   const handleShowPassword = () =>
@@ -9,76 +18,110 @@ const AuthForm = (): JSX.Element => {
 
   return (
     // div to center form
-    <div
-      style={{
-        display: "flex",
-        // backgroundColor: "green",
-        width: "100%",
-        height: "100%",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      {/* form */}
-      <form
+    Transitions.fade(
+      <div
         style={{
           display: "flex",
-          flexDirection: "column",
-          width: "560px",
-          height: "422px",
-          backgroundColor: "white",
-          borderRadius: "16px",
-          padding: "32px",
+          // backgroundColor: "green",
+          width: "100%",
+          height: "100%",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
-        <p
+        {/* form */}
+        <form
           style={{
-            fontSize: "2vw",
-            fontWeight: "bold",
+            display: "flex",
+            flexDirection: "column",
+            width: "560px",
+            height: "422px",
+            backgroundColor: "white",
+            borderRadius: "16px",
+            padding: "32px",
           }}
         >
-          Login
-        </p>
-        <div style={{ height: "32px" }} />
-        <TextFormField name="email" label="Email" type="text" />
+          <p
+            style={{
+              fontSize: "2vw",
+              fontWeight: "bold",
+            }}
+          >
+            {isLogin ? "Login" : "SignUp"}
+          </p>
 
-        <div style={{ height: "16px" }} />
+          {!isLogin ? (
+            <>
+              <div style={{ height: "32px" }} />
+              <TextFormField name="name" label="Name" type="text" />
+            </>
+          ) : (
+            <></>
+          )}
 
-        <TextFormField
-          name="password"
-          label="Password"
-          type={showPassword}
-          showPasswordIcon={true}
-          onIconTap={handleShowPassword}
-        />
+          <div style={{ height: "16px" }} />
 
-        <div style={{ height: "32px" }} />
+          <TextFormField name="email" label="Email" type="text" />
 
-        <button
-          style={{
-            backgroundColor: "black",
-            color: "white",
-            // height: "32px",
-            borderRadius: "8px",
-            paddingTop: "12px",
-            paddingBottom: "12px",
-          }}
-        >
-          Login
-        </button>
+          <div style={{ height: "16px" }} />
 
-        <div style={{ height: "32px" }} />
+          <TextFormField
+            name="password"
+            label={isLogin ? "Password" : "Create Password"}
+            type={showPassword}
+            showPasswordIcon={true}
+            onIconTap={handleShowPassword}
+          />
 
-        <p style={{ color: "#696868", textAlign: "center", fontSize: "14px" }}>
-          Need to create an account?{" "}
-          <span>
-            <a href="http://stackoverflow.com" style={{ color: "#201F24" }}>
-              Sign Up
-            </a>
-          </span>
-        </p>
-      </form>
-    </div>
+          {!isLogin ? (
+            <>
+              <div style={{ height: "12px" }} />
+
+              <p
+                style={{
+                  textAlign: "right",
+                  color: "#696868",
+                  fontSize: "12px",
+                }}
+              >
+                Passwords must be at least 8 characters
+              </p>
+            </>
+          ) : (
+            <></>
+          )}
+
+          <div style={{ height: "32px" }} />
+
+          <button
+            style={{
+              backgroundColor: "black",
+              color: "white",
+              borderRadius: "8px",
+              paddingTop: "12px",
+              paddingBottom: "12px",
+            }}
+          >
+            {isLogin ? "Login" : "Create Account"}
+          </button>
+
+          <div style={{ height: "32px" }} />
+
+          <p
+            style={{ color: "#696868", textAlign: "center", fontSize: "14px" }}
+          >
+            {isLogin
+              ? "Need to create an account? "
+              : "Already have an account? "}
+            <span>
+              <a onClick={textButtonCallback} style={{ color: "#201F24" }}>
+                {isLogin ? "Sign Up" : "Login"}
+              </a>
+            </span>
+          </p>
+        </form>
+      </div>
+    )
   );
 };
 

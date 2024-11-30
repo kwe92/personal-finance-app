@@ -1,6 +1,6 @@
-import authImage from "../../../../../assets/images/illustration-authentication.svg";
+import authImage from "../../../../assets/images/illustration-authentication.svg";
 
-import logo from "../../../../../assets/images/logo-large.svg";
+import logo from "../../../../assets/images/logo-large.svg";
 
 const AuthImage = (): JSX.Element => {
   return (
