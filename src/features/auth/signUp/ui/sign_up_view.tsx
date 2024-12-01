@@ -5,7 +5,7 @@ const SignUpView = (): JSX.Element => {
   return (
     <>
       <AuthImage />
-      {/* <AuthForm isLogin={false} /> */}
+      <AuthForm isLogin={false} />
     </>
   );
 };

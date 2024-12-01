@@ -1,10 +1,9 @@
-import { Route, Routes, useLocation } from "react-router";
 import "./app/theme/css/App.css";
+import React from "react";
+import { Route, Routes, useLocation } from "react-router";
+import { AnimatePresence, AnimationProps, motion } from "framer-motion";
 import LoginView from "./features/auth/login/ui/login_view";
 import SignUpView from "./features/auth/signUp/ui/sign_up_view";
-import { AnimatePresence, AnimationProps, motion } from "framer-motion";
-import React from "react";
-import AuthView from "./features/auth/auth_view";
 
 //!! TODO: move TransitionOptions and Transitions class
 type TransitionOptions = {
@@ -45,10 +44,8 @@ function App() {
     <div className="App">
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
-          {/* <Route path="/" element={Transitions.fade(<LoginView />)} />
-          <Route path="/signUp" element={Transitions.fade(<SignUpView />)} /> */}
-          <Route path="/" element={<AuthView />} />
-          <Route path="/signUp" element={<SignUpView />} />
+          <Route path="/" element={Transitions.fade(<LoginView />)} />
+          <Route path="/signUp" element={Transitions.fade(<SignUpView />)} />
         </Routes>
       </AnimatePresence>
     </div>

@@ -5,7 +5,7 @@ const LoginView = (): JSX.Element => {
   return (
     <>
       <AuthImage />
-      {/* <AuthForm /> */}
+      <AuthForm />
     </>
   );
 };

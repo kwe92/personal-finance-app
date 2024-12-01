@@ -4,13 +4,7 @@ import { Transitions } from "../../../../App";
 
 //!! TODO: remove inline css and figure out where state should live
 
-const AuthForm = ({
-  isLogin = true,
-  textButtonCallback,
-}: {
-  isLogin?: boolean;
-  textButtonCallback: React.MouseEventHandler<HTMLAnchorElement>;
-}): JSX.Element => {
+const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
   const [showPassword, setShowPassword] = useState("password");
 
   const handleShowPassword = () =>
@@ -114,7 +108,7 @@ const AuthForm = ({
               ? "Need to create an account? "
               : "Already have an account? "}
             <span>
-              <a onClick={textButtonCallback} style={{ color: "#201F24" }}>
+              <a href={isLogin ? "/signUp" : "/"} style={{ color: "#201F24" }}>
                 {isLogin ? "Sign Up" : "Login"}
               </a>
             </span>
