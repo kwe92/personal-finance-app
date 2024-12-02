@@ -1,0 +1,16 @@
+#auth-app-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    width: 100%;
+    height: 56px;
+    background-color: black;
+    top: 0;
+}
+
+@media (min-width: 1200px){
+    #auth-app-bar {
+        display: none;
+    }
+}
