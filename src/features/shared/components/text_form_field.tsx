@@ -10,13 +10,17 @@ const TextFormField = ({
   name,
   label,
   type,
+  value,
   showPasswordIcon = false,
+  onChange,
   onIconTap,
 }: {
   name: string;
   label: string;
   type: string;
+  value: string;
   showPasswordIcon?: boolean;
+  onChange: React.ChangeEventHandler<HTMLInputElement>;
   onIconTap?: MouseEventHandler<HTMLImageElement>;
 }): JSX.Element => {
   return (
@@ -29,6 +33,8 @@ const TextFormField = ({
           title={name}
           name={name}
           type={type}
+          value={value}
+          onChange={onChange}
           className="textFormField"
         />
         {showPasswordIcon ? (
