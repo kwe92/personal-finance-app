@@ -1,0 +1,13 @@
+#auth-image-container{
+    position: relative;
+    height: 100%;
+}
+
+
+@media (max-width: 1200px) {
+    #auth-image-container {
+      display: none; 
+    }
+  }
+
+  

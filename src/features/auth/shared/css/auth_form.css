@@ -1,0 +1,51 @@
+.main-container {
+    display:flex;
+    width: 100%;
+    height:100%;
+    align-items:center;
+    justify-content:center;
+}
+
+.form-theme {
+    display: flex;
+    flex-direction: column;
+    width: 560px;
+    height: 422px;
+    background-color: white;
+    border-radius: 16px;
+    padding: 32px;
+}
+
+#title-text{
+    font-size: 2vw;
+    font-weight: bold;
+}
+
+#auth-link{
+    color:#201F24 
+}
+
+#auth-link:hover{
+    color:black;
+    font-weight: 600;
+}
+
+@media (max-width: 900px) {
+
+    #title-text{
+        font-size: 3vw;
+    }
+}
+
+@media (max-width: 700px) {
+
+    #title-text{
+        font-size: 4vw;
+    }
+
+    .form-theme {
+
+        width: 80vw;
+
+    }
+  }

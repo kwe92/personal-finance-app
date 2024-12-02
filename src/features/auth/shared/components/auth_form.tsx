@@ -1,121 +1,130 @@
 import { useState } from "react";
 import TextFormField from "../../../shared/components/text_form_field";
-import { Transitions } from "../../../../App";
-
-//!! TODO: remove inline css and figure out where state should live
+import "../css/auth_form.css";
+import { GapH12, GapH16, GapH32 } from "../../../../app/constants/reusable";
+import MainButton from "../../../shared/components/main_button";
 
 const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
   const [showPassword, setShowPassword] = useState("password");
+
+  const [name, setName] = useState<string>("");
+
+  const [email, setEmail] = useState<string>("");
+
+  const [password, setPassword] = useState<string>("");
+
+  function handleNameChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setName(e.target.value);
+  }
+
+  function handleEmailChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setEmail(e.target.value);
+  }
+
+  function handlePasswordChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setPassword(e.target.value);
+  }
 
   const handleShowPassword = () =>
     setShowPassword(showPassword === "text" ? "password" : "text");
 
   return (
     // div to center form
-    Transitions.fade(
-      <div
-        style={{
-          display: "flex",
-          // backgroundColor: "green",
-          width: "100%",
-          height: "100%",
-          alignItems: "center",
-          justifyContent: "center",
+
+    <div className="main-container">
+      {/* form */}
+      <form
+        className="form-theme"
+        onSubmit={(e) => {
+          e.preventDefault(); // prevent form default behavior, add custom client-side form handling
+          console.log("hello");
         }}
       >
-        {/* form */}
-        <form
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            width: "560px",
-            height: "422px",
-            backgroundColor: "white",
-            borderRadius: "16px",
-            padding: "32px",
+        <p id="title-text">{isLogin ? "Login" : "SignUp"}</p>
+
+        {!isLogin ? (
+          <>
+            <GapH32 />
+
+            <TextFormField
+              name="name"
+              label="Name"
+              type="text"
+              value={name}
+              onChange={handleNameChange}
+            />
+          </>
+        ) : (
+          <></>
+        )}
+
+        <GapH16 />
+
+        <TextFormField
+          name="email"
+          label="Email"
+          type="text"
+          value={email}
+          onChange={handleEmailChange}
+        />
+
+        <GapH16 />
+
+        <TextFormField
+          showPasswordIcon={true}
+          name="password"
+          label={isLogin ? "Password" : "Create Password"}
+          type={showPassword}
+          value={password}
+          onChange={handlePasswordChange}
+          onIconTap={handleShowPassword}
+        />
+
+        {!isLogin ? (
+          <>
+            <GapH12 />
+
+            <p
+              style={{
+                textAlign: "right",
+                color: "#696868",
+                fontSize: "12px",
+              }}
+            >
+              Passwords must be at least 8 characters
+            </p>
+          </>
+        ) : (
+          <></>
+        )}
+
+        <GapH32 />
+
+        <MainButton
+          type="submit"
+          onTap={() => {
+            setName("");
+            setEmail("");
+            setPassword("");
           }}
         >
-          <p
-            style={{
-              fontSize: "2vw",
-              fontWeight: "bold",
-            }}
-          >
-            {isLogin ? "Login" : "SignUp"}
-          </p>
+          {isLogin ? "Login" : "Create Account"}
+        </MainButton>
 
-          {!isLogin ? (
-            <>
-              <div style={{ height: "32px" }} />
-              <TextFormField name="name" label="Name" type="text" />
-            </>
-          ) : (
-            <></>
-          )}
+        <GapH32 />
 
-          <div style={{ height: "16px" }} />
-
-          <TextFormField name="email" label="Email" type="text" />
-
-          <div style={{ height: "16px" }} />
-
-          <TextFormField
-            name="password"
-            label={isLogin ? "Password" : "Create Password"}
-            type={showPassword}
-            showPasswordIcon={true}
-            onIconTap={handleShowPassword}
-          />
-
-          {!isLogin ? (
-            <>
-              <div style={{ height: "12px" }} />
-
-              <p
-                style={{
-                  textAlign: "right",
-                  color: "#696868",
-                  fontSize: "12px",
-                }}
-              >
-                Passwords must be at least 8 characters
-              </p>
-            </>
-          ) : (
-            <></>
-          )}
-
-          <div style={{ height: "32px" }} />
-
-          <button
-            style={{
-              backgroundColor: "black",
-              color: "white",
-              borderRadius: "8px",
-              paddingTop: "12px",
-              paddingBottom: "12px",
-            }}
-          >
-            {isLogin ? "Login" : "Create Account"}
-          </button>
-
-          <div style={{ height: "32px" }} />
-
-          <p
-            style={{ color: "#696868", textAlign: "center", fontSize: "14px" }}
-          >
-            {isLogin
-              ? "Need to create an account? "
-              : "Already have an account? "}
-            <span>
-              <a href={isLogin ? "/signUp" : "/"} style={{ color: "#201F24" }}>
-                {isLogin ? "Sign Up" : "Login"}
-              </a>
-            </span>
-          </p>
-        </form>
-      </div>
-    )
+        <p style={{ color: "#696868", textAlign: "center", fontSize: "14px" }}>
+          {isLogin
+            ? "Need to create an account? "
+            : "Already have an account? "}
+          <span>
+            <a href={isLogin ? "/signUp" : "/"} id="auth-link">
+              {isLogin ? "Sign Up" : "Login"}
+            </a>
+          </span>
+        </p>
+      </form>
+    </div>
   );
 };
 
