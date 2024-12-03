@@ -22,19 +22,27 @@ const SideNavBar = (): JSX.Element => {
     [<navIcons.NavRecurringBillsIcon />, "Recurring Bills"],
   ]);
 
+  let navListTileItemsKey = 0;
+
   const navListTileItems = Array.from(navListTileData.entries()).map(
-    ([key, value]) => (
-      <>
-        <SelectableListTile
-          icon={key}
-          content={value}
-          onTap={() => {
-            navigate(value);
-          }}
-        />
-        <GapH6 />
-      </>
-    )
+    ([key, value]) => {
+      navListTileItemsKey++;
+
+      return (
+        <>
+          <SelectableListTile
+            key={navListTileItemsKey}
+            tabKey={navListTileItemsKey}
+            icon={key}
+            content={value}
+            onTap={() => {
+              navigate("/home/" + value);
+            }}
+          />
+          <GapH6 />
+        </>
+      );
+    }
   );
 
   return (
