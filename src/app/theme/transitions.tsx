@@ -20,7 +20,7 @@ class Transitions {
         initial={{ opacity: transitionOptions?.initialOpacity ?? 0 }}
         animate={{ opacity: transitionOptions?.animateOpacity ?? 1 }}
         transition={
-          transitionOptions?.transition ?? { duration: 0.5, ease: "easeInt" }
+          transitionOptions?.transition ?? { duration: 0.5, ease: "easeIn" }
         }
         style={{
           display: "flex",
