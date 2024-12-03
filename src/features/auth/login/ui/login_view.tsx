@@ -5,7 +5,6 @@ import AuthImage from "../../shared/components/auth_image";
 const LoginView = (): JSX.Element => {
   return (
     <>
-      <AuthImage />
       <AuthForm />
       <AuthAppBar />
     </>

@@ -3,8 +3,12 @@ import TextFormField from "../../../shared/components/text_form_field";
 import "../css/auth_form.css";
 import { GapH12, GapH16, GapH32 } from "../../../../app/constants/reusable";
 import MainButton from "../../../shared/components/main_button";
+import { useNavigate } from "react-router";
+
+//!! TODO: implement text button
 
 const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState("password");
 
   const [name, setName] = useState<string>("");
@@ -118,9 +122,13 @@ const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
             ? "Need to create an account? "
             : "Already have an account? "}
           <span>
-            <a href={isLogin ? "/signUp" : "/"} id="auth-link">
+            <button
+              onClick={() => {
+                navigate(isLogin ? "/auth/signUp" : "/auth/login");
+              }}
+            >
               {isLogin ? "Sign Up" : "Login"}
-            </a>
+            </button>
           </span>
         </p>
       </form>

@@ -1,0 +1,12 @@
+.side-nav-bar{
+    display: flex; 
+    flex-direction: column; 
+    width: 20%; 
+    height: 100%; 
+    background-color: black; 
+    /* TODO: maybe responsive padding */
+    border-top-right-radius: 24px; 
+    border-bottom-right-radius: 24px; 
+    /* TODO: maybe responsive padding */
+    padding-top: 40px;
+}
