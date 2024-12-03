@@ -5,7 +5,6 @@ import AuthAppBar from "../../shared/components/auth_app_bar";
 const SignUpView = (): JSX.Element => {
   return (
     <>
-      <AuthImage />
       <AuthForm isLogin={false} />
       <AuthAppBar />
     </>
