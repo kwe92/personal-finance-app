@@ -1,15 +1,20 @@
-import { GapW16 } from "../../../app/constants/reusable";
+import * as gaps from "../../../app/constants/reusable";
 import "./css/selectable_list_tile.css";
 
 const SelectableListTile = (props: {
   icon: JSX.Element;
   content: string;
+  tabKey: number;
   onTap?: React.MouseEventHandler<HTMLDivElement>;
 }): JSX.Element => {
   return (
-    <div className="selectable-list-tile" tabIndex={1} onClick={props.onTap}>
+    <div
+      className="selectable-list-tile"
+      tabIndex={props.tabKey}
+      onClick={props.onTap}
+    >
       {props.icon}
-      <GapW16 />
+      <gaps.GapW8 />
       <p>{props.content}</p>
     </div>
   );
