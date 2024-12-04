@@ -1,0 +1,10 @@
+.text-button{
+    color: #201F24;
+    background: none;
+    font-size: 14px;
+    font-weight: bold;
+    border: none;
+    padding: 0;
+    text-decoration: underline;
+    cursor: pointer;
+}

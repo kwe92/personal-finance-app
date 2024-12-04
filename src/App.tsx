@@ -2,13 +2,14 @@ import "./app/theme/css/App.css";
 import { useEffect, useState } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router";
 import { AnimatePresence } from "framer-motion";
-import LoginView from "./features/auth/login/ui/login_view";
-import SignUpView from "./features/auth/signUp/ui/sign_up_view";
+import LoginView from "./features/auth/login/login_view";
+import SignUpView from "./features/auth/signUp/sign_up_view";
 import Transitions from "./app/theme/transitions";
 import OverviewView from "./features/overview/overview_view";
 import TransactionsView from "./features/transactions/transactions_view";
-import SideNavBar from "./features/home/components/side_nav_bar";
+import SideNavBar from "./features/shared/components/side_nav_bar";
 import AuthImage from "./features/auth/shared/components/auth_image";
+import AuthAppBar from "./features/shared/components/auth_app_bar";
 
 function App() {
   const location = useLocation();
@@ -24,8 +25,12 @@ function App() {
   });
 
   return (
-    <div className="App">
-      {!showSideNavBar && <AuthImage />}
+    <div className="app">
+      {!showSideNavBar && (
+        <>
+          <AuthImage /> <AuthAppBar />
+        </>
+      )}
 
       {showSideNavBar && <SideNavBar />}
 

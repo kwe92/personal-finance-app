@@ -6,7 +6,7 @@ const MainButton = (props: {
   onTap?: React.MouseEventHandler<HTMLButtonElement>;
 }): JSX.Element => {
   return (
-    <button className="main_button" type={props.type} onClick={props.onTap}>
+    <button className="main-button" type={props.type} onClick={props.onTap}>
       {props.children}
     </button>
   );
