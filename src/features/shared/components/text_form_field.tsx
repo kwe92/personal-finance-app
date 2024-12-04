@@ -41,6 +41,7 @@ const TextFormField = ({
             alt="hello"
             style={{
               paddingRight: "12px",
+              cursor: "pointer",
             }}
             onClick={onIconTap}
           />

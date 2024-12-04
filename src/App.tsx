@@ -7,7 +7,7 @@ import SignUpView from "./features/auth/signUp/ui/sign_up_view";
 import Transitions from "./app/theme/transitions";
 import OverviewView from "./features/overview/overview_view";
 import TransactionsView from "./features/transactions/transactions_view";
-import SideNavBar from "./features/home/components/side_nav_bar";
+import SideNavBar from "./features/shared/components/side_nav_bar";
 import AuthImage from "./features/auth/shared/components/auth_image";
 
 function App() {

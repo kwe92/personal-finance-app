@@ -3,11 +3,10 @@
     height: 56px;
     display: flex;
     align-items: center;
-    /* background-color: white; */
     /* TODO: maybe responsive left padding */
-    /* padding: 16px 0 16px 32px; */
     border-top-right-radius: 12px;
     border-bottom-right-radius: 12px;
+    cursor: pointer;
 }
 
 .selected-selectable-list-tile{
@@ -17,7 +16,6 @@
     align-items: center;
     background-color: #F8F4F0;
     /* TODO: maybe responsive left padding */
-    /* padding: 16px 0 16px 32px; */
     border-top-right-radius: 12px;
     border-bottom-right-radius: 12px;
 
