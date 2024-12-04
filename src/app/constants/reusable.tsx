@@ -20,6 +20,10 @@ const GapW16 = (): JSX.Element => {
   return <div style={{ width: "16px" }} />;
 };
 
+const GapW24 = (): JSX.Element => {
+  return <div style={{ width: "24px" }} />;
+};
+
 const GapW32 = (): JSX.Element => {
   return <div style={{ width: "32px" }} />;
 };
@@ -50,6 +54,10 @@ const GapH16 = (): JSX.Element => {
   return <div style={{ height: "16px" }} />;
 };
 
+const GapH24 = (): JSX.Element => {
+  return <div style={{ height: "24px" }} />;
+};
+
 const GapH32 = (): JSX.Element => {
   return <div style={{ height: "32px" }} />;
 };
@@ -58,6 +66,6 @@ const GapH64 = (): JSX.Element => {
   return <div style={{ height: "64px" }} />;
 };
 
-export { GapW4, GapW6, GapW8, GapW12, GapW16, GapW32, GapW64 };
+export { GapW4, GapW6, GapW8, GapW12, GapW16, GapW24, GapW32, GapW64 };
 
-export { GapH4, GapH6, GapH8, GapH12, GapH16, GapH32, GapH64 };
+export { GapH4, GapH6, GapH8, GapH12, GapH16, GapH24, GapH32, GapH64 };
