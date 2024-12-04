@@ -4,8 +4,6 @@ import hidePassword from "../../../assets/images/icon-hide-password.svg";
 import { MouseEventHandler } from "react";
 import "./css/text_form_field.css";
 
-//!! TODO: conver px to rem
-
 const TextFormField = ({
   name,
   label,
@@ -27,7 +25,7 @@ const TextFormField = ({
     <>
       <label htmlFor={name}>{label}</label>
       <div style={{ height: "4px" }} />
-      <div className="textFormFieldContainer">
+      <div className="text-form-field-container">
         <input
           id={name}
           title={name}
@@ -35,7 +33,7 @@ const TextFormField = ({
           type={type}
           value={value}
           onChange={onChange}
-          className="textFormField"
+          className="text-form-field"
         />
         {showPasswordIcon ? (
           <img

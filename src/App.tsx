@@ -24,7 +24,7 @@ function App() {
   });
 
   return (
-    <div className="App">
+    <div className="app">
       {!showSideNavBar && <AuthImage />}
 
       {showSideNavBar && <SideNavBar />}

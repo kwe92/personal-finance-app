@@ -33,9 +33,7 @@ const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
     setShowPassword(showPassword === "text" ? "password" : "text");
 
   return (
-    // div to center form
-
-    <div className="main-container">
+    <div className="auth-form-container">
       {/* form */}
       <form
         className="form-theme"

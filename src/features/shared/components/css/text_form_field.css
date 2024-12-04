@@ -1,6 +1,6 @@
 /*!! TODO: refactor css order and conver px to rem */
 
-.textFormFieldContainer {
+.text-form-field-container {
     display: flex;
     width: 100%;
     height: 42px;
@@ -10,7 +10,7 @@
     justify-content: space-between;
 }
 
-.textFormField{
+.text-form-field{
     background: transparent;
     border: none;
     padding-left: 12px;
@@ -27,15 +27,15 @@
     - anchor element:pseudo-class name
     */
 
-.textFormFieldContainer:hover {
+.text-form-field-container:hover {
     border: 1.5px solid #201F24;
 }
 
-.textFormFieldContainer:focus-within {
+.text-form-field-container:focus-within {
     border: 1.5px solid #201F24;
 }
 
-.textFormField:focus {
+.text-form-field:focus {
     border: none;
     outline: none;
 }
