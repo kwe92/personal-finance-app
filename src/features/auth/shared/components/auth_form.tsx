@@ -1,11 +1,11 @@
+import "../css/auth_form.css";
+
 import { useState } from "react";
 import TextFormField from "../../../shared/components/text_form_field";
-import "../css/auth_form.css";
-import { GapH12, GapH16, GapH32 } from "../../../../app/constants/reusable";
+import * as gaps from "../../../../app/constants/reusable";
 import MainButton from "../../../shared/components/main_button";
 import { useNavigate } from "react-router";
-
-//!! TODO: implement text button
+import TextButton from "../../../shared/components/text_button";
 
 const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
   const navigate = useNavigate();
@@ -46,7 +46,7 @@ const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
 
         {!isLogin ? (
           <>
-            <GapH32 />
+            <gaps.GapH32 />
 
             <TextFormField
               name="name"
@@ -60,7 +60,7 @@ const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
           <></>
         )}
 
-        <GapH16 />
+        <gaps.GapH16 />
 
         <TextFormField
           name="email"
@@ -70,7 +70,7 @@ const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
           onChange={handleEmailChange}
         />
 
-        <GapH16 />
+        <gaps.GapH16 />
 
         <TextFormField
           showPasswordIcon={true}
@@ -84,7 +84,7 @@ const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
 
         {!isLogin ? (
           <>
-            <GapH12 />
+            <gaps.GapH12 />
 
             <p
               style={{
@@ -100,7 +100,7 @@ const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
           <></>
         )}
 
-        <GapH32 />
+        <gaps.GapH32 />
 
         <MainButton
           type="submit"
@@ -113,20 +113,20 @@ const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
           {isLogin ? "Login" : "Create Account"}
         </MainButton>
 
-        <GapH32 />
+        <gaps.GapH32 />
 
         <p style={{ color: "#696868", textAlign: "center", fontSize: "14px" }}>
           {isLogin
             ? "Need to create an account? "
             : "Already have an account? "}
           <span>
-            <button
-              onClick={() => {
+            <TextButton
+              onTap={() => {
                 navigate(isLogin ? "/auth/signUp" : "/auth/login");
               }}
             >
               {isLogin ? "Sign Up" : "Login"}
-            </button>
+            </TextButton>
           </span>
         </p>
       </form>
