@@ -9,6 +9,7 @@ import TextButton from "../../../shared/components/text_button";
 
 const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
   const navigate = useNavigate();
+
   const [showPassword, setShowPassword] = useState("password");
 
   const [name, setName] = useState<string>("");
@@ -39,7 +40,6 @@ const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
         className="form-theme"
         onSubmit={(e) => {
           e.preventDefault(); // prevent form default behavior, add custom client-side form handling
-          console.log("hello");
         }}
       >
         <p id="title-text">{isLogin ? "Login" : "SignUp"}</p>
