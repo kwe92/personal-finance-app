@@ -13,6 +13,8 @@ const SelectableListTile = (props: {
       tabIndex={props.tabKey}
       onClick={props.onTap}
     >
+      <div className="vertical-navbar-highlight" />
+      <gaps.GapW32 />
       {props.icon}
       <gaps.GapW8 />
       <p>{props.content}</p>
