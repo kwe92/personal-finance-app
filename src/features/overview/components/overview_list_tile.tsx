@@ -1,4 +1,4 @@
-import * as gaps from "../../../app/constants/reusable";
+import "./css/overview_list_tile.css";
 
 const OverviewListTile = ({
   title,
@@ -9,29 +9,21 @@ const OverviewListTile = ({
   content: string;
   isInvertedColors?: boolean;
 }): JSX.Element => {
-  const backgroundCOlor = !isInvertedColors ? "white" : "#201F24";
+  const backgroundColor = !isInvertedColors ? "white" : "#201F24";
 
   const contentColor = !isInvertedColors ? "#201F24" : "white";
 
   return (
     <div
+      className="overview-list-tile-container"
       style={{
-        flex: 1,
-        backgroundColor: backgroundCOlor,
-        borderRadius: "12px",
+        backgroundColor: backgroundColor,
       }}
     >
-      <div
-        style={{ display: "flex", flexDirection: "column", padding: "24px" }}
-      >
-        <p style={{ fontSize: "14px", color: contentColor }}>{title}</p>
-        <gaps.GapH12 />
-        <p
-          style={{ fontSize: "32px", fontWeight: "bold", color: contentColor }}
-        >
-          {content}
-        </p>
-      </div>
+      <p style={{ fontSize: "0.875rem", color: contentColor }}>{title}</p>
+      <p style={{ fontSize: "2rem", fontWeight: "bold", color: contentColor }}>
+        {content}
+      </p>
     </div>
   );
 };

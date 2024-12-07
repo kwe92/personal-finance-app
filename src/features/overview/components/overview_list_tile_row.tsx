@@ -1,10 +1,10 @@
 import OverviewListTile from "./overview_list_tile";
-
+import "./css/overview_list_tile_row.css";
 import * as gaps from "../../../app/constants/reusable";
 
 const OverviewListTileRow = (): JSX.Element => {
   return (
-    <div style={{ display: "flex", width: "100%", height: "118px" }}>
+    <div className="overview-list-tile-row-container">
       <OverviewListTile
         title="Current Balance"
         content="$4,836.00"
