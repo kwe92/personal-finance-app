@@ -5,6 +5,10 @@
   font-family: PublicSans;
 }
 
+body {
+  background-color: #F2F3F7;;
+}
+
 @font-face {
   font-family: PublicSans;
   src: url(../../../assets/fonts/PublicSans-VariableFont_wght.ttf);
