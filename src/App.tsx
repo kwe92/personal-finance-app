@@ -36,7 +36,13 @@ function App() {
         </>
       )}
 
-      {showSideNavBar && <SideNavBar />}
+      {showSideNavBar && (
+        <>
+          {" "}
+          <SideNavBar />
+          {/* <BottomNavBar /> */}
+        </>
+      )}
 
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
@@ -79,5 +85,19 @@ function App() {
     </div>
   );
 }
+
+const BottomNavBar = (): JSX.Element => {
+  return (
+    <div
+      style={{
+        position: "absolute",
+        bottom: "0px",
+        backgroundColor: "orange",
+        width: "100%",
+        height: "56px",
+      }}
+    />
+  );
+};
 
 export default App;
