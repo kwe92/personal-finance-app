@@ -6,6 +6,7 @@
     background-color: white;
     padding: 1.25rem;
     border-radius: 12px;
+    gap: 1rem;
 }
 
 .overview-transaction-list-tile{
@@ -21,8 +22,14 @@
     width: 100%;
     height: 1px;
     background-color: #F2F2F2;
-    margin: 20px 0 20px 0;
+    /* margin: 20px 0 20px 0; */
 
+}
+
+@media(max-height:930px){
+    .overview-transaction-section-main-container{
+        gap:0.75rem;
+    }
 }
 
 .overview-transaction-list-tile #otlt-left-side{

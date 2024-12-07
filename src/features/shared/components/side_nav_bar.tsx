@@ -1,12 +1,10 @@
+import "./css/side_nav_bar.css";
+
 import logo from "../../../assets/images/logo-large.svg";
 import { GapH6 } from "../../../app/constants/reusable";
 import useAddSelectableListTileListeners from "../hooks/use_selectable_list_tile_listeners";
-
-import * as navIcons from "./side_nav_bar_icons";
-
+import * as navIcons from "./nav_bar_icons";
 import SelectableListTile from "./selectable_list_tile";
-
-import "./css/side_nav_bar.css";
 import { useNavigate } from "react-router";
 
 const SideNavBar = (): JSX.Element => {
