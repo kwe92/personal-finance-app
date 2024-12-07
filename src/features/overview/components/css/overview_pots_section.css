@@ -1,0 +1,55 @@
+.overview-pots-section-main-container{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 40%;
+    background-color: white;
+    padding: 1.25rem;
+    border-radius: 12px;
+}
+
+.overview-pots-second-section{
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+.overview-pots-total-saved{
+    display: flex;
+    place-items: center;
+    place-content: center;
+    width: 45%;
+    height: 100%;
+    background-color: #F8F4F0;
+    border-radius: 12px;
+}
+
+.overview-pots-section-grid-container {
+    display: grid;
+    width: 55%;
+    height: 100%;
+    grid-template-columns: auto auto;
+    gap: 10px;
+    /* background-color: lightcoral; */
+  }
+  .overview-pots-section-grid-item {
+    display: flex;
+
+  }
+
+  .overview-pots-section-grid-item-content{
+    display: flex;
+    flex-direction: column;
+    place-content: center;
+    align-items: start;
+    justify-content: space-between;
+    padding: 2px 0 2px 0;
+
+  }
+
+  .overview-pots-list-tile-vertical-line{
+    width: 6px;
+    height: 100%;
+    border-radius: 12px;
+  }
+

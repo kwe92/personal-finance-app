@@ -1,0 +1,12 @@
+.avatar-image{
+    width: 40px;
+    height: 40px;
+    background-color: lightsalmon;
+    border-radius: 40px;
+}
+
+.avatar-image img{
+    width: inherit;
+    height: inherit;
+    border-radius: inherit;
+}

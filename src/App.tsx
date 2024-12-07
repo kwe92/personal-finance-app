@@ -11,6 +11,10 @@ import SideNavBar from "./features/shared/components/side_nav_bar";
 import AuthImage from "./features/auth/shared/components/auth_image";
 import AuthAppBar from "./features/shared/components/auth_app_bar";
 
+//!! TODO: look through components and remove as much inline css as possible
+
+//!! TODO: convert px and random percent spacing to rem
+
 function App() {
   const location = useLocation();
 

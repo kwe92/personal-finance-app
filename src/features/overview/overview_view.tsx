@@ -1,5 +1,5 @@
 import * as gaps from "../../app/constants/reusable";
-import OverviewFirstSection from "./components/overview_first_section";
+import OverviewPotsTransactionSection from "./components/overview_pots_transaction_section";
 import OverviewListTileRow from "./components/overview_list_tile_row";
 import OverviewSecondSection from "./components/overview_second_section";
 
@@ -15,17 +15,20 @@ const OverviewView = (): JSX.Element => {
       }}
     >
       <h1 style={{ color: "#201F24" }}>Overview</h1>
+
       <gaps.GapH32 />
 
       <OverviewListTileRow />
 
       {/* lower section */}
 
-      <div style={{ height: "3.5%" }} />
+      <gaps.GapH32 />
 
       <div style={{ width: "100%", height: "100%", display: "flex" }}>
-        <OverviewFirstSection />
-        <div style={{ width: "1.5%" }} />
+        <OverviewPotsTransactionSection />
+
+        <gaps.GapW24 />
+
         <OverviewSecondSection />
       </div>
     </div>

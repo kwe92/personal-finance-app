@@ -1,0 +1,52 @@
+.overview-transaction-section-main-container{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    padding: 1.25rem;
+    border-radius: 12px;
+}
+
+.overview-transaction-list-tile{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 48px;
+}
+
+
+.overview-transaction-divider{
+    width: 100%;
+    height: 1px;
+    background-color: #F2F2F2;
+    margin: 20px 0 20px 0;
+
+}
+
+.overview-transaction-list-tile #otlt-left-side{
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.overview-transaction-list-tile #otlt-right-side{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: end;
+    font-size: 14px;
+    height: 100%;
+}
+
+#otlt-left-side p {
+    font-size: 14px;
+    font-weight: bold;
+    color: #201F24;
+}
+
+/* #otlt-right-side p {
+    font-size: 14px;
+    font-weight: bold;
+} */

@@ -7,6 +7,10 @@ import MainButton from "../../../shared/components/main_button";
 import { useNavigate } from "react-router";
 import TextButton from "../../../shared/components/text_button";
 
+//!! TODO: add verify password section
+
+//!! TODO: add form validation
+
 const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
   const navigate = useNavigate();
 
@@ -108,6 +112,16 @@ const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
             setName("");
             setEmail("");
             setPassword("");
+
+            //!! TODO: replace with validation and real auth checks
+
+            if (
+              isLogin &&
+              email === "test@test.io" &&
+              password === "Password11!!"
+            ) {
+              navigate("/home");
+            }
           }}
         >
           {isLogin ? "Login" : "Create Account"}

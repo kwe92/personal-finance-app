@@ -1,0 +1,30 @@
+.overview-title-text-button-section{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.overview-icon-text-button{
+    display: flex;
+    align-items: center;
+    height: 20px;
+    fill:#696868;
+    color:#696868;
+    cursor: pointer;
+}
+
+.overview-title-text-button-section p{
+    font-size: 20px; 
+    font-weight: bold;
+}
+
+.overview-icon-text-button p {
+    font-size: 14px; 
+    font-weight: 400;
+}
+
+.overview-icon-text-button:hover{
+    fill: black;
+    color:black;
+    font-weight: 500;
+}
