@@ -8,6 +8,8 @@ import OverviewSectionHeader from "./overview_section_header";
 import AvatarImage from "../../shared/components/avatar_image";
 import { useEffect, useState } from "react";
 
+// TODO: maybe use flex boxes to evenly distribute the elements within the transactions section
+
 const OverviewTransactionsSection = (): JSX.Element => {
   const { windowWidth, windowHeight } = useWindowSize();
 
@@ -18,16 +20,10 @@ const OverviewTransactionsSection = (): JSX.Element => {
   });
 
   return (
-    <div
-      className="overview-transaction-section-main-container"
-      style={{
-        overflowY: "auto",
-        // maxHeight: "600px"
-      }}
-    >
+    <div className="overview-transaction-section-main-container">
       <OverviewSectionHeader title="Transactions" buttonLabel="View All" />
 
-      <gaps.GapH16 />
+      <gaps.GapH8 />
 
       {transactions.at(0)}
 
@@ -85,7 +81,7 @@ const OverviewTransactionListTile = ({
               isPositive(transaction?.amount ?? 0.0) ? "#277C78" : "#201F24"
             }`,
             fontSize: "14px",
-            fontWeight: " bold",
+            fontWeight: "bold",
           }}
         >
           {/* +$75.50 */}
