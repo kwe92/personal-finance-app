@@ -3,7 +3,6 @@ import "./css/overview_view_shared_styles.css";
 
 import * as gaps from "../../../app/constants/reusable";
 import iconPots from "../../../assets/images/icon-pot.svg";
-import OverviewIconTextButton from "./overview_icon_text_button";
 import OverviewSectionHeader from "./overview_section_header";
 
 const OverviewPotsSection = (): JSX.Element => {
@@ -11,12 +10,8 @@ const OverviewPotsSection = (): JSX.Element => {
     <div className="overview-pots-section-main-container">
       <OverviewSectionHeader title="Pots" buttonLabel="See Details" />
 
-      <gaps.GapH16 />
-
       <div className="overview-pots-second-section">
         <OverviewPotsTotalSaved />
-
-        <gaps.GapW24 />
 
         <div className="overview-pots-section-grid-container">
           <PotsSectionListTile
@@ -56,8 +51,6 @@ const PotsSectionListTile = (props: {
         style={{ backgroundColor: props.lineColor }}
       />
 
-      <gaps.GapW16 />
-
       <div className="overview-pots-section-grid-item-content">
         <p style={{ color: "#696868" }}>{props.title}</p>
         <p style={{ fontWeight: "bold" }}>{props.content}</p>
@@ -69,20 +62,12 @@ const PotsSectionListTile = (props: {
 const OverviewPotsTotalSaved = (): JSX.Element => {
   return (
     <div className="overview-pots-total-saved">
-      <img
-        src={iconPots}
-        alt="pots"
-        style={{ width: "46px", height: "46px" }}
-      />
+      <img src={iconPots} alt="pots" />
 
-      <gaps.GapW16 />
+      <div>
+        <p id="overview-pots-total-saved-title">Total Saved</p>
 
-      <div style={{ display: "flex", flexDirection: "column" }}>
-        <p style={{ color: "#696868" }}>Total Saved</p>
-
-        <gaps.GapH16 />
-
-        <h1 style={{ color: "#201F24" }}>$850</h1>
+        <p id="overview-pots-total-saved-content">$850</p>
       </div>
     </div>
   );
