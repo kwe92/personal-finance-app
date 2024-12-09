@@ -1,16 +1,14 @@
-import "./css/side_nav_bar.css";
+import "./css/bottom_nav_bar.css";
 
-import logo from "../../../assets/images/logo-large.svg";
-import { GapH6 } from "../../../app/constants/reusable";
+import { useNavigate } from "react-router";
 import useAddSelectableListTileListeners from "../hooks/use_selectable_list_tile_listeners";
 import * as navIcons from "./nav_bar_icons";
-import SelectableListTile from "./selectable_list_tile";
-import { useNavigate } from "react-router";
+import { GapW6 } from "../../../app/constants/reusable";
 
-const SideNavBar = (): JSX.Element => {
+const BottomNavBar = (): JSX.Element => {
   useAddSelectableListTileListeners({
-    selector: ".selectable-list-tile",
-    selectedStyle: "selected-selectable-list-tile",
+    selector: ".selectable-bottom-nav-list-tile",
+    selectedStyle: "selected-selectable-bottom-nav-list-tile",
   });
 
   const navigate = useNavigate();
@@ -31,7 +29,7 @@ const SideNavBar = (): JSX.Element => {
 
       return (
         <>
-          <SelectableListTile
+          <BottomNavIcon
             key={navListTileItemsKey}
             tabKey={navListTileItemsKey}
             icon={key}
@@ -40,26 +38,31 @@ const SideNavBar = (): JSX.Element => {
               navigate("/home/" + value);
             }}
           />
-          <GapH6 />
         </>
       );
     }
   );
 
+  return <div className="bottom-nav-bar">{navListTileItems}</div>;
+};
+
+const BottomNavIcon = (props: {
+  icon: JSX.Element;
+  content: string;
+  tabKey: number;
+  onTap?: React.MouseEventHandler<HTMLDivElement>;
+}): JSX.Element => {
   return (
-    <div className="side-nav-bar">
-      <img
-        src={logo}
-        style={{
-          width: "8vw",
-          height: "3vh",
-          paddingLeft: "32px", //TODO: maybe responsive padding
-        }}
-      />
-      <div style={{ height: "32px" }} />
-      {navListTileItems}
+    <div
+      className="selectable-bottom-nav-list-tile"
+      tabIndex={props.tabKey}
+      onClick={props.onTap}
+    >
+      {props.icon}
+      <p>{props.content}</p>
+      <div className="horizontal-navbar-highlight" />
     </div>
   );
 };
 
-export default SideNavBar;
+export default BottomNavBar;

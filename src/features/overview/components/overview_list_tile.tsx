@@ -20,8 +20,13 @@ const OverviewListTile = ({
         backgroundColor: backgroundColor,
       }}
     >
-      <p style={{ fontSize: "0.875rem", color: contentColor }}>{title}</p>
-      <p style={{ fontSize: "2rem", fontWeight: "bold", color: contentColor }}>
+      <p id="overview-list-tile-title" style={{ color: contentColor }}>
+        {title}
+      </p>
+      <p
+        id="overview-list-tile-content"
+        style={{ fontWeight: "bold", color: contentColor }}
+      >
         {content}
       </p>
     </div>

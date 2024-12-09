@@ -1,5 +1,5 @@
 #auth-app-bar {
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     position: absolute;
@@ -9,8 +9,8 @@
     top: 0;
 }
 
-@media (min-width: 1200px){
+@media (max-width: 1200px){
     #auth-app-bar {
-        display: none;
+    display: flex;
     }
 }

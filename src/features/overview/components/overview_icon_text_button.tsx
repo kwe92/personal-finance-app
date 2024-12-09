@@ -12,7 +12,6 @@ const OverviewIconTextButton = ({
   return (
     <div className="overview-icon-text-button" onClick={onTap}>
       <p>{label}</p>
-      <gaps.GapW8 />
       <IconCaretRight />
     </div>
   );

@@ -10,10 +10,8 @@ const OverviewListTileRow = (): JSX.Element => {
         content="$4,836.00"
         isInvertedColors={true}
       />
-      <gaps.GapW16 />
 
       <OverviewListTile title="Income" content="$3.814.25" />
-      <gaps.GapW16 />
 
       <OverviewListTile title="Expenses" content="$1,700.50" />
     </div>
