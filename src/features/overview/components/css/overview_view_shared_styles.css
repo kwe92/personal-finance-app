@@ -11,9 +11,10 @@
     fill:#696868;
     color:#696868;
     cursor: pointer;
+    gap: 8px;
 }
 
-.overview-title-text-button-section p{
+.overview-title-text-button-section #title{
     font-size: 20px; 
     font-weight: bold;
 }
@@ -27,4 +28,18 @@
     fill: black;
     color:black;
     font-weight: 500;
+}
+
+@media(max-width: 600px){
+    .overview-icon-text-button{
+        gap: 6px;
+    }
+
+    .overview-icon-text-button p {
+        font-size: 12px; 
+    }
+
+    .overview-title-text-button-section #title{
+        font-size: 16px; 
+    }
 }
