@@ -10,6 +10,7 @@ import TransactionsView from "./features/transactions/transactions_view";
 import SideNavBar from "./features/shared/components/side_nav_bar";
 import AuthImage from "./features/auth/shared/components/auth_image";
 import AuthAppBar from "./features/shared/components/auth_app_bar";
+import BottomNavBar from "./features/shared/components/bottom_nav_bar";
 
 //!! TODO: look through components and remove as much inline css as possible
 
@@ -18,29 +19,28 @@ import AuthAppBar from "./features/shared/components/auth_app_bar";
 function App() {
   const location = useLocation();
 
-  const [showSideNavBar, setShowSideNavBar] = useState(false);
+  const [showNavBar, setShowNavBarNavBar] = useState(false);
 
   console.log(`location path name: ${location.pathname}`);
 
   useEffect(() => {
     if (location.pathname.includes("home")) {
-      setShowSideNavBar(true);
+      setShowNavBarNavBar(true);
     }
   });
 
   return (
     <div className="app">
-      {!showSideNavBar && (
+      {!showNavBar && (
         <>
           <AuthImage /> <AuthAppBar />
         </>
       )}
 
-      {showSideNavBar && (
+      {showNavBar && (
         <>
-          {" "}
           <SideNavBar />
-          {/* <BottomNavBar /> */}
+          <BottomNavBar />
         </>
       )}
 
@@ -85,19 +85,5 @@ function App() {
     </div>
   );
 }
-
-const BottomNavBar = (): JSX.Element => {
-  return (
-    <div
-      style={{
-        position: "absolute",
-        bottom: "0px",
-        backgroundColor: "orange",
-        width: "100%",
-        height: "56px",
-      }}
-    />
-  );
-};
 
 export default App;
