@@ -8,7 +8,7 @@ import OverviewSectionHeader from "./overview_section_header";
 import AvatarImage from "../../shared/components/avatar_image";
 import { useEffect, useState } from "react";
 
-// TODO: maybe use flex boxes to evenly distribute the elements within the transactions section
+//!! TODO: maybe use flex boxs to evenly distribute the elements within the transactions section
 
 const OverviewTransactionsSection = (): JSX.Element => {
   const { windowWidth, windowHeight } = useWindowSize();
@@ -68,7 +68,7 @@ const OverviewTransactionListTile = ({
         <AvatarImage image={emmaAvatar} />
 
         {/* transaction name */}
-        <p>{transaction?.name ?? "Unknown"}</p>
+        <p id="entity">{transaction?.name ?? "Unknown"}</p>
       </div>
 
       {/* right side */}
@@ -76,18 +76,18 @@ const OverviewTransactionListTile = ({
       <div id="otlt-right-side">
         {/* TODO: dynamically cahnge color based on if the value is possitive or negative */}
         <p
+          id="amount"
           style={{
             color: `${
               isPositive(transaction?.amount ?? 0.0) ? "#277C78" : "#201F24"
             }`,
-            fontSize: "14px",
-            fontWeight: "bold",
           }}
         >
-          {/* +$75.50 */}
           {`$${transaction?.amount.toFixed(2) ?? 0.0}`}
         </p>
-        <p style={{ fontSize: "12px", color: "#696868" }}>19 Aug 2024</p>
+        <p id="date" style={{ color: "#696868" }}>
+          19 Aug 2024
+        </p>
       </div>
     </div>
   );
