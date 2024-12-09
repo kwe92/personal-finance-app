@@ -8,7 +8,10 @@ import SelectableListTile from "./selectable_list_tile";
 import { useNavigate } from "react-router";
 
 const SideNavBar = (): JSX.Element => {
-  useAddSelectableListTileListeners();
+  useAddSelectableListTileListeners({
+    selector: ".selectable-list-tile",
+    selectedStyle: "selected-selectable-list-tile",
+  });
 
   const navigate = useNavigate();
 

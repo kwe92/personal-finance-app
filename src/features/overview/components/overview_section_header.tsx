@@ -12,7 +12,7 @@ const OverviewSectionHeader = ({
 }): JSX.Element => {
   return (
     <div className="overview-title-text-button-section">
-      <p>{title}</p>
+      <p id="title">{title}</p>
       <OverviewIconTextButton label={buttonLabel} onTap={onTap} />
     </div>
   );

@@ -10,15 +10,7 @@
 }
 
 .selected-selectable-list-tile{
-    width: 90%;
-    height: 56px;
-    display: flex;
-    align-items: center;
     background-color: #F8F4F0;
-    /* TODO: maybe responsive left padding */
-    border-top-right-radius: 12px;
-    border-bottom-right-radius: 12px;
-
 }
 
 .vertical-navbar-highlight {
