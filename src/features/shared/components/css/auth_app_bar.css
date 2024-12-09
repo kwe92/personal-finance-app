@@ -9,7 +9,7 @@
     top: 0;
 }
 
-@media (min-width: 1200px){
+@media (max-width: 1200px){
     #auth-app-bar {
         display: none;
     }

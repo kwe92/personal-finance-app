@@ -1,0 +1,15 @@
+.bottom-nav-bar{
+    display: none;
+    bottom: 0px;
+    background-color: orange;
+    width: 100%;
+    height: 56px;
+}
+
+@media (max-width:1200px){
+    .bottom-nav-bar{
+        position: fixed; /* make element sticky */
+        display: flex;
+        z-index:2;
+    }
+}
