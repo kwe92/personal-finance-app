@@ -4,5 +4,38 @@
     flex-direction: column;
     justify-content: space-between;
     border-radius: 12px;
-    padding: 0.75rem;
+    padding: 1rem;
+}
+
+#overview-list-tile-title{
+    font-size: 0.875rem;
+}
+
+#overview-list-tile-content{
+    font-size: 2rem;
+}
+
+@media (max-width: 1440px){
+
+    #overview-list-tile-content{
+        font-size: 1.75rem;
+    }
+}
+
+@media (max-width: 1200px){
+
+    #overview-list-tile-content{
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 800px){
+
+    #overview-list-tile-content{
+        font-size: 1.125rem;
+    }
+    #overview-list-tile-title{
+        font-size: 0.75rem;
+    }
+
 }
