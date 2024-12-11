@@ -3,12 +3,12 @@ import "./css/overview_view_shared_styles.css";
 import appData from "../../../app/data.json";
 import emmaAvatar from "../../../assets/images/avatars/emma-richardson.jpg";
 import * as gaps from "../../../app/constants/reusable";
-import Transaction, { TransactionData } from "../../shared/models/transaction";
+import { TransactionData } from "../../shared/models/transaction";
 import OverviewSectionHeader from "./overview_section_header";
 import AvatarImage from "../../shared/components/avatar_image";
-import { useEffect, useState } from "react";
+import useWindowSize from "../../shared/hooks/use_window_size";
 
-//!! TODO: maybe use flex boxs to evenly distribute the elements within the transactions section
+//!! TODO: create a dart parser function for transaction date e.g.: 19 Aug 2024
 
 const OverviewTransactionsSection = (): JSX.Element => {
   const { windowWidth, windowHeight } = useWindowSize();
@@ -74,7 +74,6 @@ const OverviewTransactionListTile = ({
       {/* right side */}
 
       <div id="otlt-right-side">
-        {/* TODO: dynamically cahnge color based on if the value is possitive or negative */}
         <p
           id="amount"
           style={{
@@ -95,27 +94,6 @@ const OverviewTransactionListTile = ({
 
 function isPositive(number: number) {
   return number > 0;
-}
-
-function useWindowSize() {
-  const [windowSize, setWindowSize] = useState({
-    windowWidth: window.innerWidth,
-    windowHeight: window.innerHeight,
-  });
-
-  useEffect(() => {
-    function handleResize() {
-      setWindowSize({
-        windowWidth: window.innerWidth,
-        windowHeight: window.innerHeight,
-      });
-    }
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  return windowSize;
 }
 
 export default OverviewTransactionsSection;
