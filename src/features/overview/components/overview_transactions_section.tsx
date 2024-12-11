@@ -21,7 +21,13 @@ const OverviewTransactionsSection = (): JSX.Element => {
 
   return (
     <div className="overview-transaction-section-main-container">
-      <OverviewSectionHeader title="Transactions" buttonLabel="View All" />
+      <OverviewSectionHeader
+        title="Transactions"
+        buttonLabel="View All"
+        onTap={() => {
+          // TODO: implement
+        }}
+      />
 
       <gaps.GapH8 />
 

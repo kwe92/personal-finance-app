@@ -1,5 +1,6 @@
 import "./css/overview-budget-bills-section.css";
 import { OverviewBudgetSection } from "./overview-budget-section";
+import { OverviewBillsSection } from "./overview_bills_section";
 
 const OverviewBudgetBillsSection = (): JSX.Element => {
   return (
@@ -8,18 +9,6 @@ const OverviewBudgetBillsSection = (): JSX.Element => {
 
       <OverviewBillsSection />
     </div>
-  );
-};
-
-const OverviewBillsSection = (): JSX.Element => {
-  return (
-    <div
-      style={{
-        width: "100%",
-        height: "45%",
-        backgroundColor: "lightsteelblue",
-      }}
-    ></div>
   );
 };
 
