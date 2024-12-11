@@ -36,28 +36,6 @@
     overflow:scroll;
   }
 
-.overview-pots-section-grid-item {
-    display: flex;
-    height: 100%;
-    gap: 8px;
-    text-overflow: ellipsis;
-  }
-
-.overview-pots-section-grid-item-content{
-    display: flex;
-    flex-direction: column;
-    place-content: center;
-    align-items: start;
-    justify-content: space-between;
-    gap: 8px;
-    padding: 2px 0 2px 0;
-  }
-
-.overview-pots-list-tile-vertical-line{
-    width: 6px;
-    height: 100%;
-    border-radius: 12px;
-  }
 
 #overview-pots-total-saved-title{
     color: #696868
@@ -106,17 +84,10 @@
 
   }
 
-  .overview-pots-section-grid-item-content{
-    padding: 0px;
-    }
-
   #overview-pots-total-saved-content{
     font-size: 24px;
   }
 
-  .overview-pots-section-grid-item-content p{
-    font-size: 14px;
-  }
 }
 
 @media (max-width: 800px){
@@ -125,15 +96,6 @@
   }
 
   #overview-pots-total-saved-title{
-    font-size: 12px;
-  }
-
-  .overview-pots-section-grid-item{
-    height: 36px;
-    gap:6px;
-  }
-
-  .overview-pots-section-grid-item-content p{
     font-size: 12px;
   }
 
@@ -159,26 +121,18 @@
     height: auto;
   }
 
-  .overview-pots-section-grid-item p{
-      white-space: nowrap
-      }
-
-  .overview-pots-section-grid-item-content p{
-      font-size: 12px;
-    }
   }
 
 @media (max-width: 450px){
-
-.overview-pots-total-saved{
+  .overview-pots-total-saved{
       gap: 4px;
   }
-
-.overview-pots-section-main-container{
+  
+  .overview-pots-section-main-container{
     gap: 8px;
   }
-
-.overview-pots-total-saved div{
+  
+  .overview-pots-total-saved div{
     gap: 8px;
   }
 
