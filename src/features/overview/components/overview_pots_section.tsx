@@ -8,7 +8,13 @@ import { ColoredLineListTile } from "./colored_line_list_tile";
 const OverviewPotsSection = (): JSX.Element => {
   return (
     <div className="overview-pots-section-main-container">
-      <OverviewSectionHeader title="Pots" buttonLabel="See Details" />
+      <OverviewSectionHeader
+        title="Pots"
+        buttonLabel="See Details"
+        onTap={() => {
+          // TODO: implement
+        }}
+      />
 
       <div className="overview-pots-second-section">
         <OverviewPotsTotalSaved />

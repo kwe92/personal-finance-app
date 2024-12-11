@@ -22,7 +22,13 @@ export const OverviewBudgetSection = (): JSX.Element => {
   };
   return (
     <div className="overview-budget-section">
-      <OverviewSectionHeader title="Budget" buttonLabel="See Details" />
+      <OverviewSectionHeader
+        title="Budget"
+        buttonLabel="See Details"
+        onTap={() => {
+          // TODO: implement
+        }}
+      />
 
       <div className="overview-budget-section-content">
         <div className="overview-budget-section-dougnut">
