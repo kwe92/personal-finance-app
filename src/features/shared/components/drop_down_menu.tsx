@@ -7,7 +7,7 @@ export const DropDownMenu = ({
   onTap,
 }: {
   title: string;
-  label: string; // TODO: label needs to chsnge dynamically based on selection
+  label: string; // TODO: label needs to change dynamically based on user selection
   onTap: React.MouseEventHandler<HTMLDivElement>;
 }): JSX.Element => {
   return (

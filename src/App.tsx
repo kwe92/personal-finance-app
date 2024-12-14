@@ -13,10 +13,6 @@ import AuthAppBar from "./features/shared/components/auth_app_bar";
 import BottomNavBar from "./features/shared/components/bottom_nav_bar";
 import { TransactionProvider } from "./features/shared/context/transactionContext";
 
-// TODO: look through components and remove as much inline css as possible
-
-// TODO: convert px and random percent spacing to rem
-
 function App() {
   const location = useLocation();
 
@@ -72,7 +68,6 @@ function App() {
               element={Transitions.fade(<SignUpView />)}
             />
 
-            {/* TODO: change path name to home  */}
             <Route
               path="/home/*"
               element={Transitions.fade(<Navigate to={"/home/Overview"} />)}

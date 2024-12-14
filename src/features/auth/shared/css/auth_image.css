@@ -1,6 +1,5 @@
 #auth-image-container{
     position: relative;
-    /* TODO: ensure chage from 100% to 100vh did not break views larger than 1440px */
     height: 100vh;
 }
 

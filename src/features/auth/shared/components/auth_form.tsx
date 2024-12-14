@@ -11,8 +11,6 @@ import TextButton from "../../../shared/components/text_button";
 
 // TODO: add form validation
 
-// TODO: I still do not like how the login view looks
-
 const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
   const navigate = useNavigate();
 

@@ -1,67 +1,41 @@
-/* TODO: ensure layout at different media break points matchs that of the overview view */
-
-/* NOTE: all styles in this module were developed starting at 1440px and may need adjusting for bigger view ports*/
-
-
 td {
     border-top: 1px solid #F2F2F2;
   }
 
-  /* TODO: font should be large on screens wider than 1440px */
-  th {
-    font-size: 12px; 
+th {
+    font-size: 14px; 
     font-weight: normal;
     color: #696868;
+    text-Align:start;
   }
 
 table {
   width: 100%;
   height: 100%;
   border-collapse: collapse;
-  /* background-color: aquamarine; */
   }
 
 td:nth-child(1) {
-    /* width: 45%; */
     font-size: 14px;
     font-weight: bold; 
-    /* background: #ddd; */
     }
+
+/* td:nth-child(2) {}
   
-  /* the second */
-td:nth-child(2) {
-    /* width: 200px; */
-    /* background: #ccc; */
-  }
-  
-  /* the third */
-td:nth-child(3) {
-    /* width: 300px; */
-    /* background: #bbb; */
-   }
+td:nth-child(3) {} */
 
 td:nth-child(4) {
     font-size: 14px;
     font-weight: bold;
     text-align: end;
-    /* background: #aaa; */
-    /* text-align: end; */
    }
-
-th {
-    text-Align:start;
-     /* TODO: font should be large on screens wider than 1440px */
-    font-Size: 12px;
-    font-Weight: normal;
-    /* color: #696868; */
-}
 
 .transaction-view-main {
     display: flex;
     flex-direction: column;
     width: 100%;
     height: 100%;
-    padding: 32px 32px 32px 32px;
+    padding: 32px;
     gap: 32px;
 }
 
@@ -86,7 +60,6 @@ th {
     align-items: center;
     justify-content: end;
     gap: 24px;
-    /* background-color: blue; */
 }
 
 .transaction-avatar-name{
@@ -112,22 +85,29 @@ th {
 @media (max-width: 1440px){
 
   .transaction-view-main {
-    padding: 24px 24px 24px 24px;
+    padding: 24px;
     gap: 24px;
+  }
+
+  th {
+    font-size: 12px; 
   }
 }
 
 @media (max-width: 1250px){
   .transaction-filters-container{
     gap:32px;
-}
-
-/* .transaction-drop-down-container{
-  gap: 12px;
-} */
+  }
 
   .transaction-drop-down-container .drop-down-menu-content{
-  padding: 8px 12px 8px 12px;
+    padding: 8px 12px 8px 12px;
+  }
+
+  .transaction-view-content{
+    gap: 16px;
+    max-height: 92.5%;
+  }
+
 }
 
 @media (max-width: 1200px){
@@ -139,12 +119,6 @@ th {
   }
 }
 
-.transaction-view-content{
- gap: 16px;
- max-height: 92.5%;
-}
-
-}
 
 @media (max-width: 800px){
 
@@ -206,7 +180,7 @@ th {
 
 @media (max-width: 365px){
   /* TODO: style search field for small screens 365*/
-.search-field-container{}
+/* .search-field-container{} */
 }
 
 @media(max-height:800px){

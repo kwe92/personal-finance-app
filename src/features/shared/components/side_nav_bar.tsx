@@ -53,7 +53,7 @@ const SideNavBar = (): JSX.Element => {
         style={{
           width: "8vw",
           height: "3vh",
-          paddingLeft: "32px", //TODO: maybe responsive padding
+          paddingLeft: "32px",
         }}
       />
       <div style={{ height: "32px" }} />
