@@ -7,9 +7,11 @@ import MainButton from "../../../shared/components/main_button";
 import { useNavigate } from "react-router";
 import TextButton from "../../../shared/components/text_button";
 
-//!! TODO: add verify password section
+// TODO: add verify password section
 
-//!! TODO: add form validation
+// TODO: add form validation
+
+// TODO: I still do not like how the login view looks
 
 const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
   const navigate = useNavigate();
@@ -113,7 +115,7 @@ const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
             setEmail("");
             setPassword("");
 
-            //!! TODO: replace with validation and real auth checks
+            // TODO: replace with validation and real auth checks
 
             if (
               isLogin &&
@@ -129,20 +131,32 @@ const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
 
         <gaps.GapH32 />
 
-        <p style={{ color: "#696868", textAlign: "center", fontSize: "14px" }}>
-          {isLogin
-            ? "Need to create an account? "
-            : "Already have an account? "}
-          <span>
-            <TextButton
-              onTap={() => {
-                navigate(isLogin ? "/auth/signUp" : "/auth/login");
-              }}
-            >
-              {isLogin ? "Sign Up" : "Login"}
-            </TextButton>
-          </span>
-        </p>
+        <div
+          style={{
+            display: "flex",
+            flex: 1,
+            // backgroundColor: "lightsteelblue",
+            placeContent: "center",
+            placeItems: "end",
+          }}
+        >
+          <p
+            style={{ color: "#696868", textAlign: "center", fontSize: "14px" }}
+          >
+            {isLogin
+              ? "Need to create an account? "
+              : "Already have an account? "}
+            <span>
+              <TextButton
+                onTap={() => {
+                  navigate(isLogin ? "/auth/signUp" : "/auth/login");
+                }}
+              >
+                {isLogin ? "Sign Up" : "Login"}
+              </TextButton>
+            </span>
+          </p>
+        </div>
       </form>
     </div>
   );
