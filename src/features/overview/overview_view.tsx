@@ -2,7 +2,6 @@ import "./overview_view.css";
 import OverviewPotsTransactionSection from "./components/overview_pots_transaction_section";
 import OverviewListTileRow from "./components/overview_list_tile_row";
 import OverviewBudgetBillsSection from "./components/overview-budget-bills-section";
-import { GapH64 } from "../../app/constants/reusable";
 
 const OverviewView = (): JSX.Element => {
   return (

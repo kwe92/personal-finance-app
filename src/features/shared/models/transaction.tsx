@@ -1,14 +1,6 @@
 import { data } from "react-router";
 
-//!! TODO: define in global type / interface module in root of project
-interface TransactionData {
-  avatar: string;
-  name: string;
-  category: string;
-  date: string;
-  amount: number;
-  recurring: boolean;
-}
+// TODO: define in global type / interface module in root of project
 
 class Transaction {
   avatar: string;
@@ -40,5 +32,3 @@ class Transaction {
 }
 
 export default Transaction;
-
-export type { TransactionData };

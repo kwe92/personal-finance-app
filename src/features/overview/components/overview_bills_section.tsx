@@ -2,7 +2,7 @@ import "./css/overview_bills_section.css";
 
 import OverviewSectionHeader from "./overview_section_header";
 
-//!! NOTE: note styles are for 1440px!!!!! medium laptop
+// NOTE: note styles are for 1440px!!!!! medium laptop
 
 export const OverviewBillsSection = (): JSX.Element => {
   return (
