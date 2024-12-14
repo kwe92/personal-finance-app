@@ -1,0 +1,22 @@
+.drop-down-menu-container{
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    /* background-color: lightgoldenrodyellow; */
+}
+
+.drop-down-menu-content{
+    display: flex;
+    height: 45px;
+    align-items: center;
+    padding: 12px 16px 12px 16px;
+    border: 1px solid #98908B;
+    border-radius: 8px;
+    gap: 16px;
+    cursor: pointer;
+    /* background-color: lightcoral; */
+}
+
+.drop-down-menu-content:hover{
+    border: 1px solid #201F24;
+}
