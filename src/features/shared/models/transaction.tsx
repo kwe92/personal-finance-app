@@ -1,7 +1,3 @@
-import { data } from "react-router";
-
-// TODO: define in global type / interface module in root of project
-
 class Transaction {
   avatar: string;
   name: string;

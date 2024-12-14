@@ -1,0 +1,29 @@
+.transaction-list-tile-container {
+    display: flex;
+    flex: 1;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+    /* padding: 0 0 0 0; */
+}
+
+.transaction-list-tile-content {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    /* background-color: lightgrey; */
+}
+
+.tltc-left {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+
+.tltc-right {
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    gap: 12px;
+}

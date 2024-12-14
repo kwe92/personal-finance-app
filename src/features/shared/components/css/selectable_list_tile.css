@@ -3,7 +3,6 @@
     height: 56px;
     display: flex;
     align-items: center;
-    /* TODO: maybe responsive left padding */
     border-top-right-radius: 12px;
     border-bottom-right-radius: 12px;
     cursor: pointer;

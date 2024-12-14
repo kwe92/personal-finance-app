@@ -8,9 +8,7 @@ import useWindowSize from "../../shared/hooks/use_window_size";
 import { useTransactionData } from "../../shared/context/transactionContext";
 import { useNavigate } from "react-router";
 import { Divider } from "../../shared/components/divider";
-import { isPositive } from "../../shared/utility/functions";
-
-// TODO: create a dart parser function for transaction date e.g.: 19 Aug 2024
+import { formatDate, isPositive } from "../../shared/utility/functions";
 
 const OverviewTransactionsSection = (): JSX.Element => {
   const navigate = useNavigate();
@@ -113,7 +111,10 @@ const OverviewTransactionListTile = ({
             ? `+$${transactionAmount}`
             : `-$${transactionAmount}`}
         </p>
-        <p id="date">19 Aug 2024</p>
+        <p id="date">
+          {formatDate(transaction?.date ?? "", "dd MMM yyyy")}
+          {/* 19 Aug 2024 */}
+        </p>
       </div>
     </div>
   );
