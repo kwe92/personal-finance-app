@@ -1,64 +1,83 @@
 import "./css/overview_transactions_section.css";
 import "./css/overview_view_shared_styles.css";
-import appData from "../../../app/data.json";
-import emmaAvatar from "../../../assets/images/avatars/emma-richardson.jpg";
+import placeHolderAvatar from "../../../assets/images/avatars/green-plate-eatery.jpg";
 import * as gaps from "../../../app/constants/reusable";
-import { TransactionData } from "../../shared/models/transaction";
 import OverviewSectionHeader from "./overview_section_header";
 import AvatarImage from "../../shared/components/avatar_image";
 import useWindowSize from "../../shared/hooks/use_window_size";
+import { useTransactionData } from "../../shared/context/transactionContext";
+import { useNavigate } from "react-router";
+import { Divider } from "../../shared/components/divider";
+import { isPositive } from "../../shared/utility/functions";
 
-//!! TODO: create a dart parser function for transaction date e.g.: 19 Aug 2024
+// TODO: create a dart parser function for transaction date e.g.: 19 Aug 2024
 
 const OverviewTransactionsSection = (): JSX.Element => {
+  const navigate = useNavigate();
+
   const { windowWidth, windowHeight } = useWindowSize();
 
-  console.log(`height: ${windowHeight}`);
+  const { transactions, isLoading, error } = useTransactionData();
 
-  const transactions = appData.transactions.map((transaction, i) => {
-    return <OverviewTransactionListTile transaction={transaction} />;
-  });
+  var transactionListTiles: JSX.Element[];
 
+  if (transactions !== null) {
+    transactionListTiles = transactions.map((transaction, i) => {
+      return <OverviewTransactionListTile transaction={transaction} />;
+    });
+  }
   return (
-    <div className="overview-transaction-section-main-container">
-      <OverviewSectionHeader
-        title="Transactions"
-        buttonLabel="View All"
-        onTap={() => {
-          // TODO: implement
-        }}
-      />
-
-      <gaps.GapH8 />
-
-      {transactions.at(0)}
-
-      <Divider />
-
-      {transactions.at(1)}
-
-      <Divider />
-
-      {transactions.at(2)}
-
-      <Divider />
-
-      {transactions.at(3)}
-
-      {windowHeight > 930 ? (
-        <>
-          <Divider />
-          {transactions.at(4)}
-        </>
+    <>
+      {isLoading ? (
+        // TODO:ensure loading looks good on any screen | will use shimmer loading effects
+        <div
+          style={{
+            width: "100%",
+            height: "100%",
+            placeContent: "center",
+            textAlign: "center",
+          }}
+        >
+          <h1>testing loading state...</h1>
+        </div>
       ) : (
-        <></>
-      )}
-    </div>
-  );
-};
+        <div className="overview-transaction-section-main-container">
+          <OverviewSectionHeader
+            title="Transactions"
+            buttonLabel="View All"
+            onTap={() => {
+              navigate("/home/Transactions");
+            }}
+          />
 
-const Divider = ({ style }: { style?: React.CSSProperties }): JSX.Element => {
-  return <div className="overview-transaction-divider" style={style} />;
+          <gaps.GapH8 />
+
+          {transactionListTiles!.at(0)}
+
+          <Divider />
+
+          {transactionListTiles!.at(1)}
+
+          <Divider />
+
+          {transactionListTiles!.at(2)}
+
+          <Divider />
+
+          {transactionListTiles!.at(3)}
+
+          {windowHeight > 930 ? (
+            <>
+              <Divider />
+              {transactionListTiles!.at(4)}
+            </>
+          ) : (
+            <></>
+          )}
+        </div>
+      )}
+    </>
+  );
 };
 
 const OverviewTransactionListTile = ({
@@ -66,12 +85,16 @@ const OverviewTransactionListTile = ({
 }: {
   transaction?: TransactionData;
 }): JSX.Element => {
+  const isPositiveAmount = isPositive(transaction?.amount ?? 0.0);
+
+  const transactionAmount = Math.abs(transaction?.amount ?? 0.0).toFixed(2);
+
   return (
     <div className="overview-transaction-list-tile">
       {/* left side */}
       <div id="otlt-left-side">
         {/* avatar image */}
-        <AvatarImage image={emmaAvatar} />
+        <AvatarImage image={placeHolderAvatar} />
 
         {/* transaction name */}
         <p id="entity">{transaction?.name ?? "Unknown"}</p>
@@ -83,23 +106,17 @@ const OverviewTransactionListTile = ({
         <p
           id="amount"
           style={{
-            color: `${
-              isPositive(transaction?.amount ?? 0.0) ? "#277C78" : "#201F24"
-            }`,
+            color: `${isPositiveAmount ? "#277C78" : "#201F24"}`,
           }}
         >
-          {`$${transaction?.amount.toFixed(2) ?? 0.0}`}
+          {isPositiveAmount
+            ? `+$${transactionAmount}`
+            : `-$${transactionAmount}`}
         </p>
-        <p id="date" style={{ color: "#696868" }}>
-          19 Aug 2024
-        </p>
+        <p id="date">19 Aug 2024</p>
       </div>
     </div>
   );
 };
-
-function isPositive(number: number) {
-  return number > 0;
-}
 
 export default OverviewTransactionsSection;

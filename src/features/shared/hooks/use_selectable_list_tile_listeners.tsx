@@ -1,7 +1,9 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router";
 
-//!! TODO: will need to be updated when adding other routes with spaces | maybe parse element.textContent
+// TODO: use some form of toLower() so it doesnt matter if the route is upper of lowercase
+
+// TODO: will need to be updated when adding other routes with spaces | maybe parse element.textContent
 
 const useAddSelectableListTileListeners = ({
   selector,
