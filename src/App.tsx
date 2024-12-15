@@ -11,7 +11,7 @@ import SideNavBar from "./features/shared/components/side_nav_bar";
 import AuthImage from "./features/auth/shared/components/auth_image";
 import AuthAppBar from "./features/shared/components/auth_app_bar";
 import BottomNavBar from "./features/shared/components/bottom_nav_bar";
-import { TransactionProvider } from "./features/shared/context/transactionContext";
+import { MultiContextProvider } from "./features/shared/context/multi_context_provider";
 
 function App() {
   const location = useLocation();
@@ -42,7 +42,7 @@ function App() {
       )}
 
       <AnimatePresence mode="wait">
-        <TransactionProvider>
+        <MultiContextProvider>
           <Routes location={location} key={location.pathname}>
             <Route
               path="/"
@@ -81,7 +81,7 @@ function App() {
               element={Transitions.fade(<TransactionsView />)}
             />
           </Routes>
-        </TransactionProvider>
+        </MultiContextProvider>
       </AnimatePresence>
     </div>
   );
