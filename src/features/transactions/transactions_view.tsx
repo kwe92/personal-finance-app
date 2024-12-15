@@ -8,34 +8,58 @@ import { Divider } from "../shared/components/divider";
 import { TransactionListTile } from "./components/transaction_list_tile";
 import { useTransactionData } from "../shared/context/transactionContext";
 import { TransactionTable } from "./components/transaction_table";
+import { useState } from "react";
+import { useTransactionViewData } from "./context/transaction_view_context";
 
 const TransactionsView = (): JSX.Element => {
-  const { transactions, isLoading, error } = useTransactionData();
+  // const { transactions, isLoading, error } = useTransactionData();
+
+  // TODO: filter transactions in  TransactionViewProvider
+  // const [transactionQuery, setTransactionQuery] = useState<string>("");
+
+  const { windowWidth } = useWindowSize();
+
+  const { transactionQuery, setTransactionQuery, filteredTransactions } =
+    useTransactionViewData();
+
+  const handleQueryChange = (e: any) => {
+    console.log(e.currentTarget.value);
+    setTransactionQuery(e.target.value);
+  };
+
   var transactionListTiles: JSX.Element[];
 
-  if (transactions !== null) {
-    transactionListTiles = transactions.map((transaction, i) => {
-      return (
-        <>
-          <TransactionListTile transaction={transaction} />
-          {transactions.length - 1 !== i ? (
-            <Divider style={{ margin: "16px 0 16px 0" }} />
-          ) : (
-            <></>
-          )}
-        </>
-      );
-    });
+  if (filteredTransactions !== null) {
+    transactionListTiles = filteredTransactions
+      .filter((transaction) => {
+        return transaction.name
+          .toLowerCase()
+          .includes(transactionQuery.toLowerCase());
+      })
+      .map((transaction, i) => {
+        return (
+          <>
+            <TransactionListTile transaction={transaction} />
+            {filteredTransactions.length - 1 !== i ? (
+              <Divider style={{ margin: "16px 0 16px 0" }} />
+            ) : (
+              <></>
+            )}
+          </>
+        );
+      });
   }
 
-  const { windowWidth, windowHeight } = useWindowSize();
   return (
     <div className="transaction-view-main">
       <h1>Transactions</h1>
 
       <div className="transaction-view-content">
         <div className="transaction-filters-container">
-          <SearchBar placeholder="Search transactions" />
+          <SearchBar
+            placeholder="Search transactions"
+            onChange={handleQueryChange}
+          />
 
           <div className="transaction-drop-down-container">
             {windowWidth > 700 ? (
