@@ -1,12 +1,15 @@
 import "./css/drop_down_menu.css";
 import caretDown from "../../../assets/images/icon-caret-down.svg";
 import { Divider } from "./divider";
+import useWindowSize from "../hooks/use_window_size";
+import { useTransactionViewData } from "../../transactions/context/transaction_view_context";
 
 export const DropDownMenu = ({
   id,
   title,
   label,
   content,
+  icon,
   onMenuTap,
   onItemTap,
 }: {
@@ -14,9 +17,14 @@ export const DropDownMenu = ({
   title: string;
   label: string;
   content: string[];
+  icon: string;
   onMenuTap?: React.MouseEventHandler;
   onItemTap?: Function;
 }): JSX.Element => {
+  const { category, sortBy } = useTransactionViewData();
+
+  const { windowWidth } = useWindowSize();
+
   const dropDownMenuItems = content.map((menuItem, i) => {
     return (
       <>
@@ -24,6 +32,10 @@ export const DropDownMenu = ({
           key={i}
           onClick={() => {
             onItemTap?.(menuItem);
+          }}
+          style={{
+            fontWeight:
+              category == menuItem || sortBy == menuItem ? "bold" : "normal",
           }}
         >
           {menuItem}
@@ -40,13 +52,18 @@ export const DropDownMenu = ({
       style={{ position: "relative" }}
       onClick={onMenuTap}
     >
-      <div className="drop-down-menu-container">
-        <p style={{ color: "#696868" }}>{title}</p>
-        <div className="drop-down-menu-selector">
-          <p>{label}</p>
-          <img src={caretDown} alt="caret down" />
+      {windowWidth > 700 ? (
+        <div className="drop-down-menu-container">
+          <p style={{ color: "#696868" }}>{title}</p>
+          <div className="drop-down-menu-selector">
+            <p>{label}</p>
+            <img src={caretDown} alt="caret down" />
+          </div>
         </div>
-      </div>
+      ) : (
+        <img src={icon} alt="document-icon" />
+      )}
+
       <ul className="drop-down-menu-content">{dropDownMenuItems}</ul>
     </div>
   );

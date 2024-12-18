@@ -101,41 +101,24 @@ const TransactionsView = (): JSX.Element => {
           />
 
           <div className="transaction-drop-down-container">
-            {windowWidth > 700 ? (
-              <>
-                <DropDownMenu
-                  id="sort-drop-down-menu"
-                  title="Sort by"
-                  label={sortBy}
-                  content={sortByContent}
-                  onMenuTap={() => toggleMenu(0)}
-                  onItemTap={setSortBy}
-                />
-                <DropDownMenu
-                  id="filter-drop-down-menu"
-                  title="Category"
-                  label={category}
-                  content={categoryList ?? []}
-                  onMenuTap={() => toggleMenu(1)}
-                  onItemTap={setCategory}
-                />
-              </>
-            ) : (
-              <>
-                <img
-                  src={documentIcon}
-                  alt="document-icon"
-                  onClick={() => toggleMenu(0)}
-                />
-                <img
-                  src={filterIcon}
-                  alt="filter-icon"
-                  onClick={() => {
-                    // TODO: implement
-                  }}
-                />
-              </>
-            )}
+            <DropDownMenu
+              id="sort-drop-down-menu"
+              title="Sort by"
+              label={sortBy}
+              content={sortByContent}
+              icon={documentIcon}
+              onMenuTap={() => toggleMenu(0)}
+              onItemTap={setSortBy}
+            />
+            <DropDownMenu
+              id="filter-drop-down-menu"
+              title="Category"
+              label={category}
+              content={categoryList ?? []}
+              icon={filterIcon}
+              onMenuTap={() => toggleMenu(1)}
+              onItemTap={setCategory}
+            />
           </div>
         </div>
 
