@@ -5,7 +5,7 @@ import * as gaps from "../../../app/constants/reusable";
 import OverviewSectionHeader from "./overview_section_header";
 import AvatarImage from "../../shared/components/avatar_image";
 import useWindowSize from "../../shared/hooks/use_window_size";
-import { useTransactionData } from "../../shared/context/transactionContext";
+import { useTransactionData } from "../../shared/context/transaction_context";
 import { useNavigate } from "react-router";
 import { Divider } from "../../shared/components/divider";
 import { formatDate, isPositive } from "../../shared/utility/functions";
