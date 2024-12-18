@@ -6,21 +6,41 @@ import { DropDownMenu } from "../shared/components/drop_down_menu";
 import useWindowSize from "../shared/hooks/use_window_size";
 import { Divider } from "../shared/components/divider";
 import { TransactionListTile } from "./components/transaction_list_tile";
-import { useTransactionData } from "../shared/context/transactionContext";
 import { TransactionTable } from "./components/transaction_table";
-import { useState } from "react";
 import { useTransactionViewData } from "./context/transaction_view_context";
+import { useTransactionData } from "../shared/context/transaction_context";
+
+// TODO: move function to the bottom of file or abstract away into a class
 
 const TransactionsView = (): JSX.Element => {
-  // const { transactions, isLoading, error } = useTransactionData();
-
-  // TODO: filter transactions in  TransactionViewProvider
-  // const [transactionQuery, setTransactionQuery] = useState<string>("");
-
   const { windowWidth } = useWindowSize();
 
-  const { transactionQuery, setTransactionQuery, filteredTransactions } =
-    useTransactionViewData();
+  const {
+    transactionQuery,
+    filteredTransactions,
+    sortBy,
+    category,
+    setCategory,
+    setSortBy,
+    setTransactionQuery,
+  } = useTransactionViewData();
+
+  const { transactions } = useTransactionData();
+
+  const sortByContent = [
+    "Latest",
+    "Oldest",
+    "A to Z",
+    "Z to A",
+    "Highest",
+    "Lowest",
+  ];
+
+  const categoryList = Array.from(
+    new Set(transactions?.map((transaction) => transaction.category))
+  );
+
+  categoryList.unshift("All Transactions");
 
   const handleQueryChange = (e: any) => {
     console.log(e.currentTarget.value);
@@ -50,6 +70,25 @@ const TransactionsView = (): JSX.Element => {
       });
   }
 
+  const toggleMenu = (index: number) => {
+    const dropdownContainer = document.querySelectorAll(".dropdown")[index];
+
+    const dropdownContent = document.querySelectorAll(
+      ".drop-down-menu-content"
+    )[index];
+
+    dropdownContent!.classList.toggle("show");
+
+    document.addEventListener("click", function (event: any) {
+      if (
+        !dropdownContainer!.contains(event.target) &&
+        !dropdownContent!.contains(event.target)
+      ) {
+        dropdownContent!.classList.remove("show");
+      }
+    });
+  };
+
   return (
     <div className="transaction-view-main">
       <h1>Transactions</h1>
@@ -65,18 +104,20 @@ const TransactionsView = (): JSX.Element => {
             {windowWidth > 700 ? (
               <>
                 <DropDownMenu
+                  id="sort-drop-down-menu"
                   title="Sort by"
-                  label="Latest"
-                  onTap={() => {
-                    // TODO: implement
-                  }}
+                  label={sortBy}
+                  content={sortByContent}
+                  onMenuTap={() => toggleMenu(0)}
+                  onItemTap={setSortBy}
                 />
                 <DropDownMenu
+                  id="filter-drop-down-menu"
                   title="Category"
-                  label="All Transactions"
-                  onTap={() => {
-                    // TODO: implement
-                  }}
+                  label={category}
+                  content={categoryList ?? []}
+                  onMenuTap={() => toggleMenu(1)}
+                  onItemTap={setCategory}
                 />
               </>
             ) : (
@@ -84,9 +125,7 @@ const TransactionsView = (): JSX.Element => {
                 <img
                   src={documentIcon}
                   alt="document-icon"
-                  onClick={() => {
-                    // TODO: implement
-                  }}
+                  onClick={() => toggleMenu(0)}
                 />
                 <img
                   src={filterIcon}

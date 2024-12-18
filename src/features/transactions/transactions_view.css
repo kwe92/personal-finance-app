@@ -82,6 +82,16 @@ td:nth-child(4) {
    overflow-y:scroll;
 }
 
+/* #sort-drop-down-menu ul{} */
+
+#filter-drop-down-menu ul{
+  width: 180px;
+  margin-left: 77px;
+  height: auto;
+  max-height: 500px;
+  /* background-color: aqua; */
+}
+
 @media (max-width: 1440px){
 
   .transaction-view-main {
@@ -154,6 +164,16 @@ td:nth-child(4) {
 
   td:nth-child(4) {
       font-size: 12px;
+    }
+
+  #filter-drop-down-menu ul{
+      width: 160px;
+      margin-left: 55px;
+
+    }
+
+  #sort-drop-down-menu ul{
+      margin-left: 46px;
     }
 
   .search-field-container .search-icon{
