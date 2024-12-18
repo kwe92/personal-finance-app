@@ -10,7 +10,15 @@ import { TransactionTable } from "./components/transaction_table";
 import { useTransactionViewData } from "./context/transaction_view_context";
 import { useTransactionData } from "../shared/context/transaction_context";
 
-// TODO: move function to the bottom of file or abstract away into a class
+// TODO: move functions to the bottom of file or abstract away into a class
+
+// TODO: ensure that the transaction view transaction-view-content is not scrollable from its parent
+
+// TODO: in the future you will need to have a continue button for semi-inifinite continuous scrolling of the transactions when the list is really long
+
+// TODO: maybe add the ability to filter by date range
+
+// TODO: add some todos as issues on github
 
 const TransactionsView = (): JSX.Element => {
   const { windowWidth } = useWindowSize();
@@ -27,6 +35,7 @@ const TransactionsView = (): JSX.Element => {
 
   const { transactions } = useTransactionData();
 
+  //?? could probably be maintained somewhere else, maybe in the view
   const sortByContent = [
     "Latest",
     "Oldest",
@@ -39,8 +48,10 @@ const TransactionsView = (): JSX.Element => {
   const categoryList = Array.from(
     new Set(transactions?.map((transaction) => transaction.category))
   );
-
+  //?? could probably be maintained somewhere else, maybe in the view | adds the All Transactions category to the list of categories
   categoryList.unshift("All Transactions");
+
+  categoryList.sort((a, b) => a.localeCompare(b));
 
   const handleQueryChange = (e: any) => {
     console.log(e.currentTarget.value);
