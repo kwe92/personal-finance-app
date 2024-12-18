@@ -27,17 +27,17 @@ const TransactionProvider = ({
     setIsLoading(true);
 
     try {
+      // comment to simulate a delay
       setTransactions(appData.transactions);
       setIsLoading(false);
 
-      // to simulate a delay
+      // uncomment to simulate a delay
 
       // await new Promise((_) =>
       //   setTimeout(() => {
       //     console.log("fetchTransactions 1");
-      //     setData(appData.transactions);
+      //     setTransactions(appData.transactions);
       //     setIsLoading(false);
-
       //     console.log("fetchTransactions 2");
       //   }, 2000)
       // );

@@ -5,7 +5,7 @@ import * as gaps from "../../../app/constants/reusable";
 import OverviewSectionHeader from "./overview_section_header";
 import AvatarImage from "../../shared/components/avatar_image";
 import useWindowSize from "../../shared/hooks/use_window_size";
-import { useTransactionData } from "../../shared/context/transactionContext";
+import { useTransactionData } from "../../shared/context/transaction_context";
 import { useNavigate } from "react-router";
 import { Divider } from "../../shared/components/divider";
 import { formatDate, isPositive } from "../../shared/utility/functions";
@@ -13,9 +13,9 @@ import { formatDate, isPositive } from "../../shared/utility/functions";
 const OverviewTransactionsSection = (): JSX.Element => {
   const navigate = useNavigate();
 
-  const { windowWidth, windowHeight } = useWindowSize();
+  const { windowHeight } = useWindowSize();
 
-  const { transactions, isLoading, error } = useTransactionData();
+  const { transactions, isLoading } = useTransactionData();
 
   var transactionListTiles: JSX.Element[];
 
@@ -27,7 +27,7 @@ const OverviewTransactionsSection = (): JSX.Element => {
   return (
     <>
       {isLoading ? (
-        // TODO:ensure loading looks good on any screen | will use shimmer loading effects
+        // TODO: ensure loading looks good on any screen | will use shimmer loading effects
         <div
           style={{
             width: "100%",
@@ -111,10 +111,7 @@ const OverviewTransactionListTile = ({
             ? `+$${transactionAmount}`
             : `-$${transactionAmount}`}
         </p>
-        <p id="date">
-          {formatDate(transaction?.date ?? "", "dd MMM yyyy")}
-          {/* 19 Aug 2024 */}
-        </p>
+        <p id="date">{formatDate(transaction?.date ?? "", "dd MMM yyyy")}</p>
       </div>
     </div>
   );
