@@ -37,7 +37,7 @@ export const DropDownMenu = ({
           }}
           style={{
             fontWeight:
-              category == menuItem || sortBy == menuItem ? "bold" : "normal",
+              category === menuItem || sortBy === menuItem ? "bold" : "normal",
           }}
         >
           {menuItem}
