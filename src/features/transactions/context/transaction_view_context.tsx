@@ -10,7 +10,7 @@ const TransactionViewContext = createContext<{
   category: string;
   setSortBy: Function;
   setCategory: Function;
-  setTransactionQuery: Function;
+  setTransactionQuery: React.ChangeEventHandler<HTMLInputElement>;
 }>({
   transactionQuery: "",
   filteredTransactions: [],
@@ -58,6 +58,11 @@ const TransactionViewProvider = ({
     setCategory("All Transactions");
   }, []);
 
+  const handleQueryChange = (e: any) => {
+    console.log(e.currentTarget.value);
+    setTransactionQuery(e.target.value);
+  };
+
   return (
     <TransactionViewContext.Provider
       value={{
@@ -67,7 +72,7 @@ const TransactionViewProvider = ({
         category,
         setSortBy,
         setCategory,
-        setTransactionQuery,
+        setTransactionQuery: handleQueryChange,
       }}
     >
       {children}

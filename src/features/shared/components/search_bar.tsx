@@ -1,8 +1,6 @@
 import "./css/search_bar.css";
 import { SearchIcon } from "./search_icon";
 
-// TODO: the search bar input element seems to not fil lthe remaining space as it should
-
 export const SearchBar = ({
   placeholder,
   onChange,

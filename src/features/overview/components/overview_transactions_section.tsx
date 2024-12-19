@@ -27,7 +27,7 @@ const OverviewTransactionsSection = (): JSX.Element => {
   return (
     <>
       {isLoading ? (
-        // TODO: ensure loading looks good on any screen | will use shimmer loading effects
+        //!! TODO: temp loading component
         <div
           style={{
             width: "100%",
