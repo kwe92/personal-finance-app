@@ -1,3 +1,6 @@
+/* !! NOTE: view is styled for screens larger than 1440px at the moment */
+
+
 .budget-view-main {
     display: flex;
     flex-direction: column;

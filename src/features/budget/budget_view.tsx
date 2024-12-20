@@ -5,12 +5,9 @@ import { AddNewButton } from "../shared/components/add_new_button";
 import { BudgetSummary } from "./components/budget_summary";
 import * as gaps from "../../app/constants/reusable";
 
-//!! NOTE: view is styled for screens larger than 1440px at the moment
 import { BudgetCard } from "./components/budget_card";
 
 // TODO: remove hard coded values
-
-// TODO: remove inline css
 
 export const BudgetView = (): JSX.Element => {
   return (
