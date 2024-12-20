@@ -1,0 +1,34 @@
+/* !! NOTE: the sizing is a bit different as I am diverting from the figma design */
+
+/* !! NOTE: view is styled for screens larger than 1440px at the moment */
+
+.budget-card-main {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    /* height: 520px; */
+    height: 568px;
+    background-color: white;
+    border-radius: 12px;
+    padding: 32px;
+}
+
+.budget-card-header {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.budget-card-header-circle {
+    width: 32px;
+    height: 32px;
+    background-color: #82C9D7;
+    border-radius: 16px;
+}
+
+.budget-card-list-tile-section {
+    display: flex;
+    align-items: center;
+    width: 100%;
+
+}

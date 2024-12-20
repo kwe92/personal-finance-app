@@ -1,43 +1,17 @@
+import "./css/budget_card.css";
+
 import { GapH24 } from "../../../app/constants/reusable";
 // TODO: move to feature/shared folder along with associated css
 import { ColoredLineListTile } from "../../overview/components/colored_line_list_tile";
 import { LatestSpendingCard } from "./latest_spending_card";
 import { ProgressBar } from "./progress_bar";
 
-export //!! NOTE: the sizing is a bit different as I am diverting from the figma design
-
-// TODO: remove inline css
-
-const BudgetCard = () => {
+export const BudgetCard = () => {
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        width: "100%",
-        // height: "520px",
-        height: "568px",
-        backgroundColor: "white",
-        borderRadius: "12px",
-        padding: "32px",
-      }}
-    >
+    <div className="budget-card-main">
       {/* header */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "24px",
-        }}
-      >
-        <div
-          style={{
-            width: "32px",
-            height: "32px",
-            backgroundColor: "#82C9D7",
-            borderRadius: "16px",
-          }}
-        />
+      <div className="budget-card-header">
+        <div className="budget-card-header-circle" />
         <h1>Bills</h1>
       </div>
       {/* temporary gap and should use gap css property */}
@@ -53,7 +27,7 @@ const BudgetCard = () => {
 
       <GapH24 />
 
-      <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
+      <div className="budget-card-list-tile-section">
         <ColoredLineListTile
           lineColor="#82C9D7"
           title="Spent"
