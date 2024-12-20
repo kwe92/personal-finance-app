@@ -1,4 +1,4 @@
-// TODO: remove inline css
+import "./css/progress_bar.css";
 
 export const ProgressBar = ({
   maxAmount,
@@ -7,14 +7,7 @@ export const ProgressBar = ({
   maxAmount: number;
   expendedAmount: number;
 }): JSX.Element => (
-  <div
-    style={{
-      width: "100%",
-      height: "42px",
-      backgroundColor: "#F8F4F0",
-      borderRadius: "6px",
-    }}
-  >
+  <div className="progress-bar-main">
     <div
       style={{
         width: ((expendedAmount / maxAmount) * 100).toString() + "%",
