@@ -1,4 +1,4 @@
-// TODO: remove inline css
+import "./css/spending_summary_list_tile.css";
 
 export const SpendingSummaryListTile = ({
   label,
@@ -12,23 +12,10 @@ export const SpendingSummaryListTile = ({
   lineColor: string;
 }): JSX.Element => {
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        // alignItems: "center",
-        height: "24px",
-      }}
-    >
+    <div className="spending-summary-list-tile-main">
       {/*  vertical line and label section*/}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "16px",
-        }}
-      >
-        {/* list tile vertical line */}
+      <div className="spending-summary-left-section">
+        {/* list tile vertical line | NOTE: may need to be moved to a css file instead of being styled inline */}
         <div
           style={{
             width: "4px",
@@ -40,12 +27,12 @@ export const SpendingSummaryListTile = ({
         <p style={{ fontSize: "14px", color: "#696868" }}>{label}</p>
       </div>
 
-      {/* Expended Amount */}
-      <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+      <div className="spending-summary-right-section">
+        {/* Expended Amount | NOTE: may need to be moved to a css file instead of being styled inline */}
         <p style={{ fontSize: "16px", fontWeight: "bold" }}>
           ${expendedAmount.toFixed(2)}
         </p>
-        {/* Max Amount */}
+        {/* Max Amount | NOTE: may need to be moved to a css file instead of being styled inline */}
         <p style={{ fontSize: "12px", fontWeight: "normal", color: "#696868" }}>
           of ${maxAmount.toFixed(2)}
         </p>

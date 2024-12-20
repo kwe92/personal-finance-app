@@ -1,0 +1,19 @@
+.spending-summary-list-tile-main {
+    display: flex;
+    justify-content: space-between;
+    /* align-items: center; */
+    height: 24px;
+}
+
+.spending-summary-left-section {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+
+.spending-summary-right-section {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
