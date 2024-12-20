@@ -1,5 +1,4 @@
-// TODO: remove inline css
-
+import "./css/budget_summary.css";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, registerables } from "chart.js";
 import { SpendingSummaryListTile } from "./spending_summary_list_tile";
@@ -28,31 +27,10 @@ export const BudgetSummary = (): JSX.Element => {
   };
   return (
     // Budget summary main container
-    <div
-      style={{
-        display: "flex",
-        width: "100%",
-        height: "304px",
-        alignItems: "center",
-        justifyContent: "space-between",
-        borderRadius: "12px",
-        padding: "32px",
-        backgroundColor: "white",
-      }}
-    >
+    <div className="budget-summary-main">
       {/* Doughnut Chart */}
 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          width: "300px",
-          height: "280px",
-          padding: "12px",
-          // backgroundColor: "orange",
-        }}
-      >
+      <div className="budget-summary-chart-container">
         <Doughnut
           options={options}
           data={mockData}
@@ -61,16 +39,7 @@ export const BudgetSummary = (): JSX.Element => {
       </div>
 
       {/* spending summary section */}
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          width: "500px",
-          height: "235px",
-          gap: "16px",
-          // backgroundColor: "lightcoral",
-        }}
-      >
+      <div className="budget-spending-summary">
         <h2>Spending Summary</h2>
         <SpendingSummaryListTile
           label="Bills"
