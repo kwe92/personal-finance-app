@@ -1,0 +1,16 @@
+.latest-spending-card-main {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 24px;
+    border-radius: 16px;
+    background-color: #F8F4F0;
+    gap: 16px;
+}
+
+.latest-spending-card-list-tile-section {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    justify-content: space-between;
+}
