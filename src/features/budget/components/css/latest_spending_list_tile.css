@@ -1,0 +1,19 @@
+.latest-spending-list-tile-main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.latest-spending-list-tile-main #left-side {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.latest-spending-list-tile-main #right-side {
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    gap: 4px;
+}
