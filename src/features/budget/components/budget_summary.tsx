@@ -37,10 +37,19 @@ export const BudgetSummary = (): JSX.Element => {
           style={{ padding: "0px", marginBottom: "10px" }}
         />
       </div>
+      <div className="budget-summary-total-spending">
+        <p className="budget-summary-bold-text"> Total Spending</p>
+
+        <div>
+          {" "}
+          <p>$399.00 </p>
+          <p>of $975 limit</p>
+        </div>
+      </div>
 
       {/* spending summary section */}
       <div className="budget-spending-summary">
-        <h2>Spending Summary</h2>
+        <p className="budget-summary-bold-text">Spending Summary</p>
         <SpendingSummaryListTile
           label="Bills"
           maxAmount={750}
