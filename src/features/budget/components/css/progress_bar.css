@@ -4,3 +4,9 @@
     background-color: #F8F4F0;
     border-radius: 6px;
 }
+
+@media(max-width:600px){
+    .progress-bar-main {
+        height: 32px;
+    }
+}

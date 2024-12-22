@@ -37,7 +37,7 @@
   }
 
 .overview-title-text-button-section #title{
-    font-size: 20px; 
+    font-size: 24px; 
     font-weight: bold;
 }
 
@@ -58,7 +58,7 @@
     padding: 0px;
     }
   
-  .colored-line-list-tile-content p{
+  .overview-view-main .colored-line-list-tile-content p{
     font-size: 14px;
   }
   
@@ -66,11 +66,11 @@
   
 @media (max-width: 800px){
     .colored-line-list-tile{
-        height: 36px;
+        /* height: 36px; */
         gap:6px;
       }
       
-      .colored-line-list-tile-content p{
+    .overview-view-main .colored-line-list-tile-content p{
         font-size: 12px;
       }
   }

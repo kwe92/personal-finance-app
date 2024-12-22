@@ -14,3 +14,15 @@
     flex: 1;
     justify-content: space-between;
 }
+
+@media(max-width:600px){
+    .latest-spending-card-main{
+    padding: 16px;
+    gap: 12px;
+    max-height: 270px;
+    }
+
+    .latest-spending-card-list-tile-section {
+        gap: 12px;
+    }
+}
