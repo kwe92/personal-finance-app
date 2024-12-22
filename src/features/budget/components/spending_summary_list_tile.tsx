@@ -28,14 +28,8 @@ export const SpendingSummaryListTile = ({
       </div>
 
       <div className="spending-summary-right-section">
-        {/* Expended Amount | NOTE: may need to be moved to a css file instead of being styled inline */}
-        <p style={{ fontSize: "16px", fontWeight: "bold" }}>
-          ${expendedAmount.toFixed(2)}
-        </p>
-        {/* Max Amount | NOTE: may need to be moved to a css file instead of being styled inline */}
-        <p style={{ fontSize: "12px", fontWeight: "normal", color: "#696868" }}>
-          of ${maxAmount.toFixed(2)}
-        </p>
+        <p>${expendedAmount.toFixed(2)}</p>
+        <p>of ${maxAmount.toFixed(2)}</p>
       </div>
     </div>
   );
