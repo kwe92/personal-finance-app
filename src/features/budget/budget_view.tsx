@@ -19,11 +19,11 @@ export const BudgetView = (): JSX.Element => {
       </div>
       <BudgetSummary />
 
-      <BudgetCard />
+      <BudgetCard index={0} />
 
-      <BudgetCard />
+      <BudgetCard index={1} />
 
-      <BudgetCard />
+      <BudgetCard index={2} />
     </div>
   );
 };

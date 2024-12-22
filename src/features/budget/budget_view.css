@@ -15,3 +15,25 @@
     align-items: center;
     justify-content: space-between;
 }
+
+@media(max-width: 1440px){
+
+    .budget-view-main {
+        padding: 24px;
+        gap: 24px;
+    }
+}
+
+@media(max-width:1200px){
+    .budget-view-main {
+        gap: 16px;
+        padding: 24px 24px 80px 24px;
+    }
+}
+
+
+@media(max-width:600px){
+    .budget-view-main {
+        padding: 16px 16px 80px 16px;
+    }
+}
