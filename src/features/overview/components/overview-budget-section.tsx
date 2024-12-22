@@ -4,10 +4,13 @@ import { Doughnut } from "react-chartjs-2";
 import OverviewSectionHeader from "./overview_section_header";
 import { ColoredLineListTile } from "./colored_line_list_tile";
 import { Chart as ChartJS, registerables } from "chart.js";
+import { useNavigate } from "react-router";
 
 ChartJS.register(...registerables);
 
 export const OverviewBudgetSection = (): JSX.Element => {
+  const navigate = useNavigate();
+
   const options = {};
 
   const mockData = {
@@ -26,7 +29,7 @@ export const OverviewBudgetSection = (): JSX.Element => {
         title="Budget"
         buttonLabel="See Details"
         onTap={() => {
-          // TODO: implement
+          navigate("/home/Budgets");
         }}
       />
 

@@ -1,0 +1,38 @@
+.latest-spending-list-tile-main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.latest-spending-list-tile-main #left-side {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.latest-spending-list-tile-main #right-side {
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    gap: 4px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+@media(max-width:600px){
+    .latest-spending-list-tile-main #left-side {
+    font-size: 12px;
+    gap: 12px;
+    }
+
+    .latest-spending-list-tile-main #right-side {
+        font-size: 12px;
+}
+
+    .latest-spending-list-tile-main #right-side p:nth-child(2){
+        font-size: 10px;
+    }
+}

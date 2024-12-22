@@ -1,0 +1,46 @@
+.spending-summary-list-tile-main {
+    display: flex;
+    justify-content: space-between;
+    /* align-items: center; */
+    height: 24px;
+}
+
+.spending-summary-left-section {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+
+.spending-summary-right-section {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.spending-summary-right-section p:nth-child(1) {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.spending-summary-right-section p:nth-child(2) {
+    font-size: 12px;
+    font-weight: normal;
+    color: #696868;
+}
+
+@media(max-width: 600px){
+
+    .spending-summary-right-section p:nth-child(1) {
+    font-size: 12px;
+    }
+
+    .spending-summary-right-section p:nth-child(2) {
+    font-size: 10px;
+    }
+
+    .spending-summary-left-section {
+        gap: 6px;
+    }
+
+}

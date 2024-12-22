@@ -12,6 +12,7 @@ import AuthImage from "./features/auth/shared/components/auth_image";
 import AuthAppBar from "./features/shared/components/auth_app_bar";
 import BottomNavBar from "./features/shared/components/bottom_nav_bar";
 import { MultiContextProvider } from "./features/shared/context/multi_context_provider";
+import { BudgetView } from "./features/budget/budget_view";
 
 function App() {
   const location = useLocation();
@@ -79,6 +80,10 @@ function App() {
             <Route
               path="/home/Transactions"
               element={Transitions.fade(<TransactionsView />)}
+            />
+            <Route
+              path="/home/Budgets"
+              element={Transitions.fade(<BudgetView />)}
             />
           </Routes>
         </MultiContextProvider>

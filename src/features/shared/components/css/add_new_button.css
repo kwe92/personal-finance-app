@@ -1,0 +1,23 @@
+.add-new-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 156px;
+    height: 54px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+    background-color: #201F24;
+    cursor: pointer;
+}
+
+
+@media(max-width:600px){
+    .add-new-button {
+        width: 140px;
+        height: 38px;
+        font-size: 12px;
+        border-radius: 6px;
+    }
+}
