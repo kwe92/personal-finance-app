@@ -12,7 +12,6 @@
     cursor: pointer;
 }
 
-
 @media(max-width:600px){
     .add-new-button {
         width: 140px;
