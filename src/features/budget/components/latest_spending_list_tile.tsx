@@ -7,12 +7,12 @@ export const LatestSpendingListTile = () => (
     {/* avatar image circle */}
     <div id="left-side">
       <AvatarImage image={placeHolderAvatar} />
-      <p style={{ fontSize: "14px", fontWeight: "bold" }}>Transaction Name</p>
+      <p>Transaction Name</p>
     </div>
     {/* amount date section */}
     <div id="right-side">
-      <p style={{ fontSize: "14px", fontWeight: "bold" }}>-$5.00</p>
-      <p style={{ fontSize: "14px", color: "#696868" }}>11 Aug 2024</p>
+      <p style={{}}>-$5.00</p>
+      <p style={{ fontWeight: "normal", color: "#696868" }}>11 Aug 2024</p>
     </div>
   </div>
 );
