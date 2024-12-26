@@ -5,6 +5,7 @@ import { GapH24 } from "../../../app/constants/reusable";
 import { ColoredLineListTile } from "../../overview/components/colored_line_list_tile";
 import { LatestSpendingCard } from "./latest_spending_card";
 import { ProgressBar } from "./progress_bar";
+import { toggleDropDownMenu } from "../../shared/utility/toggle_drop_down_menu";
 
 export const BudgetCard = ({ index }: { index: number }) => {
   return (
@@ -63,24 +64,10 @@ export const BudgetCard = ({ index }: { index: number }) => {
   );
 };
 
-// TODO: needs to be refactored as toggleMenu is duplicated in transaction_view
 function toggleMenu(index: number) {
-  const dropdownContainer = document.querySelectorAll(".budget-card-dropdown")[
-    index
-  ];
-
-  const dropdownContent = document.querySelectorAll(
+  toggleDropDownMenu(
+    index,
+    ".budget-card-dropdown",
     ".budget-card-drop-down-menu"
-  )[index];
-
-  dropdownContent!.classList.toggle("show");
-
-  document.addEventListener("click", function (event: any) {
-    if (
-      !dropdownContainer!.contains(event.target) &&
-      !dropdownContent!.contains(event.target)
-    ) {
-      dropdownContent!.classList.remove("show");
-    }
-  });
+  );
 }
