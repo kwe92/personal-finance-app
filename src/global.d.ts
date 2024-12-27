@@ -6,3 +6,10 @@ interface TransactionData {
     amount: number;
     recurring: boolean;
   }
+
+
+interface ColorTagDropDownItemData {
+  name: string;
+  theme: string;
+  isInUse: boolean;
+}

@@ -5,6 +5,7 @@ import { BudgetCard } from "./components/budget_card";
 import { ModalWrapper } from "../shared/components/modal_wrapper";
 import { BudgetViewModel } from "./budget_view_model";
 import { AddNewBudgetCard } from "./components/add_new_budget_card";
+import { BudgetViewProvider } from "./context/budget_view_context";
 
 // TODO: remove hard coded values
 
@@ -12,7 +13,7 @@ export const BudgetView = (): JSX.Element => {
   const viewModel = BudgetViewModel.getInstance();
 
   return (
-    <>
+    <BudgetViewProvider>
       <div className="budget-view-main">
         <div className="budget-header-button-section">
           <h1 style={{ color: "#201F24" }}>Budgets</h1>
@@ -33,6 +34,6 @@ export const BudgetView = (): JSX.Element => {
       <ModalWrapper id="add-new-budget-modal">
         <AddNewBudgetCard onTap={viewModel.toogleAddNewBudgetModal} />
       </ModalWrapper>
-    </>
+    </BudgetViewProvider>
   );
 };

@@ -1,5 +1,11 @@
+import { Divider } from "../shared/components/divider";
+import Transaction from "../shared/models/transaction";
+import { BudgetTagDropdownItem } from "./components/budget_tag_drop_down_item";
+import { ColorTagDropDownItem } from "./models/colored_tag_drop_down_item";
+
 export class BudgetViewModel {
   private static instance: BudgetViewModel;
+
   // private constructor to ensure the class can not be instantiated from the outside
   private constructor() {}
 

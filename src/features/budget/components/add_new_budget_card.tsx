@@ -6,6 +6,9 @@ import caretDown from "../../../assets/images/icon-caret-down.svg";
 import { toggleDropDownMenu } from "../../shared/utility/toggle_drop_down_menu";
 import { useTransactionData } from "../../shared/context/transaction_context";
 import { Divider } from "../../shared/components/divider";
+import { data } from "react-router";
+import { BudgetViewModel } from "../budget_view_model";
+import { useBudgetViewData } from "../context/budget_view_context";
 
 // TODO: need context for budget card to change the value of the drop down
 
@@ -14,37 +17,17 @@ export const AddNewBudgetCard = ({
 }: {
   onTap: React.MouseEventHandler;
 }): JSX.Element => {
-  const { transactions } = useTransactionData();
+  const viewModel = BudgetViewModel.getInstance();
 
-  //!! MOTE: this is the second time we needed the unique list of categories, think about abstracting this process somehow
-  const categoryList = Array.from(
-    new Set(transactions?.map((transaction) => transaction.category))
-  );
+  const {
+    categoryContent,
+    colorTagContent,
+    selectedBudgetCategory,
+    selectedColorTag,
+    maxSpending,
+    setMaxSpending,
+  } = useBudgetViewData();
 
-  categoryList.sort((a, b) => {
-    return a.localeCompare(b);
-  });
-
-  const categoryContent = categoryList?.map((category, i) => (
-    <div>
-      <li key={i} style={{ padding: "12px 0 12px 0" }}>
-        {category}
-      </li>
-      {categoryList.length - 1 !== i ? (
-        <Divider
-          style={
-            {
-              // backgroundColor: "orange",
-              // marginTop: "12px",
-              // marginBottom: "12px",
-            }
-          }
-        />
-      ) : (
-        <></>
-      )}
-    </div>
-  ));
   return (
     <div className="add-new-budget-card-main">
       <div className="add-new-budget-card-header">
@@ -69,20 +52,31 @@ export const AddNewBudgetCard = ({
         }}
       >
         <ModalDropDownMenu
+          label="Budget Category"
           content={categoryContent ?? []}
+          initialValue={selectedBudgetCategory}
           toggleMenu={() => toggleMenu(0)}
         />
 
         <TextFormField
           name="maxSpend"
           label="Maximum Spend"
-          type="text"
-          value=""
+          type="number"
+          value={maxSpending}
           placeholder="$ e.g. 2000"
-          onChange={() => {}}
+          onChange={(event) => {
+            setMaxSpending(event.target.value);
+          }}
         />
 
-        {/* <ModalDropDownMenu /> */}
+        <ModalDropDownMenu
+          isColorTag={true}
+          label="Color Tag"
+          tagColor={selectedColorTag?.theme ?? ""}
+          initialValue={selectedColorTag?.name ?? ""}
+          content={colorTagContent ?? []}
+          toggleMenu={() => toggleMenu(1)}
+        />
       </form>
 
       <MainButton>Add Budget</MainButton>
@@ -90,20 +84,52 @@ export const AddNewBudgetCard = ({
   );
 };
 
+function toggleMenu(index: number) {
+  toggleDropDownMenu(
+    index,
+    ".modal-drop-down-menu",
+    ".modal-drop-down-menu-content"
+  );
+}
+
 const ModalDropDownMenu = ({
+  label,
   content,
+  initialValue,
+  isColorTag = false,
+  tagColor,
   toggleMenu,
 }: {
+  label: string;
   content: JSX.Element[];
+  initialValue: string;
+  isColorTag?: boolean;
+  tagColor?: string;
   toggleMenu: React.MouseEventHandler;
 }): JSX.Element => {
   // TODO: replace hard-coded values with props
   return (
     <div className="modal-drop-down-menu" onClick={toggleMenu}>
-      <label>Budget Category</label>
+      <label>{label}</label>
       {/* dropdown selector*/}
       <div className="modal-drop-down-menu-selector">
-        <p>Entertainment</p>
+        {isColorTag ? (
+          <div className="modal-drop-down-menu-colored-tag-section">
+            {/* circle */}
+            <div
+              style={{
+                width: "16px",
+                height: "16px",
+                borderRadius: "8px",
+                backgroundColor: tagColor, // TODO: change color based on currently selected color tag
+              }}
+            />
+            <p>{initialValue}</p>
+          </div>
+        ) : (
+          <p>{initialValue}</p>
+        )}
+
         <img src={caretDown} alt="caret down" />
       </div>
       {/* dropdown content*/}
@@ -134,11 +160,3 @@ const CloseModalButton = ({
     </svg>
   );
 };
-
-function toggleMenu(index: number) {
-  toggleDropDownMenu(
-    index,
-    ".modal-drop-down-menu",
-    ".modal-drop-down-menu-content"
-  );
-}
