@@ -5,7 +5,7 @@
     /* height: 476px; */
     background-color: white;
     border-radius: 8px;
-    padding: 32px;
+    padding: 24px;
     gap:16px;
 }
 
@@ -78,17 +78,9 @@
     margin-top: 8px;
 }
 
-
-@media(max-width:1440px){
-    .add-new-budget-card-main{
-        padding: 24px;
-    }
-}
-
 @media(max-width:1200px){
     .modal-drop-down-menu-content{
         height: 180px;
-
     }
 }
 

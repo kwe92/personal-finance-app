@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useTransactionData } from "../../shared/context/transaction_context";
 import Transaction from "../../shared/models/transaction";
+import { sortByDate } from "../../shared/utility/functions";
 
 // inital TransactionViewContext shape and values
 const TransactionViewContext = createContext<{
@@ -104,28 +105,10 @@ function queriedCategorizedTransactions(
 function sortTransactions(filteredTransactions: Transaction[], sortBy: string) {
   switch (sortBy) {
     case "Latest":
-      return filteredTransactions.sort((a, b) => {
-        const aDate = new Date(a.date);
-
-        const bDate = new Date(b.date);
-
-        if (aDate > bDate) {
-          return -1;
-        }
-        return 1;
-      });
+      return filteredTransactions.sort((a, b) => sortByDate(a, b));
 
     case "Oldest":
-      return filteredTransactions.sort((a, b) => {
-        const aDate = new Date(a.date);
-
-        const bDate = new Date(b.date);
-
-        if (aDate < bDate) {
-          return -1;
-        }
-        return 1;
-      });
+      return filteredTransactions.sort((a, b) => sortByDate(a, b, "asc"));
 
     case "A to Z":
       return filteredTransactions?.sort((a, b) => {
