@@ -3,6 +3,7 @@ import { useTransactionData } from "../../shared/context/transaction_context";
 import { Divider } from "../../shared/components/divider";
 import { ColorTagDropDownItem } from "../models/colored_tag_drop_down_item";
 import { BudgetTagDropdownItem } from "../components/budget_tag_drop_down_item";
+import { useBudgetData } from "../../shared/context/budget_context";
 
 // TODO: add ability to submit data into a BudgetCard
 
@@ -42,9 +43,24 @@ const BudgetViewProvider = ({
   const [selectedColorTag, setSelectedColorTag] =
     useState<ColorTagDropDownItem>();
 
-  const categoryList = Array.from(
+  const { budgets } = useBudgetData();
+
+  var categoryList = Array.from(
     new Set(transactions?.map((transaction) => transaction.category))
   );
+
+  // TODO: filter out budget categories in use already
+
+  // categoryList = categoryList.filter(() =>
+  //   budgets!.some((alreadyUsedCategory) =>
+  //     categoryList?.some((availableCategory) => {
+  //       if (availableCategory.includes(alreadyUsedCategory.category)) {
+  //         return false;
+  //       }
+  //       return true;
+  //     })
+  //   )
+  // );
 
   categoryList.sort((a, b) => a.localeCompare(b));
 
@@ -79,15 +95,35 @@ const BudgetViewProvider = ({
     </div>
   ));
 
+  const alreadyUsedColorTags = budgets?.map((budget) => {
+    return budget.theme;
+  });
+
+  const budgetColorTags = budgetColorTagData.map((json) =>
+    ColorTagDropDownItem.fromJSON(json)
+  );
+
+  // mark color as used if in the list of budgets
+  budgetColorTags.some((colorTag) =>
+    alreadyUsedColorTags?.some((colorTagInUse) => {
+      if (JSON.stringify(colorTag).includes(colorTagInUse)) {
+        colorTag.isInUse = true;
+      }
+    })
+  );
+
+  budgetColorTags.sort((a, b) => a.name.localeCompare(b.name));
+
   const colorTagContent = budgetColorTags?.map((colorTag, i) => (
     <div>
       <li
         key={i}
         style={{
           padding: "12px 0 12px 0",
-          // backgroundColor: "lightseagreen",
         }}
-        onClick={() => setSelectedColorTag(colorTag)}
+        onClick={() => {
+          if (!colorTag.isInUse) setSelectedColorTag(colorTag);
+        }}
       >
         <BudgetTagDropdownItem
           name={colorTag.name}
@@ -184,8 +220,8 @@ const budgetColorTagData = [
   ]),
 ];
 
-const budgetColorTags = budgetColorTagData.map((json) =>
-  ColorTagDropDownItem.fromJSON(json)
-);
-
-budgetColorTags.sort((a, b) => a.name.localeCompare(b.name));
+// function containsAnyString(strings: string[], objects: any[]): boolean {
+//   return objects.some((obj) =>
+//     strings.some((str) => JSON.stringify(obj).includes(str))
+//   );
+// }
