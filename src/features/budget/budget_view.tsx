@@ -6,11 +6,17 @@ import { ModalWrapper } from "../shared/components/modal_wrapper";
 import { BudgetViewModel } from "./budget_view_model";
 import { AddNewBudgetCard } from "./components/add_new_budget_card";
 import { BudgetViewProvider } from "./context/budget_view_context";
+import { useBudgetData } from "../shared/context/budget_context";
 
-// TODO: remove hard coded values
-
+// TODO: ensure that the budget summary data is using the correct budget data that is shared between the Overview View budget section
 export const BudgetView = (): JSX.Element => {
   const viewModel = BudgetViewModel.getInstance();
+
+  const { budgets } = useBudgetData();
+
+  const budgetCards = budgets?.map((budget, i) => {
+    return <BudgetCard index={i} budget={budget} />;
+  });
 
   return (
     <BudgetViewProvider>
@@ -25,11 +31,7 @@ export const BudgetView = (): JSX.Element => {
         </div>
         <BudgetSummary />
 
-        <BudgetCard index={0} />
-
-        <BudgetCard index={1} />
-
-        <BudgetCard index={2} />
+        {budgetCards}
       </div>
       <ModalWrapper id="add-new-budget-modal">
         <AddNewBudgetCard onTap={viewModel.toogleAddNewBudgetModal} />

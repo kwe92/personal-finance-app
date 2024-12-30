@@ -4,20 +4,18 @@ import MainButton from "../../shared/components/main_button";
 import TextFormField from "../../shared/components/text_form_field";
 import caretDown from "../../../assets/images/icon-caret-down.svg";
 import { toggleDropDownMenu } from "../../shared/utility/toggle_drop_down_menu";
-import { useTransactionData } from "../../shared/context/transaction_context";
-import { Divider } from "../../shared/components/divider";
-import { data } from "react-router";
-import { BudgetViewModel } from "../budget_view_model";
 import { useBudgetViewData } from "../context/budget_view_context";
+import { useBudgetData } from "../../shared/context/budget_context";
+import Budget from "../../shared/models/budget";
 
-// TODO: need context for budget card to change the value of the drop down
+// TODO: ensure that the budget card data is cleared or set to default values that make sense
 
 export const AddNewBudgetCard = ({
   onTap,
 }: {
   onTap: React.MouseEventHandler;
 }): JSX.Element => {
-  const viewModel = BudgetViewModel.getInstance();
+  const { setBudgets } = useBudgetData();
 
   const {
     categoryContent,
@@ -79,7 +77,33 @@ export const AddNewBudgetCard = ({
         />
       </form>
 
-      <MainButton>Add Budget</MainButton>
+      <MainButton
+        onTap={() => {
+          // TODO: figure out a way to abstract the bellow business logic away
+          if (
+            Number.parseFloat(maxSpending) > 0 &&
+            selectedBudgetCategory.length > 0
+          ) {
+            setBudgets((prevState: BudgetData[]) => {
+              return [
+                ...prevState,
+                new Budget({
+                  category: selectedBudgetCategory,
+                  maximum: Number.parseFloat(maxSpending),
+                  theme: selectedColorTag!.theme,
+                }),
+              ];
+            });
+
+            // find and close modal by setting display to none
+            var modal = document.getElementById("add-new-budget-modal");
+
+            modal!.style.display = "none";
+          }
+        }}
+      >
+        Add Budget
+      </MainButton>
     </div>
   );
 };
