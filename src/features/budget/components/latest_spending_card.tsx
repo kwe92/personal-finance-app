@@ -7,29 +7,36 @@ export const LatestSpendingCard = ({
   transactions,
 }: {
   transactions: TransactionData[];
-}): JSX.Element => (
-  <div className="latest-spending-card-main">
-    <OverviewSectionHeader
-      title="Latest Spending"
-      buttonLabel="See All"
-      onTap={() => {
-        // TODO: implement
-      }}
-    />
+}): JSX.Element => {
+  // grab up to the latest three transactions but may contain less than three and should always contain atleast one
+  const latestThreeTransactions = transactions.slice(0, 3);
 
-    {/* List tile section */}
-    <div className="latest-spending-card-list-tile-section">
-      <LatestSpendingListTile transaction={transactions.at(0)!} />
+  const latestSpendingListTiles = latestThreeTransactions.map(
+    (transaction, i) => (
+      <>
+        <LatestSpendingListTile transaction={transaction} />
+        {latestThreeTransactions.length - 1 !== i ? (
+          <Divider style={{ backgroundColor: "#cac7c7" }} />
+        ) : (
+          <></>
+        )}
+      </>
+    )
+  );
+  return (
+    <div className="latest-spending-card-main">
+      <OverviewSectionHeader
+        title="Latest Spending"
+        buttonLabel="See All"
+        onTap={() => {
+          // TODO: implement the ability to navigate to the transactions view with the transactions filtered based on the category type
+        }}
+      />
 
-      {/* may want to use a lighter line color */}
-
-      <Divider style={{ backgroundColor: "#cac7c7" }} />
-
-      <LatestSpendingListTile transaction={transactions.at(1)!} />
-
-      <Divider style={{ backgroundColor: "#cac7c7" }} />
-
-      <LatestSpendingListTile transaction={transactions.at(2)!} />
+      {/* List tile section */}
+      <div className="latest-spending-card-list-tile-section">
+        {latestSpendingListTiles}
+      </div>
     </div>
-  </div>
-);
+  );
+};
