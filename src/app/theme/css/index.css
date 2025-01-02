@@ -3,6 +3,7 @@
   padding: 0;
   box-sizing: border-box; /* ensure elements fit in their space and do not exceed */
   font-family: PublicSans;
+  list-style-type: none;
 }
 
 body {

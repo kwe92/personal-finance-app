@@ -1,19 +1,46 @@
 import "./css/budget_card.css";
 
-import { GapH24 } from "../../../app/constants/reusable";
 // TODO: move to feature/shared folder along with associated css
 import { ColoredLineListTile } from "../../overview/components/colored_line_list_tile";
 import { LatestSpendingCard } from "./latest_spending_card";
 import { ProgressBar } from "./progress_bar";
+import { toggleDropDownMenu } from "../../shared/utility/toggle_drop_down_menu";
+import { useTransactionData } from "../../shared/context/transaction_context";
+import { sortByDate } from "../../shared/utility/functions";
 
-export const BudgetCard = ({ index }: { index: number }) => {
+// TODO: ensure that the budget category name is always the same a capitalized
+
+export const BudgetCard = ({
+  index,
+  budget,
+}: {
+  index: number;
+  budget?: BudgetData;
+}) => {
+  const { transactions } = useTransactionData();
+
+  const filteredTransactionsByCategory = transactions?.filter((transaction) => {
+    return transaction.category === budget?.category;
+  });
+
+  filteredTransactionsByCategory?.sort((a, b) => sortByDate(a, b));
+
+  let expendedAmount = 0;
+
+  for (var i = 0; i < filteredTransactionsByCategory!.length; i++) {
+    expendedAmount += filteredTransactionsByCategory?.at(i)?.amount ?? 0;
+  }
+
   return (
     <div className="budget-card-main">
       {/* header */}
       <div className="budget-card-header">
         <div className="budget-card-header-left-side">
-          <div className="budget-card-header-circle" />
-          <p>Bills</p>
+          <div
+            className="budget-card-header-circle"
+            style={{ backgroundColor: budget!.theme }}
+          />
+          <p>{budget?.category}</p>
         </div>
 
         {/* NOTE: may need to be moved to the budget_card.css file */}
@@ -38,49 +65,42 @@ export const BudgetCard = ({ index }: { index: number }) => {
       </div>
 
       {/* should use when using number parameter .toFixed(2) */}
-      <p id="max-amount">Maximum of $750.00</p>
+      <p id="max-amount">Maximum of ${budget?.maximum.toFixed(2)}</p>
 
-      <ProgressBar maxAmount={750} expendedAmount={150} />
+      <ProgressBar
+        maxAmount={budget!.maximum}
+        expendedAmount={expendedAmount}
+        themeColor={budget!.theme}
+      />
 
       <div className="budget-card-list-tile-section">
         <ColoredLineListTile
-          lineColor="#82C9D7"
+          lineColor={budget!.theme}
           title="Spent"
-          content="$150.00"
+          // content="$150.00"
+          content={`$${Math.abs(expendedAmount).toFixed(2)}`}
           style={{ flex: 1 }}
         />
 
         <ColoredLineListTile
           lineColor="#F8F4F0"
           title="Remaining"
-          content="$600.00"
+          content={`$${(budget?.maximum! - Math.abs(expendedAmount)).toFixed(
+            2
+          )}`}
           style={{ flex: 1 }}
         />
       </div>
 
-      <LatestSpendingCard />
+      <LatestSpendingCard transactions={filteredTransactionsByCategory ?? []} />
     </div>
   );
 };
 
-// TODO: needs to be refactored as toggleMenu is duplicated in transaction_view
 function toggleMenu(index: number) {
-  const dropdownContainer = document.querySelectorAll(".budget-card-dropdown")[
-    index
-  ];
-
-  const dropdownContent = document.querySelectorAll(
+  toggleDropDownMenu(
+    index,
+    ".budget-card-dropdown",
     ".budget-card-drop-down-menu"
-  )[index];
-
-  dropdownContent!.classList.toggle("show");
-
-  document.addEventListener("click", function (event: any) {
-    if (
-      !dropdownContainer!.contains(event.target) &&
-      !dropdownContent!.contains(event.target)
-    ) {
-      dropdownContent!.classList.remove("show");
-    }
-  });
+  );
 }

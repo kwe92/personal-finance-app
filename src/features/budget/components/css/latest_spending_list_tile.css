@@ -3,6 +3,7 @@
     align-items: center;
     justify-content: space-between;
     width: 100%;
+    flex:1;
 }
 
 .latest-spending-list-tile-main #left-side {

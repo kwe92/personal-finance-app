@@ -9,6 +9,7 @@ const TextFormField = ({
   label,
   type,
   value,
+  placeholder,
   showPasswordIcon = false,
   onChange,
   onIconTap,
@@ -17,12 +18,13 @@ const TextFormField = ({
   label: string;
   type: string;
   value: string;
+  placeholder?: string;
   showPasswordIcon?: boolean;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
-  onIconTap?: MouseEventHandler<HTMLImageElement>;
+  onIconTap?: MouseEventHandler;
 }): JSX.Element => {
   return (
-    <>
+    <div>
       <label htmlFor={name}>{label}</label>
       <div style={{ height: "4px" }} />
       <div className="text-form-field-container">
@@ -32,6 +34,7 @@ const TextFormField = ({
           name={name}
           type={type}
           value={value}
+          placeholder={placeholder}
           onChange={onChange}
           className="text-form-field"
         />
@@ -49,7 +52,7 @@ const TextFormField = ({
           <></>
         )}
       </div>
-    </>
+    </div>
   );
 };
 

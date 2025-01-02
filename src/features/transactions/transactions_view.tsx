@@ -9,6 +9,7 @@ import { TransactionListTile } from "./components/transaction_list_tile";
 import { TransactionTable } from "./components/transaction_table";
 import { useTransactionViewData } from "./context/transaction_view_context";
 import { useTransactionData } from "../shared/context/transaction_context";
+import { toggleDropDownMenu } from "../shared/utility/toggle_drop_down_menu";
 
 const TransactionsView = (): JSX.Element => {
   const { windowWidth } = useWindowSize();
@@ -102,22 +103,7 @@ const TransactionsView = (): JSX.Element => {
 };
 
 function toggleMenu(index: number) {
-  const dropdownContainer = document.querySelectorAll(".dropdown")[index];
-
-  const dropdownContent = document.querySelectorAll(".drop-down-menu-content")[
-    index
-  ];
-
-  dropdownContent!.classList.toggle("show");
-
-  document.addEventListener("click", function (event: any) {
-    if (
-      !dropdownContainer!.contains(event.target) &&
-      !dropdownContent!.contains(event.target)
-    ) {
-      dropdownContent!.classList.remove("show");
-    }
-  });
+  toggleDropDownMenu(index, ".dropdown", ".drop-down-menu-content");
 }
 
 //?? could probably be maintained somewhere else, maybe in the view

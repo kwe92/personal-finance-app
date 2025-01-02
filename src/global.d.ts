@@ -6,3 +6,19 @@ interface TransactionData {
     amount: number;
     recurring: boolean;
   }
+
+interface ColorTagDropDownItemData {
+  name: string;
+  theme: string;
+  isInUse: boolean;
+}
+
+interface BudgetData {
+  category: string;
+  maximum: number;
+  theme: string;
+}
+
+interface DateObject {
+  date: string;
+}
