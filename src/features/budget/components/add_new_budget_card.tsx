@@ -7,20 +7,20 @@ import { toggleDropDownMenu } from "../../shared/utility/toggle_drop_down_menu";
 import { useBudgetViewData } from "../context/budget_view_context";
 import { useBudgetData } from "../../shared/context/budget_context";
 import Budget from "../../shared/models/budget";
+import { BudgetViewModel } from "../budget_view_model";
 
-// TODO: ensure that the budget card data is cleared or set to default values that make sense
+// TODO: added validators to the card as to give the user a visual representation of any errors made while filling out the card
 
-export const AddNewBudgetCard = ({
-  onTap,
-}: {
-  onTap: React.MouseEventHandler;
-}): JSX.Element => {
+export const AddNewBudgetCard = (): JSX.Element => {
+  const viewModel = BudgetViewModel.getInstance();
+
   const { setBudgets } = useBudgetData();
 
   const {
     categoryContent,
     colorTagContent,
     selectedBudgetCategory,
+    resetBudgetCardData,
     selectedColorTag,
     maxSpending,
     setMaxSpending,
@@ -31,7 +31,12 @@ export const AddNewBudgetCard = ({
       <div className="add-new-budget-card-header">
         <p>Add New Budget</p>
 
-        <CloseModalButton onTap={onTap} />
+        <CloseModalButton
+          onTap={() => {
+            resetBudgetCardData();
+            viewModel.toogleAddNewBudgetModal();
+          }}
+        />
       </div>
 
       <p style={{ fontSize: "14px", color: "#696868" }}>
@@ -43,10 +48,9 @@ export const AddNewBudgetCard = ({
           display: "flex",
           flexDirection: "column",
           gap: "16px",
-          //   backgroundColor: "lightcoral",
         }}
         onSubmit={(e) => {
-          e.preventDefault(); // prevent form default behavior, add custom client-side form handling
+          e.preventDefault(); // prevent form default behavior, add custom frontend form handling
         }}
       >
         <ModalDropDownMenu
@@ -79,7 +83,7 @@ export const AddNewBudgetCard = ({
 
       <MainButton
         onTap={() => {
-          // TODO: figure out a way to abstract the bellow business logic away
+          // TODO: figure out a way to abstract the bellow business logic away | also the logic is temporary for testing only
           if (
             Number.parseFloat(maxSpending) > 0 &&
             selectedBudgetCategory.length > 0
@@ -94,6 +98,9 @@ export const AddNewBudgetCard = ({
                 }),
               ];
             });
+
+            // set budget card state to default values
+            resetBudgetCardData();
 
             // find and close modal by setting display to none
             var modal = document.getElementById("add-new-budget-modal");
@@ -131,7 +138,6 @@ const ModalDropDownMenu = ({
   tagColor?: string;
   toggleMenu: React.MouseEventHandler;
 }): JSX.Element => {
-  // TODO: replace hard-coded values with props
   return (
     <div className="modal-drop-down-menu" onClick={toggleMenu}>
       <label>{label}</label>
@@ -145,7 +151,7 @@ const ModalDropDownMenu = ({
                 width: "16px",
                 height: "16px",
                 borderRadius: "8px",
-                backgroundColor: tagColor, // TODO: change color based on currently selected color tag
+                backgroundColor: tagColor,
               }}
             />
             <p>{initialValue}</p>
