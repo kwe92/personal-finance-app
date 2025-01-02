@@ -14,28 +14,32 @@ import BottomNavBar from "./features/shared/components/bottom_nav_bar";
 import { MultiContextProvider } from "./features/shared/context/multi_context_provider";
 import { BudgetView } from "./features/budget/budget_view";
 import { TransactionViewProvider } from "./features/transactions/context/transaction_view_context";
+import { BudgetViewProvider } from "./features/budget/context/budget_view_context";
 
 function App() {
   const location = useLocation();
 
-  const [showNavBar, setShowNavBarNavBar] = useState(false);
+  const [showNavBar, setShowNavBar] = useState(false);
 
   console.log(`location path name: ${location.pathname}`);
 
   useEffect(() => {
+    // show navigation menu when route includes home in the path name
     if (location.pathname.includes("home")) {
-      setShowNavBarNavBar(true);
+      setShowNavBar(true);
     }
   });
 
   return (
     <div className="app">
+      {/* if showNavBar is false then the user should only be within the authentication part of the app */}
       {!showNavBar && (
         <>
           <AuthImage /> <AuthAppBar />
         </>
       )}
 
+      {/* if showNavBar is true then the user should be logged in*/}
       {showNavBar && (
         <>
           <SideNavBar />
@@ -49,7 +53,7 @@ function App() {
             <Route
               path="/"
               element={
-                false // TODO: should useContext and some sort of AuthProvider to track is logged in state
+                false // TODO: should useContext and some sort of AuthProvider to track the users login state
                   ? Transitions.fade(<OverviewView />)
                   : Transitions.fade(<Navigate to="/auth/login" />)
               }
@@ -88,7 +92,11 @@ function App() {
             />
             <Route
               path="/home/Budgets"
-              element={Transitions.fade(<BudgetView />)}
+              element={
+                <BudgetViewProvider>
+                  {Transitions.fade(<BudgetView />)}
+                </BudgetViewProvider>
+              }
             />
           </Routes>
         </MultiContextProvider>
