@@ -5,79 +5,108 @@ import { ColorTagDropDownItem } from "../models/colored_tag_drop_down_item";
 import { BudgetTagDropdownItem } from "../components/budget_tag_drop_down_item";
 import { useBudgetData } from "../../shared/context/budget_context";
 
-// TODO: add ability to submit data into a BudgetCard
-
-const BudgetViewContext = createContext<{
+interface BudgetViewContextInterface {
   selectedBudgetCategory: string;
   maxSpending: string;
-  selectedColorTag: ColorTagDropDownItem | undefined;
+  selectedColorTag: ColorTagDropDownItem;
   categoryContent: JSX.Element[];
   colorTagContent: JSX.Element[];
   setSelectedBudgetCategory: Function;
   setMaxSpending: Function;
   setSelectedColorTag: Function;
-}>({
+  resetBudgetCardData: Function;
+}
+
+const defaultColorTag = new ColorTagDropDownItem({
+  name: "",
+  theme: "transparent",
+  isInUse: false,
+});
+
+// create context with required default values
+const BudgetViewContext = createContext<BudgetViewContextInterface>({
   selectedBudgetCategory: "",
   maxSpending: "",
-  selectedColorTag: undefined,
+  selectedColorTag: defaultColorTag,
   categoryContent: [],
   colorTagContent: [],
   setSelectedBudgetCategory: () => {},
   setMaxSpending: () => {},
   setSelectedColorTag: () => {},
+  resetBudgetCardData: () => {},
 });
 
-// TODO: continue working on the BudgetViewProvider
 const BudgetViewProvider = ({
   children,
 }: {
   children?: React.ReactNode;
 }): JSX.Element => {
+  // get all transactions
   const { transactions } = useTransactionData();
+
+  // create state variables and their associated set state functions
 
   const [selectedBudgetCategory, setSelectedBudgetCategory] =
     useState<string>("");
 
+  // TODO: maxSpending should be a number and not a string, may require parsing somewhere in the code
   const [maxSpending, setMaxSpending] = useState<string>("");
 
   const [selectedColorTag, setSelectedColorTag] =
-    useState<ColorTagDropDownItem>();
+    useState<ColorTagDropDownItem>(defaultColorTag);
 
   const { budgets } = useBudgetData();
 
-  var categoryList = Array.from(
+  // transaction categories that are already in use to budget
+  const currentBudgetCategories = new Set(
+    budgets?.map((budget) => budget.category)
+  );
+
+  // ensure there are no duplicate transaction categories
+  const UniqueCategoryList = Array.from(
     new Set(transactions?.map((transaction) => transaction.category))
   );
 
-  // TODO: filter out budget categories in use already
+  // filter out budget categories already in use
+  const filteredCategoryList = UniqueCategoryList.filter(
+    (category) => !currentBudgetCategories.has(category)
+  );
 
-  // categoryList = categoryList.filter(() =>
-  //   budgets!.some((alreadyUsedCategory) =>
-  //     categoryList?.some((availableCategory) => {
-  //       if (availableCategory.includes(alreadyUsedCategory.category)) {
-  //         return false;
-  //       }
-  //       return true;
-  //     })
-  //   )
-  // );
+  // sort categories alphabetically
+  filteredCategoryList.sort((a, b) => a.localeCompare(b));
 
-  categoryList.sort((a, b) => a.localeCompare(b));
+  const alreadyUsedColorTags = new Set(budgets?.map((budget) => budget.theme));
 
-  useEffect(() => {
-    const initialColorTag: ColorTagDropDownItem | undefined =
-      budgetColorTags.filter((budgetColorTag) => {
-        return budgetColorTag.isInUse == false;
-      })[0];
+  const budgetColorTags = budgetColorTagData.map((json) =>
+    ColorTagDropDownItem.fromJSON(json)
+  );
 
-    // set initial value to be the first element in the list
-    setSelectedBudgetCategory(categoryList[0]);
+  // mark color as used if in the list of budgets
+  budgetColorTags.forEach((colorTagItem) => {
+    if (alreadyUsedColorTags?.has(colorTagItem.theme)) {
+      colorTagItem.isInUse = true;
+    }
+  });
 
-    // set initial value to be the first element in the list
-    setSelectedColorTag(initialColorTag);
-  }, []);
+  budgetColorTags.sort((a, b) => a.name.localeCompare(b.name));
 
-  const categoryContent = categoryList?.map((category, i) => (
+  useEffect(
+    () =>
+      // set initial budget card data values
+      resetBudgetCardData(),
+    []
+  );
+
+  /**
+   * Set budget card data to default values.
+   */
+  function resetBudgetCardData() {
+    setSelectedBudgetCategory("");
+    setSelectedColorTag(defaultColorTag);
+    setMaxSpending("");
+  }
+
+  const categoryContent = filteredCategoryList?.map((category, i) => (
     <div>
       <li
         key={i}
@@ -91,28 +120,9 @@ const BudgetViewProvider = ({
       >
         {category}
       </li>
-      {categoryList.length - 1 !== i ? <Divider /> : <></>}
+      {filteredCategoryList.length - 1 !== i ? <Divider /> : <></>}
     </div>
   ));
-
-  const alreadyUsedColorTags = budgets?.map((budget) => {
-    return budget.theme;
-  });
-
-  const budgetColorTags = budgetColorTagData.map((json) =>
-    ColorTagDropDownItem.fromJSON(json)
-  );
-
-  // mark color as used if in the list of budgets
-  budgetColorTags.some((colorTag) =>
-    alreadyUsedColorTags?.some((colorTagInUse) => {
-      if (JSON.stringify(colorTag).includes(colorTagInUse)) {
-        colorTag.isInUse = true;
-      }
-    })
-  );
-
-  budgetColorTags.sort((a, b) => a.name.localeCompare(b.name));
 
   const colorTagContent = budgetColorTags?.map((colorTag, i) => (
     <div>
@@ -137,6 +147,7 @@ const BudgetViewProvider = ({
 
   return (
     <BudgetViewContext.Provider
+      // override default context default values
       value={{
         selectedBudgetCategory,
         maxSpending,
@@ -146,6 +157,7 @@ const BudgetViewProvider = ({
         setSelectedBudgetCategory,
         setMaxSpending,
         setSelectedColorTag,
+        resetBudgetCardData,
       }}
     >
       {children}
@@ -219,9 +231,3 @@ const budgetColorTagData = [
     ["theme", "#BE6C49"],
   ]),
 ];
-
-// function containsAnyString(strings: string[], objects: any[]): boolean {
-//   return objects.some((obj) =>
-//     strings.some((str) => JSON.stringify(obj).includes(str))
-//   );
-// }
