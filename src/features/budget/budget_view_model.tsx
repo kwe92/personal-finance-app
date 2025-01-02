@@ -19,7 +19,7 @@ export class BudgetViewModel {
 
   // TODO: may need to put toogleAddNewBudgetModal function in a ToastService singleton for reusability
 
-  toogleAddNewBudgetModal() {
+  toogleAddNewBudgetModal(resetBudgetCardData?: Function) {
     // find new modal with proper id that was passed in as an argument to ModalWrapper
     var modal = document.getElementById("add-new-budget-modal");
 
@@ -33,7 +33,7 @@ export class BudgetViewModel {
 
     // detect where a user clicks and react to the click
     document.addEventListener("click", function (event: any) {
-      // if the user clicks son the close modal button dismiss the modal
+      // if the user clicks on the close modal button dismiss the modal
       if (closeModalButton!.contains(event.target)) {
         modal!.style.display = "none";
       }
@@ -44,6 +44,7 @@ export class BudgetViewModel {
       // if user clicks on the modal background dismiss the modal
       if (modal!.contains(event.target)) {
         modal!.style.display = "none";
+        resetBudgetCardData?.();
       }
     });
   }
