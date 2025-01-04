@@ -8,6 +8,7 @@ import { useBudgetViewData } from "../context/budget_view_context";
 import { useBudgetData } from "../../shared/context/budget_context";
 import Budget from "../../shared/models/budget";
 import { BudgetViewModel } from "../budget_view_model";
+import { formatDate } from "../../shared/utility/functions";
 
 // TODO: added validators to the card as to give the user a visual representation of any errors made while filling out the card
 
@@ -90,12 +91,14 @@ export const AddNewBudgetCard = (): JSX.Element => {
           ) {
             setBudgets((prevState: BudgetData[]) => {
               return [
-                ...prevState,
                 new Budget({
                   category: selectedBudgetCategory,
                   maximum: Number.parseFloat(maxSpending),
                   theme: selectedColorTag!.theme,
+                  createdAt: formatDate(new Date().toLocaleString()),
+                  updatedAt: formatDate(new Date().toLocaleString()),
                 }),
+                ...prevState,
               ];
             });
 
