@@ -1,30 +1,61 @@
 import "./css/budget_summary.css";
 import { Doughnut } from "react-chartjs-2";
-import { Chart as ChartJS, registerables } from "chart.js";
 import { SpendingSummaryListTile } from "./spending_summary_list_tile";
 import { Divider } from "../../shared/components/divider";
+import { useBudgetData } from "../../shared/context/budget_context";
+import { useTransactionData } from "../../shared/context/transaction_context";
+import { useDoughnutChartData } from "../../shared/context/doughnut_chart_context";
 
-ChartJS.register(...registerables);
+// TODO: ensure that you are using real data
+
+// TODO: remove duplicated code
 
 export const BudgetSummary = (): JSX.Element => {
-  const options = {
-    layout: {
-      autoPadding: false,
-      padding: 0,
-      margin: 0,
+  const { budgets } = useBudgetData();
+
+  const { transactions } = useTransactionData();
+
+  const { doughnutChartOptions, doughnutChartData } = useDoughnutChartData();
+
+  // TODO: move to budget context
+  const maximumBudgetAmount = budgets?.reduce(
+    (accumulator, budget) => {
+      return (accumulator += budget.maximum);
     },
-  };
+    0 // initial accumulator value
+  );
 
-  const mockData = {
-    datasets: [
-      {
-        data: [40, 750, 75, 100],
+  // TODO: move to budget context
+  const budgetCategories = budgets?.map((budget) => budget.category);
 
-        backgroundColor: ["#277C78", "#82C9D7", "#F2CDAC", "#626070"],
-        hoverOffset: 4,
-      },
-    ],
-  };
+  // TODO: move to budget context
+  const filteredTransactionsByCategory = transactions?.filter((transaction) =>
+    budgetCategories?.includes(transaction.category)
+  );
+
+  // TODO: move to budget context
+  let expendedAmount = 0;
+
+  // TODO: move to budget context
+  // ensure that data is not undefined before iterating over
+  if (filteredTransactionsByCategory) {
+    filteredTransactionsByCategory.forEach(
+      (transaction) => (expendedAmount += transaction.amount)
+    );
+  }
+  // TODO: move to budget context
+  const latestBudgets = budgets?.slice(0, 4);
+
+  // get the latest budgets at most 4
+  const spendingSummaryListTiles = latestBudgets
+    ?.slice(0, 4)
+    .map((budget, i) => (
+      <>
+        <SpendingSummaryListTile budget={budget} />
+        {latestBudgets.length - 1 !== i ? <Divider /> : <></>}
+      </>
+    ));
+
   return (
     // Budget summary main container
     <div className="budget-summary-main">
@@ -32,8 +63,8 @@ export const BudgetSummary = (): JSX.Element => {
 
       <div className="budget-summary-chart-container">
         <Doughnut
-          options={options}
-          data={mockData}
+          options={doughnutChartOptions}
+          data={doughnutChartData}
           style={{ padding: "0px", marginBottom: "10px" }}
         />
       </div>
@@ -42,43 +73,15 @@ export const BudgetSummary = (): JSX.Element => {
 
         <div>
           {" "}
-          <p>$399.00 </p>
-          <p>of $975 limit</p>
+          <p>${Math.abs(expendedAmount).toFixed(2)} </p>
+          <p>of ${maximumBudgetAmount?.toFixed(2)} limit</p>
         </div>
       </div>
 
       {/* spending summary section */}
       <div className="budget-spending-summary">
         <p className="budget-summary-bold-text">Spending Summary</p>
-        <SpendingSummaryListTile
-          label="Bills"
-          maxAmount={750}
-          expendedAmount={150}
-          lineColor="#82C9D7"
-        />
-        <Divider />
-        <SpendingSummaryListTile
-          label="Dining Out"
-          expendedAmount={133}
-          maxAmount={75}
-          lineColor="#F2CDAC"
-        />
-
-        <Divider />
-        <SpendingSummaryListTile
-          label="Personal Care"
-          expendedAmount={40}
-          maxAmount={100}
-          lineColor="#626070"
-        />
-
-        <Divider />
-        <SpendingSummaryListTile
-          label="Entertainment"
-          expendedAmount={15}
-          maxAmount={50}
-          lineColor="#277C78"
-        />
+        {spendingSummaryListTiles}
       </div>
     </div>
   );
