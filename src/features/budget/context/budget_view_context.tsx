@@ -4,16 +4,23 @@ import { Divider } from "../../shared/components/divider";
 import { ColorTagDropDownItem } from "../models/colored_tag_drop_down_item";
 import { BudgetTagDropdownItem } from "../components/budget_tag_drop_down_item";
 import { useBudgetData } from "../../shared/context/budget_context";
+import Budget from "../../shared/models/budget";
+import { BudgetViewModel } from "../budget_view_model";
 
 interface BudgetViewContextInterface {
   selectedBudgetCategory: string;
   maxSpending: string;
   selectedColorTag: ColorTagDropDownItem;
+  editBudet: boolean;
+  budgetToEdit: BudgetData;
   categoryContent: JSX.Element[];
   colorTagContent: JSX.Element[];
+  budgetColorTags: ColorTagDropDownItem[];
   setSelectedBudgetCategory: Function;
   setMaxSpending: Function;
   setSelectedColorTag: Function;
+  setEditBudget: Function;
+  setBudgetToEdit: Function;
   resetBudgetCardData: Function;
 }
 
@@ -23,16 +30,29 @@ const defaultColorTag = new ColorTagDropDownItem({
   isInUse: false,
 });
 
+const defaultBudgetToEdit = new Budget({
+  category: "",
+  maximum: 0,
+  theme: "",
+  createdAt: "",
+  updatedAt: "",
+});
+
 // create context with required default values
 const BudgetViewContext = createContext<BudgetViewContextInterface>({
   selectedBudgetCategory: "",
   maxSpending: "",
   selectedColorTag: defaultColorTag,
+  editBudet: false,
+  budgetToEdit: defaultBudgetToEdit,
   categoryContent: [],
   colorTagContent: [],
+  budgetColorTags: [],
   setSelectedBudgetCategory: () => {},
   setMaxSpending: () => {},
   setSelectedColorTag: () => {},
+  setEditBudget: () => {},
+  setBudgetToEdit: () => {},
   resetBudgetCardData: () => {},
 });
 
@@ -41,11 +61,9 @@ const BudgetViewProvider = ({
 }: {
   children?: React.ReactNode;
 }): JSX.Element => {
-  // get all transactions
   const { transactions } = useTransactionData();
 
   // create state variables and their associated set state functions
-
   const [selectedBudgetCategory, setSelectedBudgetCategory] =
     useState<string>("");
 
@@ -57,12 +75,17 @@ const BudgetViewProvider = ({
 
   const { budgets } = useBudgetData();
 
+  const [editBudet, setEditBudget] = useState<boolean>(false);
+
+  const [budgetToEdit, setBudgetToEdit] =
+    useState<BudgetData>(defaultBudgetToEdit);
+
   // transaction categories that are already in use to budget
   const currentBudgetCategories = new Set(
     budgets?.map((budget) => budget.category)
   );
 
-  // ensure there are no duplicate transaction categories
+  // unique transaction categories
   const UniqueCategoryList = Array.from(
     new Set(transactions?.map((transaction) => transaction.category))
   );
@@ -104,6 +127,8 @@ const BudgetViewProvider = ({
     setSelectedBudgetCategory("");
     setSelectedColorTag(defaultColorTag);
     setMaxSpending("");
+    setBudgetToEdit(defaultBudgetToEdit);
+    setEditBudget(false);
   }
 
   const categoryContent = filteredCategoryList?.map((category, i) => (
@@ -152,11 +177,16 @@ const BudgetViewProvider = ({
         selectedBudgetCategory,
         maxSpending,
         selectedColorTag,
+        editBudet,
+        budgetToEdit,
         categoryContent,
         colorTagContent,
+        budgetColorTags,
         setSelectedBudgetCategory,
         setMaxSpending,
         setSelectedColorTag,
+        setEditBudget,
+        setBudgetToEdit,
         resetBudgetCardData,
       }}
     >
