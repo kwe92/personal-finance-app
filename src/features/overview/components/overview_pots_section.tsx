@@ -4,15 +4,17 @@ import "./css/overview_view_shared_styles.css";
 import iconPots from "../../../assets/images/icon-pot.svg";
 import OverviewSectionHeader from "./overview_section_header";
 import { ColoredLineListTile } from "./colored_line_list_tile";
+import { useNavigate } from "react-router";
 
 const OverviewPotsSection = (): JSX.Element => {
+  const navigate = useNavigate();
   return (
     <div className="overview-pots-section-main-container">
       <OverviewSectionHeader
         title="Pots"
         buttonLabel="See Details"
         onTap={() => {
-          // TODO: implement
+          navigate("/home/Pots");
         }}
       />
 
