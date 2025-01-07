@@ -13,7 +13,7 @@ import AuthAppBar from "./features/shared/components/auth_app_bar";
 import BottomNavBar from "./features/shared/components/bottom_nav_bar";
 import { MultiContextProvider } from "./features/shared/context/multi_context_provider";
 import { BudgetView } from "./features/budget/budget_view";
-import { TransactionViewProvider } from "./features/transactions/context/transaction_view_context";
+import { TransactionFilterProvider } from "./features/shared/context/transaction_filter_context";
 import { BudgetViewProvider } from "./features/budget/context/budget_view_context";
 
 function App() {
@@ -84,11 +84,7 @@ function App() {
             />
             <Route
               path="/home/Transactions"
-              element={
-                <TransactionViewProvider>
-                  {Transitions.fade(<TransactionsView />)}
-                </TransactionViewProvider>
-              }
+              element={Transitions.fade(<TransactionsView />)}
             />
             <Route
               path="/home/Budgets"

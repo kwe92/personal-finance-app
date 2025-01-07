@@ -2,13 +2,18 @@ import "./css/latest_spending_card.css";
 import OverviewSectionHeader from "../../overview/components/overview_section_header";
 import { Divider } from "../../shared/components/divider";
 import { LatestSpendingListTile } from "./latest_spending_list_tile";
+import { useNavigate } from "react-router";
+import { useTransactionFilterData } from "../../shared/context/transaction_filter_context";
 
 export const LatestSpendingCard = ({
   transactions,
 }: {
   transactions: TransactionData[];
 }): JSX.Element => {
-  // grab up to the latest three transactions but may contain less than three and should always contain atleast one
+  const navigate = useNavigate();
+
+  const { setCategory } = useTransactionFilterData();
+
   const latestThreeTransactions = transactions.slice(0, 3);
 
   const latestSpendingListTiles = latestThreeTransactions.map(
@@ -29,7 +34,12 @@ export const LatestSpendingCard = ({
         title="Latest Spending"
         buttonLabel="See All"
         onTap={() => {
-          // TODO: implement the ability to navigate to the transactions view with the transactions filtered based on the category type
+          if (transactions.length > 0) {
+            setCategory(transactions[0].category);
+            navigate("/home/Transactions");
+          } else {
+            navigate("/home/Transactions");
+          }
         }}
       />
 

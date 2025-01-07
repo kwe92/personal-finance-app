@@ -1,16 +1,29 @@
+import { useTransactionData } from "../../shared/context/transaction_context";
+import { sortByDate } from "../../shared/utility/functions";
 import "./css/spending_summary_list_tile.css";
 
 export const SpendingSummaryListTile = ({
-  label,
-  maxAmount,
-  expendedAmount,
-  lineColor,
+  budget,
 }: {
-  label: string;
-  maxAmount: number;
-  expendedAmount: number;
-  lineColor: string;
+  budget: BudgetData;
 }): JSX.Element => {
+  // TODO: refactor duplicated code, see BudgetCard for details as the bellow code is nearly identical
+  const { transactions } = useTransactionData();
+
+  const filteredTransactionsByCategory = transactions?.filter((transaction) => {
+    return transaction.category === budget?.category;
+  });
+
+  filteredTransactionsByCategory?.sort((a, b) => sortByDate(a, b));
+
+  let expendedAmount = 0;
+
+  for (var i = 0; i < filteredTransactionsByCategory!.length; i++) {
+    expendedAmount += filteredTransactionsByCategory?.at(i)?.amount ?? 0;
+  }
+
+  // TODO: refactor duplicated code end
+
   return (
     <div className="spending-summary-list-tile-main">
       {/*  vertical line and label section*/}
@@ -21,15 +34,15 @@ export const SpendingSummaryListTile = ({
             width: "4px",
             height: "100%",
             borderRadius: "12px",
-            backgroundColor: lineColor,
+            backgroundColor: budget.theme,
           }}
         />
-        <p style={{ fontSize: "14px", color: "#696868" }}>{label}</p>
+        <p style={{ fontSize: "14px", color: "#696868" }}>{budget.category}</p>
       </div>
 
       <div className="spending-summary-right-section">
-        <p>${expendedAmount.toFixed(2)}</p>
-        <p>of ${maxAmount.toFixed(2)}</p>
+        <p>${Math.abs(expendedAmount).toFixed(2)}</p>
+        <p>of ${budget.maximum.toFixed(2)}</p>
       </div>
     </div>
   );

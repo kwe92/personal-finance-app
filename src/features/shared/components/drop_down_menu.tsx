@@ -2,7 +2,7 @@ import "./css/drop_down_menu.css";
 import caretDown from "../../../assets/images/icon-caret-down.svg";
 import { Divider } from "./divider";
 import useWindowSize from "../hooks/use_window_size";
-import { useTransactionViewData } from "../../transactions/context/transaction_view_context";
+import { useTransactionFilterData } from "../context/transaction_filter_context";
 
 // TODO: fix the spacing of category drop down menu items as they are bunched together for some reason
 
@@ -23,7 +23,7 @@ export const DropDownMenu = ({
   onMenuTap?: React.MouseEventHandler;
   onItemTap?: Function;
 }): JSX.Element => {
-  const { category, sortBy } = useTransactionViewData();
+  const { category, sortBy } = useTransactionFilterData();
 
   const { windowWidth } = useWindowSize();
 

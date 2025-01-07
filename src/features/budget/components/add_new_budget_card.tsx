@@ -8,13 +8,14 @@ import { useBudgetViewData } from "../context/budget_view_context";
 import { useBudgetData } from "../../shared/context/budget_context";
 import Budget from "../../shared/models/budget";
 import { BudgetViewModel } from "../budget_view_model";
+import { formatDate } from "../../shared/utility/functions";
 
 // TODO: added validators to the card as to give the user a visual representation of any errors made while filling out the card
 
 export const AddNewBudgetCard = (): JSX.Element => {
   const viewModel = BudgetViewModel.getInstance();
 
-  const { setBudgets } = useBudgetData();
+  const { budgets, setBudgets } = useBudgetData();
 
   const {
     categoryContent,
@@ -24,6 +25,8 @@ export const AddNewBudgetCard = (): JSX.Element => {
     selectedColorTag,
     maxSpending,
     setMaxSpending,
+    editBudet,
+    budgetToEdit,
   } = useBudgetViewData();
 
   return (
@@ -65,7 +68,7 @@ export const AddNewBudgetCard = (): JSX.Element => {
           label="Maximum Spend"
           type="number"
           value={maxSpending}
-          placeholder="$ e.g. 2000"
+          placeholder="$ e.g. 200.00"
           onChange={(event) => {
             setMaxSpending(event.target.value);
           }}
@@ -81,38 +84,67 @@ export const AddNewBudgetCard = (): JSX.Element => {
         />
       </form>
 
-      <MainButton
-        onTap={() => {
-          // TODO: figure out a way to abstract the bellow business logic away | also the logic is temporary for testing only
-          if (
-            Number.parseFloat(maxSpending) > 0 &&
-            selectedBudgetCategory.length > 0
-          ) {
-            setBudgets((prevState: BudgetData[]) => {
-              return [
-                ...prevState,
-                new Budget({
-                  category: selectedBudgetCategory,
-                  maximum: Number.parseFloat(maxSpending),
-                  theme: selectedColorTag!.theme,
-                }),
-              ];
-            });
-
-            // set budget card state to default values
-            resetBudgetCardData();
-
-            // find and close modal by setting display to none
-            var modal = document.getElementById("add-new-budget-modal");
-
-            modal!.style.display = "none";
-          }
-        }}
-      >
-        Add Budget
+      <MainButton onTap={handleBudgetCard}>
+        {!editBudet ? "Add Budget" : "Edit Budget"}
       </MainButton>
     </div>
   );
+
+  function handleBudgetCard() {
+    if (isValidFormData()) {
+      if (editBudet) {
+        editExistingBudgetItem();
+      } else {
+        addNewBudgetItem();
+      }
+
+      // set budget card state to default values
+      resetBudgetCardData();
+
+      // find and close modal by setting display to none
+      var modal = document.getElementById("add-new-budget-modal");
+
+      modal!.style.display = "none";
+    }
+  }
+
+  function addNewBudgetItem() {
+    setBudgets((prevState: BudgetData[]) => {
+      return [
+        new Budget({
+          category: selectedBudgetCategory,
+          maximum: Number.parseFloat(maxSpending),
+          theme: selectedColorTag!.theme,
+          createdAt: formatDate(new Date().toLocaleString()),
+          updatedAt: formatDate(new Date().toLocaleString()),
+        }),
+        ...prevState,
+      ];
+    });
+  }
+
+  function editExistingBudgetItem() {
+    const indexOfItemToUpdate = budgets!.indexOf(budgetToEdit);
+
+    const updatedBudget = new Budget({
+      category: selectedBudgetCategory,
+      maximum: Number.parseFloat(maxSpending),
+      theme: selectedColorTag!.theme,
+      createdAt: budgetToEdit.createdAt,
+      updatedAt: formatDate(new Date().toLocaleString()),
+    });
+
+    budgets!.splice(indexOfItemToUpdate, 1, updatedBudget);
+
+    // needs to be unpacked or the doughnut chart will not update
+    setBudgets([...budgets!]);
+  }
+
+  function isValidFormData() {
+    return (
+      Number.parseFloat(maxSpending) > 0 && selectedBudgetCategory.length > 0
+    );
+  }
 };
 
 function toggleMenu(index: number) {

@@ -7,29 +7,36 @@ import { ProgressBar } from "./progress_bar";
 import { toggleDropDownMenu } from "../../shared/utility/toggle_drop_down_menu";
 import { useTransactionData } from "../../shared/context/transaction_context";
 import { sortByDate } from "../../shared/utility/functions";
-
-// TODO: ensure that the budget category name is always the same a capitalized
+import { useBudgetData } from "../../shared/context/budget_context";
+import { BudgetViewModel } from "../budget_view_model";
+import { useBudgetViewData } from "../context/budget_view_context";
 
 export const BudgetCard = ({
   index,
   budget,
 }: {
   index: number;
-  budget?: BudgetData;
+  budget: BudgetData;
 }) => {
   const { transactions } = useTransactionData();
 
-  const filteredTransactionsByCategory = transactions?.filter((transaction) => {
-    return transaction.category === budget?.category;
-  });
+  const { budgets, setBudgets } = useBudgetData();
 
-  filteredTransactionsByCategory?.sort((a, b) => sortByDate(a, b));
+  const viewModel = BudgetViewModel.getInstance();
 
-  let expendedAmount = 0;
+  const {
+    resetBudgetCardData,
+    setBudgetToEdit,
+    setSelectedBudgetCategory,
+    setMaxSpending,
+    setSelectedColorTag,
+    budgetColorTags,
+    setEditBudget,
+  } = useBudgetViewData();
 
-  for (var i = 0; i < filteredTransactionsByCategory!.length; i++) {
-    expendedAmount += filteredTransactionsByCategory?.at(i)?.amount ?? 0;
-  }
+  const filteredTransactionsByCategory = getSortedFilteredTransactions();
+
+  const expendedAmount = getBudgetCategoryExpendedAmount();
 
   return (
     <div className="budget-card-main">
@@ -40,7 +47,7 @@ export const BudgetCard = ({
             className="budget-card-header-circle"
             style={{ backgroundColor: budget!.theme }}
           />
-          <p>{budget?.category}</p>
+          <p>{budget.category}</p>
         </div>
 
         {/* NOTE: may need to be moved to the budget_card.css file */}
@@ -58,19 +65,20 @@ export const BudgetCard = ({
           </svg>
 
           <div className="budget-card-drop-down-menu">
-            <p>Edit Budget</p>
-            <p style={{ color: "#C94736" }}>Delete Budget</p>
+            <p onClick={handleEditBudgetCard}>Edit Budget</p>
+            <p style={{ color: "#C94736" }} onClick={handleRemoveBudgetCard}>
+              Delete Budget
+            </p>
           </div>
         </div>
       </div>
 
-      {/* should use when using number parameter .toFixed(2) */}
-      <p id="max-amount">Maximum of ${budget?.maximum.toFixed(2)}</p>
+      <p id="max-amount">Maximum of ${budget.maximum.toFixed(2)}</p>
 
       <ProgressBar
-        maxAmount={budget!.maximum}
+        maxAmount={budget.maximum}
         expendedAmount={expendedAmount}
-        themeColor={budget!.theme}
+        themeColor={budget.theme}
       />
 
       <div className="budget-card-list-tile-section">
@@ -85,9 +93,7 @@ export const BudgetCard = ({
         <ColoredLineListTile
           lineColor="#F8F4F0"
           title="Remaining"
-          content={`$${(budget?.maximum! - Math.abs(expendedAmount)).toFixed(
-            2
-          )}`}
+          content={`$${(budget.maximum - Math.abs(expendedAmount)).toFixed(2)}`}
           style={{ flex: 1 }}
         />
       </div>
@@ -95,6 +101,52 @@ export const BudgetCard = ({
       <LatestSpendingCard transactions={filteredTransactionsByCategory ?? []} />
     </div>
   );
+
+  function getBudgetCategoryExpendedAmount(): number {
+    const filteredTransactions = getSortedFilteredTransactions();
+
+    let expendedAmount = 0;
+
+    for (var i = 0; i < filteredTransactions!.length; i++) {
+      expendedAmount += filteredTransactions?.at(i)?.amount ?? 0;
+    }
+
+    return expendedAmount;
+  }
+
+  function handleEditBudgetCard() {
+    setEditBudget(true);
+    setBudgetToEdit(budget);
+    setSelectedBudgetCategory(budget.category);
+    setMaxSpending(budget.maximum);
+    setSelectedColorTag(
+      budgetColorTags.find((colorTag) => {
+        return colorTag.theme === budget.theme;
+      })
+    );
+
+    viewModel.toogleAddNewBudgetModal(resetBudgetCardData);
+  }
+
+  function getSortedFilteredTransactions(): TransactionData[] {
+    const filteredTransactionsByCategory = transactions?.filter(
+      (transaction) => {
+        return transaction.category === budget?.category;
+      }
+    );
+
+    filteredTransactionsByCategory?.sort((a, b) => sortByDate(a, b));
+
+    return filteredTransactionsByCategory ?? [];
+  }
+
+  function handleRemoveBudgetCard() {
+    const updatedBudgets = budgets?.filter((currentBudgetedItem) => {
+      return currentBudgetedItem !== budget;
+    });
+
+    setBudgets(updatedBudgets);
+  }
 };
 
 function toggleMenu(index: number) {

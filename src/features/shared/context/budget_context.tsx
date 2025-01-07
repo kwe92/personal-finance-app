@@ -29,6 +29,7 @@ const BudgetProvider = ({
     try {
       // comment to simulate a delay
       setBudgets(appData.budgets);
+
       setIsLoading(false);
 
       // uncomment to simulate a delay

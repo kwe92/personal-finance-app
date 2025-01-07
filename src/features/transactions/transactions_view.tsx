@@ -7,7 +7,7 @@ import useWindowSize from "../shared/hooks/use_window_size";
 import { Divider } from "../shared/components/divider";
 import { TransactionListTile } from "./components/transaction_list_tile";
 import { TransactionTable } from "./components/transaction_table";
-import { useTransactionViewData } from "./context/transaction_view_context";
+import { useTransactionFilterData } from "../shared/context/transaction_filter_context";
 import { useTransactionData } from "../shared/context/transaction_context";
 import { toggleDropDownMenu } from "../shared/utility/toggle_drop_down_menu";
 
@@ -22,7 +22,7 @@ const TransactionsView = (): JSX.Element => {
     setCategory,
     setSortBy,
     setTransactionQuery,
-  } = useTransactionViewData();
+  } = useTransactionFilterData();
 
   const { transactions } = useTransactionData();
 

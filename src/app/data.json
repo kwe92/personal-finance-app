@@ -402,22 +402,30 @@
         {
             "category": "Entertainment",
             "maximum": 50.00,
-            "theme": "#277C78"
+            "theme": "#277C78",
+            "createdAt":"01-01-2025",
+            "updatedAt":"01-01-2025"
         },
         {
             "category": "Bills",
             "maximum": 750.00,
-            "theme": "#82C9D7"
+            "theme": "#82C9D7",
+            "createdAt":"12-21-2024",
+            "updatedAt":"12-21-2024"
         },
         {
             "category": "Dining Out",
             "maximum": 75.00,
-            "theme": "#F2CDAC"
+            "theme": "#F2CDAC",
+            "createdAt":"11-16-2024",
+            "updatedAt":"11-16-2024"
         },
         {
             "category": "Personal Care",
             "maximum": 100.00,
-            "theme": "#201F24"
+            "theme": "#201F24",
+            "createdAt":"08-19-2024",
+            "updatedAt":"08-19-2024"
         }
     ],
     "pots": [

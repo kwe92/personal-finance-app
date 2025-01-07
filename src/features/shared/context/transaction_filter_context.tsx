@@ -1,10 +1,10 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { useTransactionData } from "../../shared/context/transaction_context";
-import Transaction from "../../shared/models/transaction";
-import { sortByDate } from "../../shared/utility/functions";
+import { useTransactionData } from "./transaction_context";
+import Transaction from "../models/transaction";
+import { sortByDate } from "../utility/functions";
 
-// inital TransactionViewContext shape and values
-const TransactionViewContext = createContext<{
+// inital TransactionFilterContext shape and values
+const TransactionFilterContext = createContext<{
   transactionQuery: string;
   filteredTransactions: TransactionData[];
   sortBy: string;
@@ -22,8 +22,8 @@ const TransactionViewContext = createContext<{
   setTransactionQuery: () => {},
 });
 
-// used to wrap any part of your app to provide the TransactionViewContext
-const TransactionViewProvider = ({
+// used to wrap any part of your app to provide the TransactionFilterContext
+const TransactionFilterProvider = ({
   children,
 }: {
   children?: React.ReactNode;
@@ -65,7 +65,7 @@ const TransactionViewProvider = ({
   };
 
   return (
-    <TransactionViewContext.Provider
+    <TransactionFilterContext.Provider
       value={{
         transactionQuery,
         filteredTransactions: filteredTransactions ?? [],
@@ -77,7 +77,7 @@ const TransactionViewProvider = ({
       }}
     >
       {children}
-    </TransactionViewContext.Provider>
+    </TransactionFilterContext.Provider>
   );
 };
 
@@ -141,6 +141,6 @@ function sortTransactions(filteredTransactions: Transaction[], sortBy: string) {
   }
 }
 
-const useTransactionViewData = () => useContext(TransactionViewContext);
+const useTransactionFilterData = () => useContext(TransactionFilterContext);
 
-export { TransactionViewProvider, useTransactionViewData };
+export { TransactionFilterProvider, useTransactionFilterData };

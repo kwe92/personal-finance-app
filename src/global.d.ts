@@ -17,6 +17,8 @@ interface BudgetData {
   category: string;
   maximum: number;
   theme: string;
+  createdAt: string;
+  updatedAt:string;
 }
 
 interface DateObject {
