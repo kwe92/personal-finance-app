@@ -13,8 +13,8 @@ import AuthAppBar from "./features/shared/components/auth_app_bar";
 import BottomNavBar from "./features/shared/components/bottom_nav_bar";
 import { MultiContextProvider } from "./features/shared/context/multi_context_provider";
 import { BudgetView } from "./features/budget/budget_view";
-import { TransactionFilterProvider } from "./features/shared/context/transaction_filter_context";
 import { BudgetViewProvider } from "./features/budget/context/budget_view_context";
+import { PotsView } from "./features/pots/pots_view";
 
 function App() {
   const location = useLocation();
@@ -94,6 +94,7 @@ function App() {
                 </BudgetViewProvider>
               }
             />
+            <Route path="/home/Pots" element={Transitions.fade(<PotsView />)} />
           </Routes>
         </MultiContextProvider>
       </AnimatePresence>
