@@ -1,12 +1,12 @@
 import * as gaps from "../../../app/constants/reusable";
 import { useTransactionData } from "../../shared/context/transaction_context";
 import useWindowSize from "../../shared/hooks/use_window_size";
-import { useTransactionViewData } from "../context/transaction_view_context";
+import { useTransactionFilterData } from "../../shared/context/transaction_filter_context";
 import { TansactionRow } from "./transaction_row";
 
 export const TransactionTable = (): JSX.Element => {
   const { windowWidth } = useWindowSize();
-  const { filteredTransactions } = useTransactionViewData();
+  const { filteredTransactions } = useTransactionFilterData();
 
   var transactionRowItems: JSX.Element[];
 
