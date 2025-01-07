@@ -1,4 +1,5 @@
 import "./budget_view.css";
+import "../shared/css/view_container.css";
 import { AddNewButton } from "../shared/components/add_new_button";
 import { BudgetSummary } from "./components/budget_summary";
 import { BudgetCard } from "./components/budget_card";
@@ -8,7 +9,6 @@ import { AddNewBudgetCard } from "./components/add_new_budget_card";
 import { useBudgetViewData } from "./context/budget_view_context";
 import { useBudgetData } from "../shared/context/budget_context";
 
-// TODO: ensure that the budget summary data is using the correct budget data that is shared between the Overview View budget section
 export const BudgetView = (): JSX.Element => {
   const viewModel = BudgetViewModel.getInstance();
 
@@ -22,7 +22,7 @@ export const BudgetView = (): JSX.Element => {
 
   return (
     <>
-      <div className="budget-view-main">
+      <div className="view-container">
         <div className="budget-header-button-section">
           <h1 style={{ color: "#201F24" }}>Budgets</h1>
 
