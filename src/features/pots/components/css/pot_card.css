@@ -1,0 +1,50 @@
+.pot-card-main {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border-radius: 12px;
+    padding: 32px;
+    gap: 32px;
+}
+
+.pot-card-total-saved {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pot-card-progress {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 12px;
+}
+
+.pot-card-total-saved p:nth-child(1) {
+    color: #696868;
+    font-size: 14px;
+}
+
+.pot-card-total-saved p:nth-child(2) {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.pot-card-progress p:nth-child(1) {
+    color: #696868;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.pot-card-progress p:nth-child(2) {
+    color: #696868;
+    font-size: 12px;
+}
+
+@media(max-width:1440px) {
+    .pot-card-main {
+        padding: 24px;
+        gap: 24px;
+    }
+}
