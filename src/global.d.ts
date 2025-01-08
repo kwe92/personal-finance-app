@@ -24,3 +24,10 @@ interface BudgetData {
 interface DateObject {
   date: string;
 }
+
+interface PotData {
+  name: string;
+  target: number;
+  total: number;
+  theme: string;
+}
