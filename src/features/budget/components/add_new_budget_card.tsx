@@ -32,7 +32,7 @@ export const AddNewBudgetCard = (): JSX.Element => {
   return (
     <div className="add-new-budget-card-main">
       <div className="add-new-budget-card-header">
-        <p>Add New Budget</p>
+        <p>{!editBudet ? "Add New Budget" : "Edit Budget"}</p>
 
         <CloseModalButton
           onTap={() => {
@@ -43,8 +43,9 @@ export const AddNewBudgetCard = (): JSX.Element => {
       </div>
 
       <p style={{ fontSize: "14px", color: "#696868" }}>
-        Choose a category to set a spending budget. These categories can help
-        you monitor spending.
+        {!editBudet
+          ? "Choose a category to set a spending budget. These categories can help you monitor spending."
+          : "As your budgets change, feel free to update your spending limits."}
       </p>
       <form
         style={{
@@ -85,7 +86,7 @@ export const AddNewBudgetCard = (): JSX.Element => {
       </form>
 
       <MainButton onTap={handleBudgetCard}>
-        {!editBudet ? "Add Budget" : "Edit Budget"}
+        {!editBudet ? "Add Budget" : "Save Changes"}
       </MainButton>
     </div>
   );

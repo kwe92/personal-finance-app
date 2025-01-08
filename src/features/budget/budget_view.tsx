@@ -9,6 +9,8 @@ import { AddNewBudgetCard } from "./components/add_new_budget_card";
 import { useBudgetViewData } from "./context/budget_view_context";
 import { useBudgetData } from "../shared/context/budget_context";
 
+//!! TODO: implement the delete pop up modal
+
 export const BudgetView = (): JSX.Element => {
   const viewModel = BudgetViewModel.getInstance();
 
