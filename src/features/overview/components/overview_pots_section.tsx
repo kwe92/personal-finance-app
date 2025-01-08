@@ -5,9 +5,29 @@ import iconPots from "../../../assets/images/icon-pot.svg";
 import OverviewSectionHeader from "./overview_section_header";
 import { ColoredLineListTile } from "./colored_line_list_tile";
 import { useNavigate } from "react-router";
+import { usePotData } from "../../shared/context/pot_context";
 
 const OverviewPotsSection = (): JSX.Element => {
   const navigate = useNavigate();
+
+  const { pots } = usePotData();
+
+  var potListTiles: React.ReactNode[] = [];
+
+  if (pots !== null) {
+    const latestPots = pots?.slice(0, 4);
+
+    potListTiles = latestPots.map((potData, i) => {
+      return (
+        <ColoredLineListTile
+          lineColor={potData.theme}
+          title={potData.name}
+          content={`$${potData.total.toFixed(2)}`}
+        />
+      );
+    });
+  }
+
   return (
     <div className="overview-pots-section-main-container">
       <OverviewSectionHeader
@@ -22,25 +42,7 @@ const OverviewPotsSection = (): JSX.Element => {
         <OverviewPotsTotalSaved />
 
         <div className="overview-pots-section-grid-container">
-          <ColoredLineListTile
-            lineColor="#277C78"
-            title="Savings"
-            content="$159"
-          />
-
-          <ColoredLineListTile lineColor="#82C9D7" title="Gift" content="$40" />
-
-          <ColoredLineListTile
-            lineColor="#626070"
-            title="Concert Ticket"
-            content="$110"
-          />
-
-          <ColoredLineListTile
-            lineColor="#F2CDAC"
-            title="New Laptop"
-            content="$10"
-          />
+          {potListTiles}
         </div>
       </div>
     </div>

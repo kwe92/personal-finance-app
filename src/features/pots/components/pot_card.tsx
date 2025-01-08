@@ -4,16 +4,8 @@ import { CardHeader } from "../../shared/components/card_header";
 import MainButton from "../../shared/components/main_button";
 
 // TODO: props should eventually be a single Model / DTO
-export const PotCard = ({
-  totalSaved,
-  target,
-  color,
-}: {
-  totalSaved: number;
-  target: number;
-  color: string;
-}): JSX.Element => {
-  const percentSaved = pctTotal(totalSaved, target);
+export const PotCard = ({ potData }: { potData: PotData }): JSX.Element => {
+  const percentSaved = pctTotal(potData.total, potData.target);
 
   const buttonStyle = {
     backgroundColor: "#F8F4F0",
@@ -25,8 +17,8 @@ export const PotCard = ({
       {/* card header */}
 
       <CardHeader
-        color={color}
-        name={"Savings"}
+        color={potData.theme}
+        name={potData.name}
         dropdownText="Pot"
         dropdownClassName="pot-card-dropdown"
         onIconTap={() => {
@@ -42,12 +34,16 @@ export const PotCard = ({
 
       <div className="pot-card-total-saved">
         <p>Total Saved</p>
-        <p>${totalSaved.toFixed(2)}</p>
+        <p>${potData.total.toFixed(2)}</p>
       </div>
 
       {/* progress bar / percent saved */}
       <div className="pot-card-progress">
-        <PotProgressBar totalSaved={totalSaved} target={target} color="blue" />
+        <PotProgressBar
+          totalSaved={potData.total}
+          target={potData.target}
+          color={potData.theme}
+        />
         <div
           style={{
             display: "flex",
@@ -57,7 +53,7 @@ export const PotCard = ({
         >
           <p>{percentSaved.toFixed(2)}%</p>
 
-          <p>Target of ${target.toFixed(2)}</p>
+          <p>Target of ${potData.target.toFixed(2)}</p>
         </div>
       </div>
 
