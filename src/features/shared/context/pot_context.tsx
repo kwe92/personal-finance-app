@@ -2,11 +2,13 @@ import { useContext, useEffect, useState } from "react";
 import { createContext } from "react";
 import appData from "../../../app/data.json";
 
+type SetPotsState = React.Dispatch<React.SetStateAction<PotData[] | null>>;
+
 const PotContext = createContext<{
   pots: PotData[] | null;
   isLoading: boolean;
   error: string | null;
-  setPots: Function;
+  setPots: SetPotsState;
 }>({
   pots: [],
   isLoading: true,
