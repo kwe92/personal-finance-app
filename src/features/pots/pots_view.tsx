@@ -6,6 +6,8 @@ import { usePotData } from "../shared/context/pot_context";
 import { ModalWrapper } from "../shared/components/modal_wrapper";
 import { AddNewPotModal } from "./components/add_new_pot_modal";
 import { ToastService } from "../shared/services/toast_service";
+import { usePotViewData } from "./context/pot_view_context";
+import { DeleteModal } from "../shared/components/delete_modal";
 
 //!! TODO: start working on pots modal to add and edit
 
@@ -16,11 +18,13 @@ export const PotsView = (): JSX.Element => {
 
   const { pots } = usePotData();
 
+  const { resetPotModalData } = usePotViewData();
+
   var potCards: React.ReactNode[] = [];
 
   if (pots !== null) {
     potCards = pots.map((potData, i) => {
-      return <PotCard potData={potData} />;
+      return <PotCard pot={potData} />;
     });
   }
 
@@ -33,7 +37,7 @@ export const PotsView = (): JSX.Element => {
           label="Pot"
           onTap={() => {
             // TODO: may need to add reset modal content function to toogleModal
-            toastService.toogleModal(modalId);
+            toastService.toogleModal(modalId, resetPotModalData);
           }}
         />
       </div>
