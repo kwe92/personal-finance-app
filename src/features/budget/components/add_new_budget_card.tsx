@@ -1,4 +1,3 @@
-import "./css/add_new_budget_card.css";
 import "../../shared/css/base_modal.css";
 
 import MainButton from "../../shared/components/main_button";
