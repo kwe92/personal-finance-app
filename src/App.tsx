@@ -15,6 +15,7 @@ import { MultiContextProvider } from "./features/shared/context/multi_context_pr
 import { BudgetView } from "./features/budget/budget_view";
 import { BudgetViewProvider } from "./features/budget/context/budget_view_context";
 import { PotsView } from "./features/pots/pots_view";
+import { PotViewProvider } from "./features/pots/context/pot_view_context";
 
 function App() {
   const location = useLocation();
@@ -94,7 +95,14 @@ function App() {
                 </BudgetViewProvider>
               }
             />
-            <Route path="/home/Pots" element={Transitions.fade(<PotsView />)} />
+            <Route
+              path="/home/Pots"
+              element={
+                <PotViewProvider>
+                  {Transitions.fade(<PotsView />)}
+                </PotViewProvider>
+              }
+            />
           </Routes>
         </MultiContextProvider>
       </AnimatePresence>
