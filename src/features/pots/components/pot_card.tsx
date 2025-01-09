@@ -2,10 +2,30 @@ import "./css/pot_card.css";
 
 import { CardHeader } from "../../shared/components/card_header";
 import MainButton from "../../shared/components/main_button";
+import { ToastService } from "../../shared/services/toast_service";
+import { usePotData } from "../../shared/context/pot_context";
+import { usePotViewData } from "../context/pot_view_context";
+import { ModalWrapper } from "../../shared/components/modal_wrapper";
+import { DeleteModal } from "../../shared/components/delete_modal";
 
-// TODO: props should eventually be a single Model / DTO
-export const PotCard = ({ potData }: { potData: PotData }): JSX.Element => {
-  const percentSaved = pctTotal(potData.total, potData.target);
+export const PotCard = ({ pot }: { pot: PotData }): JSX.Element => {
+  const headerDropdownClassName = "pot-card-dropdown";
+
+  const toastService = ToastService.getInstance();
+
+  const percentSaved = pctTotal(pot.total, pot.target);
+
+  const { pots, setPots } = usePotData();
+
+  const {
+    setEditPot,
+    setPotToEdit,
+    setPotName,
+    setTarget,
+    setSelectedColorTag,
+    potColorTags,
+    resetPotModalData,
+  } = usePotViewData();
 
   const buttonStyle = {
     backgroundColor: "#F8F4F0",
@@ -17,32 +37,26 @@ export const PotCard = ({ potData }: { potData: PotData }): JSX.Element => {
       {/* card header */}
 
       <CardHeader
-        color={potData.theme}
-        name={potData.name}
+        color={pot.theme}
+        name={pot.name}
         dropdownText="Pot"
-        dropdownClassName="pot-card-dropdown"
-        onIconTap={() => {
-          // TODO: implement
-        }}
-        handleEditItem={() => {
-          // TODO: implement
-        }}
-        handleDeleteItem={() => {
-          // TODO: implement
-        }}
+        dropdownClassName={headerDropdownClassName}
+        onIconTap={handleIconTap}
+        handleEditItem={handleEditPotCard}
+        handleDeleteItem={handleDeletePotCard}
       />
 
       <div className="pot-card-total-saved">
         <p>Total Saved</p>
-        <p>${potData.total.toFixed(2)}</p>
+        <p>${pot.total.toFixed(2)}</p>
       </div>
 
       {/* progress bar / percent saved */}
       <div className="pot-card-progress">
         <PotProgressBar
-          totalSaved={potData.total}
-          target={potData.target}
-          color={potData.theme}
+          totalSaved={pot.total}
+          target={pot.target}
+          color={pot.theme}
         />
         <div
           style={{
@@ -53,7 +67,7 @@ export const PotCard = ({ potData }: { potData: PotData }): JSX.Element => {
         >
           <p>{percentSaved.toFixed(2)}%</p>
 
-          <p>Target of ${potData.target.toFixed(2)}</p>
+          <p>Target of ${pot.target.toFixed(2)}</p>
         </div>
       </div>
 
@@ -70,7 +84,45 @@ export const PotCard = ({ potData }: { potData: PotData }): JSX.Element => {
         <MainButton style={buttonStyle}>Withdraw</MainButton>
       </div>
     </div>
+
+    // <ModalWrapper id={modalId}>
+    // <DeleteModal />
+    // </ModalWrapper>
   );
+
+  function handleIconTap() {
+    toastService.toggleDropDownMenu(
+      pots!.indexOf(pot),
+      `.${headerDropdownClassName}`,
+      ".card-drop-down-menu"
+    );
+  }
+
+  function handleEditPotCard() {
+    setEditPot(true);
+    setPotToEdit(pot);
+    setPotName(pot.name);
+    setTarget(pot.target);
+    setSelectedColorTag(
+      potColorTags.find((colorTag) => {
+        return colorTag.theme === pot.theme;
+      })
+    );
+    // TODO: we need to do something about all these hard coded values surrounding modals
+    toastService.toogleModal("add-new-pot-modal", resetPotModalData);
+  }
+
+  //!! TODO: continue working on delete modal logic
+  function handleDeletePotCard() {
+    const toastService = ToastService.getInstance();
+
+    toastService.toogleModal("delete-pot-modal");
+
+    // const updatedPots = pots?.filter((currentPotItem) => {
+    //   return currentPotItem !== pot;
+    // });
+    // setPots(updatedPots!);
+  }
 };
 
 const PotProgressBar = ({
