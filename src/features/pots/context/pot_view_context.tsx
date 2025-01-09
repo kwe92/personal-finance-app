@@ -8,16 +8,18 @@ import { Divider } from "../../shared/components/divider";
 
 interface potViewContextInterface {
   potName: string;
-  target: number;
+  target: string;
   selectedColorTag: ColorTagDropDownItemData;
   editPot: boolean;
   potToEdit: PotData;
   colorTagContent: JSX.Element[];
+  potColorTags: ColorTagDropDownItem[];
   setPotName: Function;
   setTarget: Function;
   setSelectedColorTag: Function;
   setEditPot: Function;
   setPotToEdit: Function;
+  resetPotModalData: Function;
 }
 
 const defaultColorTag = new ColorTagDropDownItem({
@@ -34,16 +36,18 @@ const defaultPotToEdit = new Pot({
 });
 const PotViewContext = createContext<potViewContextInterface>({
   potName: "",
-  target: 0,
+  target: "",
   selectedColorTag: defaultColorTag,
   editPot: false,
   potToEdit: defaultPotToEdit,
   colorTagContent: [],
+  potColorTags: [],
   setPotName: () => {},
   setTarget: () => {},
   setSelectedColorTag: () => {},
   setEditPot: () => {},
   setPotToEdit: () => {},
+  resetPotModalData: () => {},
 });
 
 const PotViewProvider = ({
@@ -53,7 +57,7 @@ const PotViewProvider = ({
 }): JSX.Element => {
   const [potName, setPotName] = useState<string>("");
 
-  const [target, setTarget] = useState<number>(0);
+  const [target, setTarget] = useState<string>("");
 
   const [selectedColorTag, setSelectedColorTag] =
     useState<ColorTagDropDownItemData>(defaultColorTag);
@@ -109,16 +113,26 @@ const PotViewProvider = ({
         editPot,
         potToEdit,
         colorTagContent,
+        potColorTags,
         setPotName,
         setTarget,
         setSelectedColorTag,
         setEditPot,
         setPotToEdit,
+        resetPotModalData,
       }}
     >
       {children}
     </PotViewContext.Provider>
   );
+
+  function resetPotModalData() {
+    setEditPot(false);
+    setPotToEdit(defaultPotToEdit);
+    setPotName("");
+    setSelectedColorTag(defaultColorTag);
+    setTarget("");
+  }
 };
 
 const usePotViewData = () => useContext(PotViewContext);
