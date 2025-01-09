@@ -1,0 +1,10 @@
+.add-new-pot-modal-main{
+    display: flex;
+    flex-direction: column;
+    width: 560px;
+    height: 476px;
+    background-color: white;
+    border-radius: 8px;
+    padding: 24px;
+    gap:16px;
+}
