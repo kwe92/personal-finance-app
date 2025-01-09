@@ -4,15 +4,17 @@ import { AddNewButton } from "../shared/components/add_new_button";
 import { BudgetSummary } from "./components/budget_summary";
 import { BudgetCard } from "./components/budget_card";
 import { ModalWrapper } from "../shared/components/modal_wrapper";
-import { BudgetViewModel } from "./budget_view_model";
 import { AddNewBudgetCard } from "./components/add_new_budget_card";
 import { useBudgetViewData } from "./context/budget_view_context";
 import { useBudgetData } from "../shared/context/budget_context";
+import { ToastService } from "../shared/services/toast_service";
 
 //!! TODO: implement the delete pop up modal
 
 export const BudgetView = (): JSX.Element => {
-  const viewModel = BudgetViewModel.getInstance();
+  const modalId = "add-new-budget-modal";
+
+  const toastService = ToastService.getInstance();
 
   const { budgets } = useBudgetData();
 
@@ -31,8 +33,7 @@ export const BudgetView = (): JSX.Element => {
           <AddNewButton
             label="Budget"
             onTap={() => {
-              // ensure the first time toogleAddNewBudgetModal gets called the resetBudgetCardData function is added to the listener
-              viewModel.toogleAddNewBudgetModal(resetBudgetCardData);
+              toastService.toogleModal(modalId, resetBudgetCardData);
             }}
           />
         </div>
@@ -40,7 +41,7 @@ export const BudgetView = (): JSX.Element => {
 
         {budgetCards}
       </div>
-      <ModalWrapper id="add-new-budget-modal">
+      <ModalWrapper id={modalId}>
         <AddNewBudgetCard />
       </ModalWrapper>
     </>

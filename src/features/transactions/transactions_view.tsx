@@ -10,12 +10,14 @@ import { TransactionListTile } from "./components/transaction_list_tile";
 import { TransactionTable } from "./components/transaction_table";
 import { useTransactionFilterData } from "../shared/context/transaction_filter_context";
 import { useTransactionData } from "../shared/context/transaction_context";
-import { toggleDropDownMenu } from "../shared/utility/toggle_drop_down_menu";
 import { GapH4 } from "../../app/constants/reusable";
+import { ToastService } from "../shared/services/toast_service";
 
 // TODO: business logic could potentially be refactored
 
 const TransactionsView = (): JSX.Element => {
+  const toastService = ToastService.getInstance();
+
   const { windowWidth } = useWindowSize();
 
   const {
@@ -105,11 +107,15 @@ const TransactionsView = (): JSX.Element => {
       </div>
     </div>
   );
-};
 
-function toggleMenu(index: number) {
-  toggleDropDownMenu(index, ".dropdown", ".drop-down-menu-content");
-}
+  function toggleMenu(index: number) {
+    toastService.toggleDropDownMenu(
+      index,
+      ".dropdown",
+      ".drop-down-menu-content"
+    );
+  }
+};
 
 //?? could probably be maintained somewhere else, maybe in the view
 const sortByContent = [

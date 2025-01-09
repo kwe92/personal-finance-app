@@ -4,13 +4,12 @@ import "./css/budget_card.css";
 import { ColoredLineListTile } from "../../overview/components/colored_line_list_tile";
 import { LatestSpendingCard } from "./latest_spending_card";
 import { ProgressBar } from "./progress_bar";
-import { toggleDropDownMenu } from "../../shared/utility/toggle_drop_down_menu";
 import { useTransactionData } from "../../shared/context/transaction_context";
 import { sortByDate } from "../../shared/utility/functions";
 import { useBudgetData } from "../../shared/context/budget_context";
-import { BudgetViewModel } from "../budget_view_model";
 import { useBudgetViewData } from "../context/budget_view_context";
 import { CardHeader } from "../../shared/components/card_header";
+import { ToastService } from "../../shared/services/toast_service";
 
 export const BudgetCard = ({
   index, // required to ensure that only the menu to the associated card will be opened
@@ -23,8 +22,7 @@ export const BudgetCard = ({
 
   const { budgets, setBudgets } = useBudgetData();
 
-  const viewModel = BudgetViewModel.getInstance();
-
+  const toastService = ToastService.getInstance();
   const {
     resetBudgetCardData,
     setBudgetToEdit,
@@ -102,7 +100,7 @@ export const BudgetCard = ({
       })
     );
 
-    viewModel.toogleAddNewBudgetModal(resetBudgetCardData);
+    toastService.toogleModal("add-new-budget-modal", resetBudgetCardData);
   }
 
   function getSortedFilteredTransactions(): TransactionData[] {
@@ -124,8 +122,12 @@ export const BudgetCard = ({
 
     setBudgets(updatedBudgets);
   }
-};
 
-function toggleMenu(index: number) {
-  toggleDropDownMenu(index, ".budget-card-dropdown", ".card-drop-down-menu");
-}
+  function toggleMenu(index: number) {
+    toastService.toggleDropDownMenu(
+      index,
+      ".budget-card-dropdown",
+      ".card-drop-down-menu"
+    );
+  }
+};
