@@ -19,7 +19,7 @@ export class ToastService {
     var modal = document.getElementById(modalId);
 
     // find modal content, required to ensure the modal does not dismiss when clicking inside the modal content
-    var modalContent = document.getElementById("modal-content");
+    var modalContent = document.getElementById(`${modalId}-content`);
 
     // find the close modal button to close the modal when tapped
     var closeModalButton = document.getElementById("close-modal-button");

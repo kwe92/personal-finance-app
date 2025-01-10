@@ -33,61 +33,71 @@ export const PotCard = ({ pot }: { pot: PotData }): JSX.Element => {
     color: "black",
   };
   return (
-    <div className="pot-card-main">
-      {/* card header */}
+    <>
+      <div className="pot-card-main">
+        {/* card header */}
 
-      <CardHeader
-        color={pot.theme}
-        name={pot.name}
-        dropdownText="Pot"
-        dropdownClassName={headerDropdownClassName}
-        onIconTap={handleIconTap}
-        handleEditItem={handleEditPotCard}
-        handleDeleteItem={handleDeletePotCard}
-      />
-
-      <div className="pot-card-total-saved">
-        <p>Total Saved</p>
-        <p>${pot.total.toFixed(2)}</p>
-      </div>
-
-      {/* progress bar / percent saved */}
-      <div className="pot-card-progress">
-        <PotProgressBar
-          totalSaved={pot.total}
-          target={pot.target}
+        <CardHeader
           color={pot.theme}
+          name={pot.name}
+          dropdownText="Pot"
+          dropdownClassName={headerDropdownClassName}
+          onIconTap={handleIconTap}
+          handleEditItem={handleEditPotCard}
+          handleDeleteItem={handleDeletePotCard}
         />
+
+        <div className="pot-card-total-saved">
+          <p>Total Saved</p>
+          <p>${pot.total.toFixed(2)}</p>
+        </div>
+
+        {/* progress bar / percent saved */}
+        <div className="pot-card-progress">
+          <PotProgressBar
+            totalSaved={pot.total}
+            target={pot.target}
+            color={pot.theme}
+          />
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <p>{percentSaved.toFixed(2)}%</p>
+
+            <p>Target of ${pot.target.toFixed(2)}</p>
+          </div>
+        </div>
+
+        {/* buttons */}
         <div
           style={{
             display: "flex",
-            justifyContent: "space-between",
+            width: "100%",
             alignItems: "center",
+            gap: "16px",
           }}
         >
-          <p>{percentSaved.toFixed(2)}%</p>
-
-          <p>Target of ${pot.target.toFixed(2)}</p>
+          <MainButton style={buttonStyle}>+ Add Money</MainButton>
+          <MainButton style={buttonStyle}>Withdraw</MainButton>
         </div>
       </div>
 
-      {/* buttons */}
-      <div
-        style={{
-          display: "flex",
-          width: "100%",
-          alignItems: "center",
-          gap: "16px",
-        }}
+      {/* TODO: not working as expected check how edit is workings, may need to move to pots view and add a state for deleted item to be queued*/}
+      <ModalWrapper
+        id={"delete-pot-modal"}
+        contentId="delete-pot-modal-content"
       >
-        <MainButton style={buttonStyle}>+ Add Money</MainButton>
-        <MainButton style={buttonStyle}>Withdraw</MainButton>
-      </div>
-    </div>
-
-    // <ModalWrapper id={modalId}>
-    // <DeleteModal />
-    // </ModalWrapper>
+        <DeleteModal
+          itemToDelete={pot}
+          title={pot.name}
+          handleItemDeletion={() => {}}
+        />
+      </ModalWrapper>
+    </>
   );
 
   function handleIconTap() {

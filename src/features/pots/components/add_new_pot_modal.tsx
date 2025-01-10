@@ -30,9 +30,9 @@ export const AddNewPotModal = () => {
 
         <CloseModalButton
           onTap={() => {
-            // TODO: I don't seem to need to have a calback here for the modal to work
-            // resetBudgetCardData();
-            // viewModel.toogleAddNewBudgetModal();
+            var modal = document.getElementById("add-new-pot-modal");
+
+            modal!.style.display = "none";
           }}
         />
       </div>

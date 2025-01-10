@@ -9,8 +9,6 @@ import { ToastService } from "../shared/services/toast_service";
 import { usePotViewData } from "./context/pot_view_context";
 import { DeleteModal } from "../shared/components/delete_modal";
 
-//!! TODO: start working on pots modal to add and edit
-
 export const PotsView = (): JSX.Element => {
   const modalId = "add-new-pot-modal";
 
@@ -44,7 +42,7 @@ export const PotsView = (): JSX.Element => {
 
       <div className="pots-view-content">{potCards}</div>
 
-      <ModalWrapper id={modalId}>
+      <ModalWrapper id={modalId} contentId={`${modalId}-content`}>
         <AddNewPotModal />
       </ModalWrapper>
     </div>

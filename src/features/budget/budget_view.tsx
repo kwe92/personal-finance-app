@@ -8,9 +8,6 @@ import { AddNewBudgetCard } from "./components/add_new_budget_card";
 import { useBudgetViewData } from "./context/budget_view_context";
 import { useBudgetData } from "../shared/context/budget_context";
 import { ToastService } from "../shared/services/toast_service";
-
-//!! TODO: implement the delete pop up modal
-
 export const BudgetView = (): JSX.Element => {
   const modalId = "add-new-budget-modal";
 
@@ -41,7 +38,7 @@ export const BudgetView = (): JSX.Element => {
 
         {budgetCards}
       </div>
-      <ModalWrapper id={modalId}>
+      <ModalWrapper id={modalId} contentId={`${modalId}-content`}>
         <AddNewBudgetCard />
       </ModalWrapper>
     </>
