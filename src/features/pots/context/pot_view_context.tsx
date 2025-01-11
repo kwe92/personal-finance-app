@@ -12,6 +12,7 @@ interface potViewContextInterface {
   selectedColorTag: ColorTagDropDownItemData;
   editPot: boolean;
   potToEdit: PotData;
+  potToDelete: PotData;
   colorTagContent: JSX.Element[];
   potColorTags: ColorTagDropDownItem[];
   setPotName: Function;
@@ -19,6 +20,7 @@ interface potViewContextInterface {
   setSelectedColorTag: Function;
   setEditPot: Function;
   setPotToEdit: Function;
+  setPotToDelete: Function;
   resetPotModalData: Function;
 }
 
@@ -28,7 +30,7 @@ const defaultColorTag = new ColorTagDropDownItem({
   isInUse: false,
 });
 
-const defaultPotToEdit = new Pot({
+const defaultPot = new Pot({
   name: "",
   target: 0,
   total: 0,
@@ -39,7 +41,8 @@ const PotViewContext = createContext<potViewContextInterface>({
   target: "",
   selectedColorTag: defaultColorTag,
   editPot: false,
-  potToEdit: defaultPotToEdit,
+  potToEdit: defaultPot,
+  potToDelete: defaultPot,
   colorTagContent: [],
   potColorTags: [],
   setPotName: () => {},
@@ -47,6 +50,7 @@ const PotViewContext = createContext<potViewContextInterface>({
   setSelectedColorTag: () => {},
   setEditPot: () => {},
   setPotToEdit: () => {},
+  setPotToDelete: () => {},
   resetPotModalData: () => {},
 });
 
@@ -64,7 +68,9 @@ const PotViewProvider = ({
 
   const [editPot, setEditPot] = useState<boolean>(false);
 
-  const [potToEdit, setPotToEdit] = useState<PotData>(defaultPotToEdit);
+  const [potToEdit, setPotToEdit] = useState<PotData>(defaultPot);
+
+  const [potToDelete, setPotToDelete] = useState<PotData>(defaultPot);
 
   const { pots } = usePotData();
 
@@ -112,6 +118,7 @@ const PotViewProvider = ({
         selectedColorTag,
         editPot,
         potToEdit,
+        potToDelete,
         colorTagContent,
         potColorTags,
         setPotName,
@@ -119,6 +126,7 @@ const PotViewProvider = ({
         setSelectedColorTag,
         setEditPot,
         setPotToEdit,
+        setPotToDelete,
         resetPotModalData,
       }}
     >
@@ -128,7 +136,8 @@ const PotViewProvider = ({
 
   function resetPotModalData() {
     setEditPot(false);
-    setPotToEdit(defaultPotToEdit);
+    setPotToEdit(defaultPot);
+    setPotToDelete(defaultPot);
     setPotName("");
     setSelectedColorTag(defaultColorTag);
     setTarget("");

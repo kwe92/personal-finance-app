@@ -5,12 +5,9 @@ import MainButton from "../../shared/components/main_button";
 import { ToastService } from "../../shared/services/toast_service";
 import { usePotData } from "../../shared/context/pot_context";
 import { usePotViewData } from "../context/pot_view_context";
-import { ModalWrapper } from "../../shared/components/modal_wrapper";
-import { DeleteModal } from "../../shared/components/delete_modal";
+import { ModalClassName, ModalId } from "../../../app/constants/constants";
 
 export const PotCard = ({ pot }: { pot: PotData }): JSX.Element => {
-  const headerDropdownClassName = "pot-card-dropdown";
-
   const toastService = ToastService.getInstance();
 
   const percentSaved = pctTotal(pot.total, pot.target);
@@ -25,6 +22,7 @@ export const PotCard = ({ pot }: { pot: PotData }): JSX.Element => {
     setSelectedColorTag,
     potColorTags,
     resetPotModalData,
+    setPotToDelete,
   } = usePotViewData();
 
   const buttonStyle = {
@@ -41,7 +39,7 @@ export const PotCard = ({ pot }: { pot: PotData }): JSX.Element => {
           color={pot.theme}
           name={pot.name}
           dropdownText="Pot"
-          dropdownClassName={headerDropdownClassName}
+          dropdownClassName="pot-card-dropdown"
           onIconTap={handleIconTap}
           handleEditItem={handleEditPotCard}
           handleDeleteItem={handleDeletePotCard}
@@ -85,26 +83,14 @@ export const PotCard = ({ pot }: { pot: PotData }): JSX.Element => {
           <MainButton style={buttonStyle}>Withdraw</MainButton>
         </div>
       </div>
-
-      {/* TODO: not working as expected check how edit is workings, may need to move to pots view and add a state for deleted item to be queued*/}
-      <ModalWrapper
-        id={"delete-pot-modal"}
-        contentId="delete-pot-modal-content"
-      >
-        <DeleteModal
-          itemToDelete={pot}
-          title={pot.name}
-          handleItemDeletion={() => {}}
-        />
-      </ModalWrapper>
     </>
   );
 
   function handleIconTap() {
     toastService.toggleDropDownMenu(
       pots!.indexOf(pot),
-      `.${headerDropdownClassName}`,
-      ".card-drop-down-menu"
+      ModalClassName.potCardDropDown,
+      ModalClassName.cardDropDownMenu
     );
   }
 
@@ -118,20 +104,28 @@ export const PotCard = ({ pot }: { pot: PotData }): JSX.Element => {
         return colorTag.theme === pot.theme;
       })
     );
-    // TODO: we need to do something about all these hard coded values surrounding modals
-    toastService.toogleModal("add-new-pot-modal", resetPotModalData);
+
+    closeMenu();
+
+    toastService.toogleModal(ModalId.potModal, resetPotModalData);
   }
 
-  //!! TODO: continue working on delete modal logic
   function handleDeletePotCard() {
+    setPotToDelete(pot);
+
     const toastService = ToastService.getInstance();
 
-    toastService.toogleModal("delete-pot-modal");
+    closeMenu();
 
-    // const updatedPots = pots?.filter((currentPotItem) => {
-    //   return currentPotItem !== pot;
-    // });
-    // setPots(updatedPots!);
+    toastService.toogleModal(ModalId.deletePotModal, resetPotModalData);
+  }
+
+  function closeMenu() {
+    const dropdownContent = document.querySelectorAll(
+      ModalClassName.cardDropDownMenu
+    )[pots!.indexOf(pot)];
+
+    dropdownContent!.classList.toggle("show");
   }
 };
 
