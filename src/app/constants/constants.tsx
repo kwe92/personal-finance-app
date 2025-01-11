@@ -1,4 +1,26 @@
-export const colorTagData = [
+class ModalId {
+  private constructor() {}
+
+  static budgetModal = "budget-modal";
+
+  static potModal = "pot-modal";
+
+  static deletePotModal = "delete-pot-modal";
+
+  static deleteBudgetModal = "delete-budget-modal";
+}
+
+class ModalClassName {
+  private constructor() {}
+
+  static cardDropDownMenu = ".card-drop-down-menu";
+
+  static budgetCardDropDown = ".budget-card-dropdown";
+
+  static potCardDropDown = ".pot-card-dropdown";
+}
+
+const colorTagData = [
   new Map([
     ["name", "Green"],
     ["theme", "#277C78"],
@@ -60,3 +82,5 @@ export const colorTagData = [
     ["theme", "#BE6C49"],
   ]),
 ];
+
+export { colorTagData, ModalId, ModalClassName };
