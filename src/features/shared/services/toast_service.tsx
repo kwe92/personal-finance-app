@@ -21,17 +21,11 @@ export class ToastService {
     // find modal content, required to ensure the modal does not dismiss when clicking inside the modal content
     var modalContent = document.getElementById(`${modalId}-content`);
 
-    // find the close modal button to close the modal when tapped
-    var closeModalButton = document.getElementById("close-modal-button");
-
+    // display the modal
     modal!.style.display = "flex";
 
     // detect where a user clicks and react to the click
     document.addEventListener("click", function (event: any) {
-      // if the user clicks on the close modal button dismiss the modal
-      if (closeModalButton!.contains(event.target)) {
-        modal!.style.display = "none";
-      }
       // if user clicks on the modal content do nothing
       if (modalContent!.contains(event.target)) {
         return;
@@ -44,8 +38,14 @@ export class ToastService {
     });
   }
 
-  /// Toggles the display of a drop dowm menu.
+  closeModal(modalId: string) {
+    const modalToClose = document.getElementById(modalId);
 
+    // close the modal
+    modalToClose!.style.display = "none";
+  }
+
+  /// Toggles the display of a drop down menu.
   toggleDropDownMenu(
     index: number,
     dropDownContainerClassName: string,
