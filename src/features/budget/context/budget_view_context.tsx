@@ -13,6 +13,7 @@ interface BudgetViewContextInterface {
   selectedColorTag: ColorTagDropDownItem;
   editBudet: boolean;
   budgetToEdit: BudgetData;
+  budgetToDelete: BudgetData;
   categoryContent: JSX.Element[];
   colorTagContent: JSX.Element[];
   budgetColorTags: ColorTagDropDownItem[];
@@ -21,7 +22,8 @@ interface BudgetViewContextInterface {
   setSelectedColorTag: Function;
   setEditBudget: Function;
   setBudgetToEdit: Function;
-  resetBudgetCardData: Function;
+  setBudgetToDelete: Function;
+  resetBudgetModalData: Function;
 }
 
 const defaultColorTag = new ColorTagDropDownItem({
@@ -30,7 +32,7 @@ const defaultColorTag = new ColorTagDropDownItem({
   isInUse: false,
 });
 
-const defaultBudgetToEdit = new Budget({
+const defaultBudget = new Budget({
   category: "",
   maximum: 0,
   theme: "",
@@ -44,7 +46,8 @@ const BudgetViewContext = createContext<BudgetViewContextInterface>({
   maxSpending: "",
   selectedColorTag: defaultColorTag,
   editBudet: false,
-  budgetToEdit: defaultBudgetToEdit,
+  budgetToEdit: defaultBudget,
+  budgetToDelete: defaultBudget,
   categoryContent: [],
   colorTagContent: [],
   budgetColorTags: [],
@@ -53,7 +56,8 @@ const BudgetViewContext = createContext<BudgetViewContextInterface>({
   setSelectedColorTag: () => {},
   setEditBudget: () => {},
   setBudgetToEdit: () => {},
-  resetBudgetCardData: () => {},
+  setBudgetToDelete: () => {},
+  resetBudgetModalData: () => {},
 });
 
 const BudgetViewProvider = ({
@@ -77,8 +81,10 @@ const BudgetViewProvider = ({
 
   const [editBudet, setEditBudget] = useState<boolean>(false);
 
-  const [budgetToEdit, setBudgetToEdit] =
-    useState<BudgetData>(defaultBudgetToEdit);
+  const [budgetToEdit, setBudgetToEdit] = useState<BudgetData>(defaultBudget);
+
+  const [budgetToDelete, setBudgetToDelete] =
+    useState<BudgetData>(defaultBudget);
 
   // transaction categories that are already in use to budget
   const currentBudgetCategories = new Set(
@@ -116,18 +122,19 @@ const BudgetViewProvider = ({
   useEffect(
     () =>
       // set initial budget card data values
-      resetBudgetCardData(),
+      resetBudgetModalData(),
     []
   );
 
   /**
    * Set budget card data to default values.
    */
-  function resetBudgetCardData() {
+  function resetBudgetModalData() {
     setSelectedBudgetCategory("");
     setSelectedColorTag(defaultColorTag);
     setMaxSpending("");
-    setBudgetToEdit(defaultBudgetToEdit);
+    setBudgetToEdit(defaultBudget);
+    setBudgetToDelete(defaultBudget);
     setEditBudget(false);
   }
 
@@ -179,6 +186,7 @@ const BudgetViewProvider = ({
         selectedColorTag,
         editBudet,
         budgetToEdit,
+        budgetToDelete,
         categoryContent,
         colorTagContent,
         budgetColorTags,
@@ -187,7 +195,8 @@ const BudgetViewProvider = ({
         setSelectedColorTag,
         setEditBudget,
         setBudgetToEdit,
-        resetBudgetCardData,
+        setBudgetToDelete,
+        resetBudgetModalData,
       }}
     >
       {children}

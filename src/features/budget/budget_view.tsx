@@ -4,18 +4,20 @@ import { AddNewButton } from "../shared/components/add_new_button";
 import { BudgetSummary } from "./components/budget_summary";
 import { BudgetCard } from "./components/budget_card";
 import { ModalWrapper } from "../shared/components/modal_wrapper";
-import { AddNewBudgetCard } from "./components/add_new_budget_card";
+import { BudgetModal } from "./components/budget_modal";
 import { useBudgetViewData } from "./context/budget_view_context";
 import { useBudgetData } from "../shared/context/budget_context";
 import { ToastService } from "../shared/services/toast_service";
+import { ModalId } from "../../app/constants/constants";
+import { DeleteModal } from "../shared/components/delete_modal";
 export const BudgetView = (): JSX.Element => {
-  const modalId = "add-new-budget-modal";
+  const modalId = ModalId.budgetModal;
 
   const toastService = ToastService.getInstance();
 
-  const { budgets } = useBudgetData();
+  const { budgets, setBudgets } = useBudgetData();
 
-  const { resetBudgetCardData } = useBudgetViewData();
+  const { resetBudgetModalData, budgetToDelete } = useBudgetViewData();
 
   const budgetCards = budgets?.map((budget, i) => {
     return <BudgetCard index={i} budget={budget} />;
@@ -30,7 +32,7 @@ export const BudgetView = (): JSX.Element => {
           <AddNewButton
             label="Budget"
             onTap={() => {
-              toastService.toogleModal(modalId, resetBudgetCardData);
+              toastService.toogleModal(modalId, resetBudgetModalData);
             }}
           />
         </div>
@@ -38,9 +40,25 @@ export const BudgetView = (): JSX.Element => {
 
         {budgetCards}
       </div>
-      <ModalWrapper id={modalId} contentId={`${modalId}-content`}>
-        <AddNewBudgetCard />
+      <ModalWrapper id={modalId}>
+        <BudgetModal />
+      </ModalWrapper>
+
+      <ModalWrapper id={ModalId.deleteBudgetModal}>
+        <DeleteModal
+          modalId={ModalId.deleteBudgetModal}
+          isPot={false}
+          title={budgetToDelete.category}
+          handleItemDeletion={handleDeleteBudget}
+        />
       </ModalWrapper>
     </>
   );
+
+  function handleDeleteBudget() {
+    const updatedBudget = budgets?.filter((currentBudgetItem) => {
+      return currentBudgetItem !== budgetToDelete;
+    });
+    setBudgets(updatedBudget!);
+  }
 };
