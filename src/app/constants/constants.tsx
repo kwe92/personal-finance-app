@@ -5,6 +5,8 @@ class ModalId {
 
   static potModal = "pot-modal";
 
+  static potTransactionModal = "pot-transaction-modal";
+
   static deletePotModal = "delete-pot-modal";
 
   static deleteBudgetModal = "delete-budget-modal";
