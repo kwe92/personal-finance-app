@@ -37,4 +37,10 @@ function sortByDate(
   }
 }
 
-export { isPositive, formatDate, sortByDate };
+function pctTotal(amount: number, total: number): number {
+  const percentOfTotal = (amount / total) * 100;
+
+  return percentOfTotal;
+}
+
+export { isPositive, formatDate, sortByDate, pctTotal };
