@@ -6,6 +6,7 @@ import { ToastService } from "../../shared/services/toast_service";
 import { usePotData } from "../../shared/context/pot_context";
 import { usePotViewData } from "../context/pot_view_context";
 import { ModalClassName, ModalId } from "../../../app/constants/constants";
+import { pctTotal } from "../../shared/utility/functions";
 
 export const PotCard = ({ pot }: { pot: PotData }): JSX.Element => {
   const toastService = ToastService.getInstance();
@@ -23,6 +24,7 @@ export const PotCard = ({ pot }: { pot: PotData }): JSX.Element => {
     potColorTags,
     resetPotModalData,
     setPotToDelete,
+    setIsWithdrawal,
   } = usePotViewData();
 
   const buttonStyle = {
@@ -79,8 +81,12 @@ export const PotCard = ({ pot }: { pot: PotData }): JSX.Element => {
             gap: "16px",
           }}
         >
-          <MainButton style={buttonStyle}>+ Add Money</MainButton>
-          <MainButton style={buttonStyle}>Withdraw</MainButton>
+          <MainButton style={buttonStyle} onTap={handlePotAdd}>
+            + Add Money
+          </MainButton>
+          <MainButton style={buttonStyle} onTap={handlePotWithdrawal}>
+            Withdraw
+          </MainButton>
         </div>
       </div>
     </>
@@ -118,6 +124,18 @@ export const PotCard = ({ pot }: { pot: PotData }): JSX.Element => {
     closeMenu();
 
     toastService.toogleModal(ModalId.deletePotModal, resetPotModalData);
+  }
+
+  function handlePotAdd() {
+    setPotToEdit(pot);
+
+    toastService.toogleModal(ModalId.potTransactionModal, resetPotModalData);
+  }
+  function handlePotWithdrawal() {
+    setIsWithdrawal(true);
+    setPotToEdit(pot);
+
+    toastService.toogleModal(ModalId.potTransactionModal, resetPotModalData);
   }
 
   function closeMenu() {
@@ -159,9 +177,3 @@ const PotProgressBar = ({
     </div>
   );
 };
-
-function pctTotal(amount: number, total: number): number {
-  const percentOfTotal = (amount / total) * 100;
-
-  return percentOfTotal;
-}
