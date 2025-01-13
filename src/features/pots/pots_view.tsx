@@ -9,6 +9,7 @@ import { ToastService } from "../shared/services/toast_service";
 import { usePotViewData } from "./context/pot_view_context";
 import { DeleteModal } from "../shared/components/delete_modal";
 import { ModalId } from "../../app/constants/constants";
+import { PotsTransactionModal } from "./components/pot_transaction_modal";
 
 export const PotsView = (): JSX.Element => {
   const modalId = ModalId.potModal;
@@ -53,6 +54,10 @@ export const PotsView = (): JSX.Element => {
           title={potToDelete.name}
           handleItemDeletion={handleDeletePot}
         />
+      </ModalWrapper>
+
+      <ModalWrapper id={ModalId.potTransactionModal}>
+        <PotsTransactionModal />
       </ModalWrapper>
     </div>
   );
