@@ -9,18 +9,24 @@ import { Divider } from "../../shared/components/divider";
 interface potViewContextInterface {
   potName: string;
   target: string;
+  total: string;
   selectedColorTag: ColorTagDropDownItemData;
   editPot: boolean;
+  isWithdrawal: boolean;
   potToEdit: PotData;
   potToDelete: PotData;
   colorTagContent: JSX.Element[];
   potColorTags: ColorTagDropDownItem[];
+  transactionAmount: string;
   setPotName: Function;
   setTarget: Function;
+  setTotal: Function;
   setSelectedColorTag: Function;
   setEditPot: Function;
+  setIsWithdrawal: Function;
   setPotToEdit: Function;
   setPotToDelete: Function;
+  setTransactionAmount: Function;
   resetPotModalData: Function;
 }
 
@@ -39,18 +45,24 @@ const defaultPot = new Pot({
 const PotViewContext = createContext<potViewContextInterface>({
   potName: "",
   target: "",
+  total: "",
   selectedColorTag: defaultColorTag,
   editPot: false,
+  isWithdrawal: false,
   potToEdit: defaultPot,
   potToDelete: defaultPot,
   colorTagContent: [],
   potColorTags: [],
+  transactionAmount: "",
   setPotName: () => {},
   setTarget: () => {},
+  setTotal: () => {},
   setSelectedColorTag: () => {},
   setEditPot: () => {},
+  setIsWithdrawal: () => {},
   setPotToEdit: () => {},
   setPotToDelete: () => {},
+  setTransactionAmount: () => {},
   resetPotModalData: () => {},
 });
 
@@ -63,14 +75,20 @@ const PotViewProvider = ({
 
   const [target, setTarget] = useState<string>("");
 
+  const [total, setTotal] = useState<string>("");
+
   const [selectedColorTag, setSelectedColorTag] =
     useState<ColorTagDropDownItemData>(defaultColorTag);
 
   const [editPot, setEditPot] = useState<boolean>(false);
 
+  const [isWithdrawal, setIsWithdrawal] = useState<boolean>(false);
+
   const [potToEdit, setPotToEdit] = useState<PotData>(defaultPot);
 
   const [potToDelete, setPotToDelete] = useState<PotData>(defaultPot);
+
+  const [transactionAmount, setTransactionAmount] = useState<string>("");
 
   const { pots } = usePotData();
 
@@ -115,18 +133,24 @@ const PotViewProvider = ({
       value={{
         potName,
         target,
+        total,
         selectedColorTag,
         editPot,
+        isWithdrawal,
         potToEdit,
         potToDelete,
         colorTagContent,
         potColorTags,
+        transactionAmount,
         setPotName,
         setTarget,
+        setTotal,
         setSelectedColorTag,
         setEditPot,
+        setIsWithdrawal,
         setPotToEdit,
         setPotToDelete,
+        setTransactionAmount,
         resetPotModalData,
       }}
     >
@@ -136,11 +160,14 @@ const PotViewProvider = ({
 
   function resetPotModalData() {
     setEditPot(false);
+    setIsWithdrawal(false);
     setPotToEdit(defaultPot);
     setPotToDelete(defaultPot);
     setPotName("");
     setSelectedColorTag(defaultColorTag);
     setTarget("");
+    setTotal("");
+    setTransactionAmount("");
   }
 };
 
