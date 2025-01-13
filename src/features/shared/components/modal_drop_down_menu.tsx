@@ -18,7 +18,15 @@ export const ModalDropDownMenu = ({
 }): JSX.Element => {
   return (
     <div className="modal-drop-down-menu" onClick={toggleMenu}>
-      <label>{label}</label>
+      <label
+        style={{
+          color: "#696868",
+          fontSize: "12px",
+          fontWeight: "bold",
+        }}
+      >
+        {label}
+      </label>
       {/* dropdown selector*/}
       <div className="modal-drop-down-menu-selector">
         {isColorTag ? (
