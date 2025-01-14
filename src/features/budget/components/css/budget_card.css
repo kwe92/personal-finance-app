@@ -1,5 +1,3 @@
-/* !! NOTE: the sizing is a bit different as I am diverting from the figma design */
-
 .budget-card-main {
     display: flex;
     flex-direction: column;
@@ -11,120 +9,40 @@
     gap: 32px;
 }
 
-.budget-card-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-}
-
-.budget-card-header-left-side {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-}
-
-.budget-card-header-circle {
-    width: 24px;
-    height: 24px;
-    border-radius: 16px;
-}
-
 .budget-card-list-tile-section {
     display: flex;
     align-items: center;
     width: 100%;
 }
 
-.budget-card-drop-down-menu {
-    display: none;
-    position: absolute;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 24px;
-    width: 136px;
-    height: 96px;
-    top: 24px;
-    padding: 12px;
-    border-radius: 8px;
-    background-color: white;
-    box-shadow:  0px 2px 4px 4px #F2F2F2;
-}
-
-#max-amount{
+#max-amount {
     color: #696868;
     font-size: 16px;
 }
 
-.budget-card-drop-down-menu.show{
-    display: flex;
-}
-
-.budget-card-drop-down-menu p{
-    font-size: 14px;
-    cursor: pointer;
-}
-
-.budget-card-header-left-side p {
-    font-size: 24px;
-    font-weight: bold;
-}
-
-.budget-card-header svg{
-    width:24px;
-    height:24px;
-    fill: #B3B3B3;
-}
-
-@media(max-width:1440px){
+@media(max-width:1440px) {
     .budget-card-main {
         padding: 24px;
         gap: 24px;
     }
 }
 
-@media(max-width:1200px){
+@media(max-width:1200px) {
     .budget-card-main {
         gap: 16px;
     }
 }
 
-@media(max-width: 600px){
-    
+@media(max-width: 600px) {
+
     .budget-card-main {
         padding: 16px;
         gap: 12px;
         height: auto;
     }
 
-    .budget-card-drop-down-menu {
-        width: 120px;
-        height: 80px;
-    }
-
-    .budget-card-header-circle {
-        width: 16px;
-        height: 16px;
-    }    
-
-    #max-amount{
+    #max-amount {
         color: #696868;
         font-size: 12px;
     }
-
-    .budget-card-header-left-side p {
-    font-size: 16px;
-}
-
-    .budget-card-header svg{
-    width:16px;
-    height:16px;
-}
-
-    .budget-card-drop-down-menu p{
-    font-size: 12px;
-}
-
-
 }

@@ -1,7 +1,6 @@
 import { ColorTagDropDownItem } from "../models/colored_tag_drop_down_item";
-// TODO: ensure that the item is not clickable if already in use
 
-export const BudgetTagDropdownItem = (
+export const ColorTagDropdownItem = (
   item: ColorTagDropDownItem
 ): JSX.Element => {
   return (

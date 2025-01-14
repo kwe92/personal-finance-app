@@ -1,20 +1,23 @@
 import "./budget_view.css";
+import "../shared/css/view_container.css";
 import { AddNewButton } from "../shared/components/add_new_button";
 import { BudgetSummary } from "./components/budget_summary";
 import { BudgetCard } from "./components/budget_card";
 import { ModalWrapper } from "../shared/components/modal_wrapper";
-import { BudgetViewModel } from "./budget_view_model";
-import { AddNewBudgetCard } from "./components/add_new_budget_card";
+import { BudgetModal } from "./components/budget_modal";
 import { useBudgetViewData } from "./context/budget_view_context";
 import { useBudgetData } from "../shared/context/budget_context";
-
-// TODO: ensure that the budget summary data is using the correct budget data that is shared between the Overview View budget section
+import { ToastService } from "../shared/services/toast_service";
+import { ModalId } from "../../app/constants/constants";
+import { DeleteModal } from "../shared/components/delete_modal";
 export const BudgetView = (): JSX.Element => {
-  const viewModel = BudgetViewModel.getInstance();
+  const modalId = ModalId.budgetModal;
 
-  const { budgets } = useBudgetData();
+  const toastService = ToastService.getInstance();
 
-  const { resetBudgetCardData } = useBudgetViewData();
+  const { budgets, setBudgets } = useBudgetData();
+
+  const { resetBudgetModalData, budgetToDelete } = useBudgetViewData();
 
   const budgetCards = budgets?.map((budget, i) => {
     return <BudgetCard index={i} budget={budget} />;
@@ -22,15 +25,14 @@ export const BudgetView = (): JSX.Element => {
 
   return (
     <>
-      <div className="budget-view-main">
+      <div className="view-container">
         <div className="budget-header-button-section">
           <h1 style={{ color: "#201F24" }}>Budgets</h1>
 
           <AddNewButton
             label="Budget"
             onTap={() => {
-              // ensure the first time toogleAddNewBudgetModal gets called the resetBudgetCardData function is added to the listener
-              viewModel.toogleAddNewBudgetModal(resetBudgetCardData);
+              toastService.toogleModal(modalId, resetBudgetModalData);
             }}
           />
         </div>
@@ -38,9 +40,25 @@ export const BudgetView = (): JSX.Element => {
 
         {budgetCards}
       </div>
-      <ModalWrapper id="add-new-budget-modal">
-        <AddNewBudgetCard />
+      <ModalWrapper id={modalId}>
+        <BudgetModal />
+      </ModalWrapper>
+
+      <ModalWrapper id={ModalId.deleteBudgetModal}>
+        <DeleteModal
+          modalId={ModalId.deleteBudgetModal}
+          isPot={false}
+          title={budgetToDelete.category}
+          handleItemDeletion={handleDeleteBudget}
+        />
       </ModalWrapper>
     </>
   );
+
+  function handleDeleteBudget() {
+    const updatedBudget = budgets?.filter((currentBudgetItem) => {
+      return currentBudgetItem !== budgetToDelete;
+    });
+    setBudgets(updatedBudget!);
+  }
 };

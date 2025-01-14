@@ -1,11 +1,11 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useTransactionData } from "../../shared/context/transaction_context";
 import { Divider } from "../../shared/components/divider";
-import { ColorTagDropDownItem } from "../models/colored_tag_drop_down_item";
-import { BudgetTagDropdownItem } from "../components/budget_tag_drop_down_item";
+import { ColorTagDropDownItem } from "../../shared/models/colored_tag_drop_down_item";
 import { useBudgetData } from "../../shared/context/budget_context";
 import Budget from "../../shared/models/budget";
-import { BudgetViewModel } from "../budget_view_model";
+import { colorTagData } from "../../../app/constants/constants";
+import { ColorTagDropdownItem } from "../../shared/components/color_tag_drop_down_item";
 
 interface BudgetViewContextInterface {
   selectedBudgetCategory: string;
@@ -13,6 +13,7 @@ interface BudgetViewContextInterface {
   selectedColorTag: ColorTagDropDownItem;
   editBudet: boolean;
   budgetToEdit: BudgetData;
+  budgetToDelete: BudgetData;
   categoryContent: JSX.Element[];
   colorTagContent: JSX.Element[];
   budgetColorTags: ColorTagDropDownItem[];
@@ -21,7 +22,8 @@ interface BudgetViewContextInterface {
   setSelectedColorTag: Function;
   setEditBudget: Function;
   setBudgetToEdit: Function;
-  resetBudgetCardData: Function;
+  setBudgetToDelete: Function;
+  resetBudgetModalData: Function;
 }
 
 const defaultColorTag = new ColorTagDropDownItem({
@@ -30,7 +32,7 @@ const defaultColorTag = new ColorTagDropDownItem({
   isInUse: false,
 });
 
-const defaultBudgetToEdit = new Budget({
+const defaultBudget = new Budget({
   category: "",
   maximum: 0,
   theme: "",
@@ -44,7 +46,8 @@ const BudgetViewContext = createContext<BudgetViewContextInterface>({
   maxSpending: "",
   selectedColorTag: defaultColorTag,
   editBudet: false,
-  budgetToEdit: defaultBudgetToEdit,
+  budgetToEdit: defaultBudget,
+  budgetToDelete: defaultBudget,
   categoryContent: [],
   colorTagContent: [],
   budgetColorTags: [],
@@ -53,7 +56,8 @@ const BudgetViewContext = createContext<BudgetViewContextInterface>({
   setSelectedColorTag: () => {},
   setEditBudget: () => {},
   setBudgetToEdit: () => {},
-  resetBudgetCardData: () => {},
+  setBudgetToDelete: () => {},
+  resetBudgetModalData: () => {},
 });
 
 const BudgetViewProvider = ({
@@ -77,8 +81,10 @@ const BudgetViewProvider = ({
 
   const [editBudet, setEditBudget] = useState<boolean>(false);
 
-  const [budgetToEdit, setBudgetToEdit] =
-    useState<BudgetData>(defaultBudgetToEdit);
+  const [budgetToEdit, setBudgetToEdit] = useState<BudgetData>(defaultBudget);
+
+  const [budgetToDelete, setBudgetToDelete] =
+    useState<BudgetData>(defaultBudget);
 
   // transaction categories that are already in use to budget
   const currentBudgetCategories = new Set(
@@ -100,7 +106,7 @@ const BudgetViewProvider = ({
 
   const alreadyUsedColorTags = new Set(budgets?.map((budget) => budget.theme));
 
-  const budgetColorTags = budgetColorTagData.map((json) =>
+  const budgetColorTags = colorTagData.map((json) =>
     ColorTagDropDownItem.fromJSON(json)
   );
 
@@ -116,18 +122,19 @@ const BudgetViewProvider = ({
   useEffect(
     () =>
       // set initial budget card data values
-      resetBudgetCardData(),
+      resetBudgetModalData(),
     []
   );
 
   /**
    * Set budget card data to default values.
    */
-  function resetBudgetCardData() {
+  function resetBudgetModalData() {
     setSelectedBudgetCategory("");
     setSelectedColorTag(defaultColorTag);
     setMaxSpending("");
-    setBudgetToEdit(defaultBudgetToEdit);
+    setBudgetToEdit(defaultBudget);
+    setBudgetToDelete(defaultBudget);
     setEditBudget(false);
   }
 
@@ -160,7 +167,7 @@ const BudgetViewProvider = ({
           if (!colorTag.isInUse) setSelectedColorTag(colorTag);
         }}
       >
-        <BudgetTagDropdownItem
+        <ColorTagDropdownItem
           name={colorTag.name}
           theme={colorTag.theme}
           isInUse={colorTag.isInUse}
@@ -179,6 +186,7 @@ const BudgetViewProvider = ({
         selectedColorTag,
         editBudet,
         budgetToEdit,
+        budgetToDelete,
         categoryContent,
         colorTagContent,
         budgetColorTags,
@@ -187,7 +195,8 @@ const BudgetViewProvider = ({
         setSelectedColorTag,
         setEditBudget,
         setBudgetToEdit,
-        resetBudgetCardData,
+        setBudgetToDelete,
+        resetBudgetModalData,
       }}
     >
       {children}
@@ -198,66 +207,3 @@ const BudgetViewProvider = ({
 const useBudgetViewData = () => useContext(BudgetViewContext);
 
 export { BudgetViewProvider, useBudgetViewData };
-
-const budgetColorTagData = [
-  new Map([
-    ["name", "Green"],
-    ["theme", "#277C78"],
-  ]),
-  new Map([
-    ["name", "Yellow"],
-    ["theme", "#F2CDAC"],
-  ]),
-  new Map([
-    ["name", "Cyan"],
-    ["theme", "#82C9D7"],
-  ]),
-  new Map([
-    ["name", "Navy"],
-    ["theme", "#201F24"],
-  ]),
-  new Map([
-    ["name", "Red"],
-    ["theme", "#C94736"],
-  ]),
-  new Map([
-    ["name", "Purple"],
-    ["theme", "#826CB0"],
-  ]),
-  new Map([
-    ["name", "Turquoise"],
-    ["theme", "#597C7C"],
-  ]),
-  new Map([
-    ["name", "Brown"],
-    ["theme", "#93674F"],
-  ]),
-  new Map([
-    ["name", "Magenta"],
-    ["theme", "#934F6F"],
-  ]),
-  new Map([
-    ["name", "Blue"],
-    ["theme", "#3F82B2"],
-  ]),
-  new Map([
-    ["name", "Navy Grey"],
-    ["theme", "#97A0AC"],
-  ]),
-  new Map([
-    ["name", "Army Green"],
-    ["theme", "#7F9161"],
-  ]),
-  new Map([
-    ["name", "Pink"],
-    ["theme", "#fb928e"],
-  ]),
-  new Map([
-    ["name", "Gold"],
-    ["theme", "#CAB361"],
-  ]),
-  new Map([
-    ["name", "Orange"],
-    ["theme", "#BE6C49"],
-  ]),
-];

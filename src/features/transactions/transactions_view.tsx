@@ -1,4 +1,5 @@
 import "./transactions_view.css";
+import "../shared/css/view_container.css";
 import documentIcon from "../../assets/images/icon-sort-mobile.svg";
 import filterIcon from "../../assets/images/icon-filter-mobile.svg";
 import { SearchBar } from "../shared/components/search_bar";
@@ -9,9 +10,14 @@ import { TransactionListTile } from "./components/transaction_list_tile";
 import { TransactionTable } from "./components/transaction_table";
 import { useTransactionFilterData } from "../shared/context/transaction_filter_context";
 import { useTransactionData } from "../shared/context/transaction_context";
-import { toggleDropDownMenu } from "../shared/utility/toggle_drop_down_menu";
+import { GapH4 } from "../../app/constants/reusable";
+import { ToastService } from "../shared/services/toast_service";
+
+// TODO: business logic could potentially be refactored
 
 const TransactionsView = (): JSX.Element => {
+  const toastService = ToastService.getInstance();
+
   const { windowWidth } = useWindowSize();
 
   const {
@@ -58,7 +64,7 @@ const TransactionsView = (): JSX.Element => {
   }
 
   return (
-    <div className="transaction-view-main">
+    <div className="view-container">
       <h1>Transactions</h1>
 
       <div className="transaction-view-content">
@@ -94,17 +100,22 @@ const TransactionsView = (): JSX.Element => {
           <TransactionTable />
         ) : (
           <div className="transaction-list-tile-wrapper">
+            <GapH4 />
             {transactionListTiles!}
           </div>
         )}
       </div>
     </div>
   );
-};
 
-function toggleMenu(index: number) {
-  toggleDropDownMenu(index, ".dropdown", ".drop-down-menu-content");
-}
+  function toggleMenu(index: number) {
+    toastService.toggleDropDownMenu(
+      index,
+      ".dropdown",
+      ".drop-down-menu-content"
+    );
+  }
+};
 
 //?? could probably be maintained somewhere else, maybe in the view
 const sortByContent = [

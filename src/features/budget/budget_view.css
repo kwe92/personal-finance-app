@@ -1,39 +1,5 @@
-/* !! NOTE: view is styled for screens larger than 1440px at the moment */
-
-
-.budget-view-main {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
-    padding: 32px;
-    gap: 32px;
-}
-
 .budget-header-button-section {
     display: flex;
     align-items: center;
     justify-content: space-between;
-}
-
-@media(max-width: 1440px){
-
-    .budget-view-main {
-        padding: 24px;
-        gap: 24px;
-    }
-}
-
-@media(max-width:1200px){
-    .budget-view-main {
-        gap: 16px;
-        padding: 24px 24px 80px 24px;
-    }
-}
-
-
-@media(max-width:600px){
-    .budget-view-main {
-        padding: 16px 16px 80px 16px;
-    }
 }

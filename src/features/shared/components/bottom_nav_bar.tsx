@@ -3,7 +3,6 @@ import "./css/bottom_nav_bar.css";
 import { useNavigate } from "react-router";
 import useAddSelectableListTileListeners from "../hooks/use_selectable_list_tile_listeners";
 import * as navIcons from "./nav_bar_icons";
-import { GapW6 } from "../../../app/constants/reusable";
 
 const BottomNavBar = (): JSX.Element => {
   useAddSelectableListTileListeners({

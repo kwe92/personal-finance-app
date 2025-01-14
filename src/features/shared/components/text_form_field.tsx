@@ -25,7 +25,16 @@ const TextFormField = ({
 }): JSX.Element => {
   return (
     <div>
-      <label htmlFor={name}>{label}</label>
+      <label
+        htmlFor={name}
+        style={{
+          color: "#696868",
+          fontSize: "12px",
+          fontWeight: "bold",
+        }}
+      >
+        {label}
+      </label>
       <div style={{ height: "4px" }} />
       <div className="text-form-field-container">
         <input
@@ -34,6 +43,7 @@ const TextFormField = ({
           name={name}
           type={type}
           value={value}
+          step="0.01"
           placeholder={placeholder}
           onChange={onChange}
           className="text-form-field"

@@ -1,0 +1,28 @@
+.view-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    padding: 32px;
+    gap: 32px;
+}
+
+@media (max-width: 1440px) {
+    .view-container {
+        padding: 24px;
+        gap: 24px;
+    }
+}
+
+@media(max-width: 1200px) {
+    .view-container {
+        gap: 16px;
+        padding: 24px 24px 80px 24px;
+    }
+}
+
+@media (max-width: 600px) {
+    .view-container {
+        padding: 16px 16px 80px 16px;
+    }
+}
