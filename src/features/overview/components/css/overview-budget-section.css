@@ -1,4 +1,4 @@
-.overview-budget-section{
+.overview-budget-section {
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -8,19 +8,19 @@
     border-radius: 2px;
 }
 
-.overview-budget-section-content{
+.overview-budget-section-content {
     display: flex;
     width: 100%;
     height: 100%;
-    align-items: start;
-    justify-content: space-evenly;
-    /* backgroundColor: lightskyblue; */
+    align-items: center;
+    /* justify-content: space-evenly; */
+    /* background-color: lightskyblue; */
     padding-top: 24px;
     padding-bottom: 24px;
-    /* gap: 12px; */
+    gap: 16px;
 }
 
-.overview-budget-section-dougnut{
+.overview-budget-section-dougnut {
     display: flex;
     justify-content: center;
     width: 68%;
@@ -28,47 +28,47 @@
     /* background-color: orange; */
 }
 
-.overview-budget-section-dougnut-labels{
+.overview-budget-section-dougnut-labels {
     display: flex;
     flex-direction: column;
-    width: 32%;
-    /* height: 244px; */
+    /* width: 32%; */
+    /* height: 226px; */
     gap: 8px;
- /* backgroundColor: "lightcoral", */
+ /* background-color: lightcoral; */
 }
 
 
-@media (max-width:1440px){
+@media (max-width:1440px) {
 
-      .overview-budget-section-dougnut{
+      .overview-budget-section-dougnut {
         height: 226px;
       }
 
     
 }
 
-@media (max-width:1200px){
-    .overview-budget-section-dougnut{
+@media (max-width:1200px) {
+    .overview-budget-section-dougnut {
     width: 100%;
 }
-    .overview-budget-section-dougnut-labels{
+    .overview-budget-section-dougnut-labels {
     width: auto;
 }
 }
 
-@media (max-width:600px){
-    .overview-budget-section{
+@media (max-width:600px) {
+    .overview-budget-section {
         padding: 16px;
-
+        height: auto;
     }
 
-    .overview-budget-section-content{
+    .overview-budget-section-content {
         flex-direction: column;
         padding:0px;
         gap: 12px;
     }
 
-    .overview-budget-section-dougnut-labels{
+    .overview-budget-section-dougnut-labels {
         display: grid;
         width: 100%;
         height: auto;

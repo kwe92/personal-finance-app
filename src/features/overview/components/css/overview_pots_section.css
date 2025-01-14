@@ -27,15 +27,12 @@
     gap: 16px;
 }
 
-.overview-pots-section-grid-container {
-    display: grid;
-    width: 55%;
-    height: 100%;
-    grid-template-columns: auto auto;
-    gap: 8px;
-    overflow:scroll;
-  }
-
+.overview-pots-section-listtile-container {
+  display: flex;
+  flex-direction: column;
+  width: 55%;  
+  gap: 12px;
+}
 
 #overview-pots-total-saved-title{
     color: #696868
@@ -58,7 +55,6 @@
     width: 46px;
     height: 46px;
   }
-
 
 @media (max-width: 1440px){
     #overview-pots-total-saved-content{
@@ -116,11 +112,10 @@
 
   }
 
-  .overview-pots-section-grid-container{
+  .overview-pots-section-listtile-container {
     width: auto;
-    height: auto;
   }
-
+  
   }
 
 @media (max-width: 450px){

@@ -12,21 +12,18 @@ const OverviewPotsSection = (): JSX.Element => {
 
   const { pots } = usePotData();
 
-  var potListTiles: React.ReactNode[] = [];
+  const latestPots = pots.slice(0, 4);
 
-  if (pots !== null) {
-    const latestPots = pots?.slice(0, 4);
-
-    potListTiles = latestPots.map((potData, i) => {
-      return (
-        <ColoredLineListTile
-          lineColor={potData.theme}
-          title={potData.name}
-          content={`$${potData.total.toFixed(2)}`}
-        />
-      );
-    });
-  }
+  const potListTiles = latestPots.map((potData, i) => {
+    return (
+      <ColoredLineListTile
+        style={{ flex: 1 }}
+        lineColor={potData.theme}
+        title={potData.name}
+        content={`$${potData.total.toFixed(2)}`}
+      />
+    );
+  });
 
   return (
     <div className="overview-pots-section-main-container">
@@ -41,15 +38,35 @@ const OverviewPotsSection = (): JSX.Element => {
       <div className="overview-pots-second-section">
         <OverviewPotsTotalSaved />
 
-        <div className="overview-pots-section-grid-container">
-          {potListTiles}
+        {/* TODO: continue refactoring and move inline css to css file for this module */}
+        <div className="overview-pots-section-listtile-container">
+          <div style={{ display: "flex", alignItems: "center" }}>
+            {potListTiles.slice(0, 2)}
+          </div>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            {potListTiles.slice(2, 4)}
+          </div>
         </div>
+
+        {/* TODO: continue refactoring  END */}
+
+        {/* <div className="overview-pots-section-grid-container">
+          {potListTiles}
+        </div> */}
       </div>
     </div>
   );
 };
 
 const OverviewPotsTotalSaved = (): JSX.Element => {
+  const { pots } = usePotData();
+
+  var totalPotsSaved: number;
+
+  totalPotsSaved = pots.reduce((accumulator, pot) => {
+    return (accumulator += pot.total);
+  }, 0);
+
   return (
     <div className="overview-pots-total-saved">
       <img src={iconPots} alt="pots" />
@@ -57,7 +74,9 @@ const OverviewPotsTotalSaved = (): JSX.Element => {
       <div>
         <p id="overview-pots-total-saved-title">Total Saved</p>
 
-        <p id="overview-pots-total-saved-content">$850</p>
+        <p id="overview-pots-total-saved-content">
+          ${totalPotsSaved.toFixed(2)}
+        </p>
       </div>
     </div>
   );

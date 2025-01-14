@@ -2,10 +2,10 @@ import { useContext, useEffect, useState } from "react";
 import { createContext } from "react";
 import appData from "../../../app/data.json";
 
-type SetPotsState = React.Dispatch<React.SetStateAction<PotData[] | null>>;
+type SetPotsState = React.Dispatch<React.SetStateAction<PotData[]>>;
 
 const PotContext = createContext<{
-  pots: PotData[] | null;
+  pots: PotData[];
   isLoading: boolean;
   error: string | null;
   setPots: SetPotsState;
@@ -21,7 +21,7 @@ const PotProvider = ({
 }: {
   children?: React.ReactNode;
 }): JSX.Element => {
-  const [pots, setPots] = useState<PotData[] | null>(null);
+  const [pots, setPots] = useState<PotData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<any>(null);
 
