@@ -1,4 +1,5 @@
 import "../shared/css/view_container.css";
+import "../shared/css/button_header_section.css";
 import "./pots_view.css";
 import { AddNewButton } from "../shared/components/add_new_button";
 import { PotCard } from "./components/pot_card";
@@ -22,15 +23,13 @@ export const PotsView = (): JSX.Element => {
 
   var potCards: React.ReactNode[] = [];
 
-  if (pots !== null) {
-    potCards = pots.map((potData, i) => {
-      return <PotCard pot={potData} />;
-    });
-  }
+  potCards = pots.map((potData, i) => {
+    return <PotCard pot={potData} />;
+  });
 
   return (
     <div className="view-container">
-      <div className="budget-header-button-section">
+      <div className="button-header-section">
         <h1 style={{ color: "#201F24" }}>Pots</h1>
 
         <AddNewButton

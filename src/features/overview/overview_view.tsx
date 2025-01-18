@@ -9,7 +9,6 @@ const OverviewView = (): JSX.Element => {
     <div className="view-container">
       <h1 style={{ color: "#201F24" }}>Overview</h1>
       <OverviewListTileRow />
-
       <div className="overview-view-secondary">
         <OverviewPotsTransactionSection />
         <OverviewBudgetBillsSection />

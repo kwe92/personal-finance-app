@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router";
 import "./css/overview_bills_section.css";
 
 import OverviewSectionHeader from "./overview_section_header";
@@ -5,13 +6,14 @@ import OverviewSectionHeader from "./overview_section_header";
 // NOTE: note styles are for 1440px!!!!! medium laptop
 
 export const OverviewBillsSection = (): JSX.Element => {
+  const navigate = useNavigate();
   return (
     <div className="overview-bills-section-container">
       <OverviewSectionHeader
         title="Recurring Bills"
         buttonLabel="See Details"
         onTap={() => {
-          // TODO: implement
+          navigate("/home/Recurring Bills");
         }}
       />
       <div className="overview-bills-section-content">
