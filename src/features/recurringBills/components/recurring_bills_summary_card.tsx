@@ -1,44 +1,34 @@
 import { Divider } from "../../shared/components/divider";
 import { useTransactionData } from "../../shared/context/transaction_context";
-import { formatDate } from "../../shared/utility/functions";
+import { getDaysDifference } from "../../shared/utility/functions";
 import "./css/recurring_bills_summary_card.css";
-
-//!! TODO: continue styling css file and adding hard-coded logic
 
 export const RecurringBillsSummaryCard = (): JSX.Element => {
   const { transactions } = useTransactionData();
 
-  var paidBills = [];
+  // bill summary values
+
+  var paidBills: TransactionData[] = [];
+
+  var upcomingBills: TransactionData[] = [];
+
+  var dueSoonBills: TransactionData[] = [];
 
   var sumOfBillsPaid = 0;
 
+  var sumOfBillsUpcoming = 0;
+
+  var sumOfBillsDueSoon = 0;
+
   if (transactions !== null) {
-    const recurringBills = transactions!.filter((trnasaction) => {
-      return trnasaction.recurring === true;
-    });
-
-    paidBills = getPaidBills(recurringBills);
-
-    sumOfBillsPaid = Math.abs(
-      paidBills.reduce((accumulator, bill) => {
-        return accumulator + bill.amount;
-      }, 0)
-    );
+    setBillSummaryValues();
   }
 
   return (
     <div className="recurring-bills-summary-card">
       <p>Summary</p>
 
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          width: "100%",
-          height: "100%",
-        }}
-      >
+      <div className="recurring-bills-summary-card-content">
         <div className="recurring-bills-summary-card-tist-tile">
           <p>Paid Bills</p>
           <p>
@@ -49,32 +39,71 @@ export const RecurringBillsSummaryCard = (): JSX.Element => {
         <Divider />
 
         <div className="recurring-bills-summary-card-tist-tile">
-          <p>Paid Bills</p>
+          <p>Upcoming Bills</p>
           <p>
-            {paidBills.length} (${sumOfBillsPaid.toFixed(2)})
+            {upcomingBills.length} (${sumOfBillsUpcoming.toFixed(2)})
           </p>
         </div>
 
         <Divider />
 
         <div className="recurring-bills-summary-card-tist-tile">
-          <p>Paid Bills</p>
+          <p>Due Soon Bills</p>
           <p>
-            {paidBills.length} (${sumOfBillsPaid.toFixed(2)})
+            {dueSoonBills.length} (${sumOfBillsDueSoon.toFixed(2)})
           </p>
         </div>
       </div>
     </div>
   );
 
-  // TODO: refactor into billsByType and use an enum and a switch statement to return the bill type
-  function getPaidBills(recurringBills: TransactionData[]): TransactionData[] {
-    return recurringBills.filter((bill) => {
-      const now = Date.now();
-
-      const billDate = Date.parse(bill.date);
-
-      return billDate < now;
+  function setBillSummaryValues() {
+    const recurringBills = transactions!.filter((trnasaction) => {
+      return trnasaction.recurring === true;
     });
+
+    paidBills = billsByCategory(recurringBills, "paid");
+
+    upcomingBills = billsByCategory(recurringBills, "upcoming");
+
+    dueSoonBills = billsByCategory(recurringBills, "due");
+
+    sumOfBillsPaid = sumOfBills(paidBills);
+
+    sumOfBillsUpcoming = sumOfBills(upcomingBills);
+
+    sumOfBillsDueSoon = sumOfBills(dueSoonBills);
   }
 };
+
+function billsByCategory(
+  recurringBills: TransactionData[],
+  recurringBillCategory: RecurringBillCategory
+): TransactionData[] {
+  return recurringBills.filter((bill) => {
+    const now = new Date(Date.now());
+
+    const billDate = new Date(bill.date);
+
+    const differenceInDays = getDaysDifference(now, billDate);
+
+    switch (recurringBillCategory) {
+      case "paid":
+        return differenceInDays > 0;
+
+      case "upcoming":
+        return differenceInDays < -8;
+
+      case "due":
+        return differenceInDays > -8 && differenceInDays <= 0;
+    }
+  });
+}
+
+function sumOfBills(bills: TransactionData[]): number {
+  return Math.abs(
+    bills.reduce((accumulator, bill) => {
+      return accumulator + bill.amount;
+    }, 0)
+  );
+}
