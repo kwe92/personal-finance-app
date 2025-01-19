@@ -1,3 +1,5 @@
+// Interfaces
+
 interface TransactionData {
     avatar: string;
     name: string;
@@ -31,3 +33,7 @@ interface PotData {
   total: number;
   theme: string;
 }
+
+// Types
+
+type RecurringBillCategory = "paid" | "upcoming" | "due";
