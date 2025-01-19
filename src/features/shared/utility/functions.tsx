@@ -43,4 +43,39 @@ function pctTotal(amount: number, total: number): number {
   return percentOfTotal;
 }
 
-export { isPositive, formatDate, sortByDate, pctTotal };
+/**
+ *
+ * @param date1
+ *
+ * @param date2
+ *
+ * @returns The difference in days between date1 and date2.
+ *
+ * A positive return value indicates date1 will be n number of days ahead of date2.
+ *
+ * A negative return value indicates date2 will be n number of days ahead of date1.
+ *
+ * Note: only the day, month, and year will be considered.
+ *
+ */
+function getDaysDifference(date1: Date, date2: Date) {
+  const oneDay = 24 * 60 * 60 * 1000; // milliseconds in a day
+
+  // ensure dates are in the same format
+  date1 = new Date(date1.toDateString());
+
+  date2 = new Date(date2.toDateString());
+
+  // convert dates to milliseconds
+  const date1Ms = date1.getTime();
+  const date2Ms = date2.getTime();
+
+  // calculate the difference in milliseconds
+  const differenceMs = date1Ms - date2Ms;
+
+  const differenceInDays = Math.round(differenceMs / oneDay);
+
+  return differenceInDays;
+}
+
+export { isPositive, formatDate, sortByDate, pctTotal, getDaysDifference };
