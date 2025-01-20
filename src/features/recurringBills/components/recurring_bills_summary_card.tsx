@@ -1,28 +1,20 @@
 import { Divider } from "../../shared/components/divider";
 import { useTransactionData } from "../../shared/context/transaction_context";
-import { getDaysDifference } from "../../shared/utility/functions";
+import { sumOfBills } from "../../shared/utility/functions";
+import { useRecurringBillsViewData } from "../context/recurring_bills_context";
 import "./css/recurring_bills_summary_card.css";
 
 export const RecurringBillsSummaryCard = (): JSX.Element => {
-  const { transactions } = useTransactionData();
+  const { paidBills, upcomingBills, dueSoonBills } =
+    useRecurringBillsViewData();
 
   // bill summary values
 
-  var paidBills: TransactionData[] = [];
+  const sumOfBillsPaid = sumOfBills(paidBills);
 
-  var upcomingBills: TransactionData[] = [];
+  const sumOfBillsUpcoming = sumOfBills(upcomingBills);
 
-  var dueSoonBills: TransactionData[] = [];
-
-  var sumOfBillsPaid = 0;
-
-  var sumOfBillsUpcoming = 0;
-
-  var sumOfBillsDueSoon = 0;
-
-  if (transactions !== null) {
-    setBillSummaryValues();
-  }
+  const sumOfBillsDueSoon = sumOfBills(dueSoonBills);
 
   return (
     <div className="recurring-bills-summary-card">
@@ -56,54 +48,4 @@ export const RecurringBillsSummaryCard = (): JSX.Element => {
       </div>
     </div>
   );
-
-  function setBillSummaryValues() {
-    const recurringBills = transactions!.filter((trnasaction) => {
-      return trnasaction.recurring === true;
-    });
-
-    paidBills = billsByCategory(recurringBills, "paid");
-
-    upcomingBills = billsByCategory(recurringBills, "upcoming");
-
-    dueSoonBills = billsByCategory(recurringBills, "due");
-
-    sumOfBillsPaid = sumOfBills(paidBills);
-
-    sumOfBillsUpcoming = sumOfBills(upcomingBills);
-
-    sumOfBillsDueSoon = sumOfBills(dueSoonBills);
-  }
 };
-
-function billsByCategory(
-  recurringBills: TransactionData[],
-  recurringBillCategory: RecurringBillCategory
-): TransactionData[] {
-  return recurringBills.filter((bill) => {
-    const now = new Date(Date.now());
-
-    const billDate = new Date(bill.date);
-
-    const differenceInDays = getDaysDifference(now, billDate);
-
-    switch (recurringBillCategory) {
-      case "paid":
-        return differenceInDays > 0;
-
-      case "upcoming":
-        return differenceInDays < -8;
-
-      case "due":
-        return differenceInDays > -8 && differenceInDays <= 0;
-    }
-  });
-}
-
-function sumOfBills(bills: TransactionData[]): number {
-  return Math.abs(
-    bills.reduce((accumulator, bill) => {
-      return accumulator + bill.amount;
-    }, 0)
-  );
-}

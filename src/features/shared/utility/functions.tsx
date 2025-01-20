@@ -78,4 +78,106 @@ function getDaysDifference(date1: Date, date2: Date) {
   return differenceInDays;
 }
 
-export { isPositive, formatDate, sortByDate, pctTotal, getDaysDifference };
+function sortTransactions(
+  filteredTransactions: TransactionData[],
+  sortBy: SortCategory
+) {
+  switch (sortBy) {
+    case "Latest":
+      return filteredTransactions.sort((a, b) => sortByDate(a, b));
+
+    case "Oldest":
+      return filteredTransactions.sort((a, b) => sortByDate(a, b, "asc"));
+
+    case "A to Z":
+      return filteredTransactions?.sort((a, b) => {
+        return a.name.localeCompare(b.name);
+      });
+
+    case "Z to A":
+      return filteredTransactions?.sort((a, b) => {
+        return b.name.localeCompare(a.name);
+      });
+
+    case "Highest":
+      return filteredTransactions?.sort((a, b) => {
+        if (a.amount > b.amount) {
+          return -1;
+        }
+        return 1;
+      });
+
+    case "Lowest":
+      return filteredTransactions?.sort((a, b) => {
+        if (a.amount < b.amount) {
+          return -1;
+        }
+        return 1;
+      });
+
+    default:
+      return filteredTransactions ?? [];
+  }
+}
+
+function getBillCategory(bill: TransactionData): RecurringBillCategory {
+  const now = new Date(Date.now());
+
+  const billDate = new Date(bill.date);
+
+  const differenceInDays = getDaysDifference(now, billDate);
+
+  if (differenceInDays > -8 && differenceInDays <= 0) {
+    return "due";
+  }
+
+  if (differenceInDays < -8) {
+    return "upcoming";
+  }
+
+  return "paid";
+}
+
+function billsByCategory(
+  recurringBills: TransactionData[],
+  recurringBillCategory: RecurringBillCategory
+): TransactionData[] {
+  return recurringBills.filter((bill) => {
+    const now = new Date(Date.now());
+
+    const billDate = new Date(bill.date);
+
+    const differenceInDays = getDaysDifference(now, billDate);
+
+    switch (recurringBillCategory) {
+      case "paid":
+        return differenceInDays > 0;
+
+      case "upcoming":
+        return differenceInDays < -8;
+
+      case "due":
+        return differenceInDays > -8 && differenceInDays <= 0;
+    }
+  });
+}
+
+function sumOfBills(bills: TransactionData[]): number {
+  return Math.abs(
+    bills.reduce((accumulator, bill) => {
+      return accumulator + bill.amount;
+    }, 0)
+  );
+}
+
+export {
+  isPositive,
+  formatDate,
+  sortByDate,
+  pctTotal,
+  getDaysDifference,
+  sortTransactions,
+  getBillCategory,
+  billsByCategory,
+  sumOfBills,
+};
