@@ -173,6 +173,10 @@ td:nth-child(4) {
   .view-container {
     max-height: 100%;
   }
+
+  .transaction-avatar-name {
+    gap: 12px;
+  }
 }
 
 

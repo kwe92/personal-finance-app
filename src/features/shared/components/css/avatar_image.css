@@ -10,3 +10,10 @@
     height: inherit;
     border-radius: inherit;
 }
+
+@media(max-width: 1440px){
+    .avatar-image{
+        width: 32px;
+        height: 32px;
+    }
+}
