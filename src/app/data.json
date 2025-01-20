@@ -177,7 +177,7 @@
             "avatar": "./assets/images/avatars/aqua-flow-utilities.jpg",
             "name": "Aqua Flow Utilities",
             "category": "Bills",
-            "date": "2024-07-30T13:20:14Z",
+            "date": "2025-01-26T13:20:14Z",
             "amount": -100.00,
             "recurring": true
         },
@@ -185,7 +185,7 @@
             "avatar": "./assets/images/avatars/ecofuel-energy.jpg",
             "name": "EcoFuel Energy",
             "category": "Bills",
-            "date": "2024-07-29T11:55:29Z",
+            "date": "2025-01-21T11:55:29Z",
             "amount": -35.00,
             "recurring": true
         },
@@ -241,7 +241,7 @@
             "avatar": "./assets/images/avatars/nimbus-data-storage.jpg",
             "name": "Nimbus Data Storage",
             "category": "Bills",
-            "date": "2024-07-21T10:05:42Z",
+            "date": "2025-02-15T10:05:42Z",
             "amount": -9.99,
             "recurring": true
         },
