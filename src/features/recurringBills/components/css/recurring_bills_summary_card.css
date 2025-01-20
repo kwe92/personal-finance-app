@@ -44,3 +44,10 @@
     padding: 24px;
     }
 }
+
+@media (max-width: 600px) {
+    .recurring-bills-summary-card {
+    padding: 16px;
+    height: 180px;
+    }
+}
