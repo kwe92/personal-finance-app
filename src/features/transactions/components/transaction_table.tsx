@@ -1,5 +1,4 @@
 import * as gaps from "../../../app/constants/reusable";
-import { useTransactionData } from "../../shared/context/transaction_context";
 import useWindowSize from "../../shared/hooks/use_window_size";
 import { useTransactionFilterData } from "../../shared/context/transaction_filter_context";
 import { TansactionRow } from "./transaction_row";

@@ -6,7 +6,7 @@ export const SearchBar = ({
   onChange,
 }: {
   placeholder: string;
-  onChange: React.ChangeEventHandler<HTMLInputElement>;
+  onChange: React.ChangeEventHandler;
 }): JSX.Element => {
   return (
     <div className="search-field-container" role="search">

@@ -1,13 +1,13 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useTransactionData } from "./transaction_context";
 import Transaction from "../models/transaction";
-import { sortByDate } from "../utility/functions";
+import { sortByDate, sortTransactions } from "../utility/functions";
 
 // inital TransactionFilterContext shape and values
 const TransactionFilterContext = createContext<{
   transactionQuery: string;
   filteredTransactions: TransactionData[];
-  sortBy: string;
+  sortBy: SortCategory;
   category: string;
   setSortBy: Function;
   setCategory: Function;
@@ -15,7 +15,7 @@ const TransactionFilterContext = createContext<{
 }>({
   transactionQuery: "",
   filteredTransactions: [],
-  sortBy: "",
+  sortBy: "Latest",
   category: "",
   setSortBy: () => {},
   setCategory: () => {},
@@ -35,15 +35,12 @@ const TransactionFilterProvider = ({
   // mutable observable state
   const [transactionQuery, setTransactionQuery] = useState<string>("");
 
-  const [sortBy, setSortBy] = useState<string>("");
+  const [sortBy, setSortBy] = useState<SortCategory>("Latest");
 
-  const [category, setCategory] = useState<string>("");
-
-  // initally empty filtered transactions
-  var filteredTransactions: TransactionData[] = [];
+  const [category, setCategory] = useState<string>("All Transactions");
 
   // queried and categorized transactions based on the transactionQuery and category mutable variables
-  filteredTransactions =
+  const filteredTransactions =
     queriedCategorizedTransactions(
       transactions ?? [],
       transactionQuery,
@@ -52,12 +49,6 @@ const TransactionFilterProvider = ({
 
   // sorted transactions based on the sortBy value
   sortTransactions(filteredTransactions, sortBy);
-
-  // set the inital values of sortBy and category when view loads or reloads
-  useEffect(() => {
-    setSortBy("Latest");
-    setCategory("All Transactions");
-  }, []);
 
   const handleQueryChange = (e: any) => {
     console.log(e.currentTarget.value);
@@ -82,10 +73,10 @@ const TransactionFilterProvider = ({
 };
 
 function queriedCategorizedTransactions(
-  transactions: Transaction[] | undefined,
+  transactions: Transaction[],
   transactionQuery: string,
   category: string
-): TransactionData[] | undefined {
+): TransactionData[] {
   return transactions?.filter((transaction) => {
     const queriedTranactions = transaction.name
       .toLowerCase()
@@ -100,45 +91,6 @@ function queriedCategorizedTransactions(
       transaction.category.toLowerCase().includes(category.toLowerCase())
     );
   });
-}
-
-function sortTransactions(filteredTransactions: Transaction[], sortBy: string) {
-  switch (sortBy) {
-    case "Latest":
-      return filteredTransactions.sort((a, b) => sortByDate(a, b));
-
-    case "Oldest":
-      return filteredTransactions.sort((a, b) => sortByDate(a, b, "asc"));
-
-    case "A to Z":
-      return filteredTransactions?.sort((a, b) => {
-        return a.name.localeCompare(b.name);
-      });
-
-    case "Z to A":
-      return filteredTransactions?.sort((a, b) => {
-        return b.name.localeCompare(a.name);
-      });
-
-    case "Highest":
-      return filteredTransactions?.sort((a, b) => {
-        if (a.amount > b.amount) {
-          return -1;
-        }
-        return 1;
-      });
-
-    case "Lowest":
-      return filteredTransactions?.sort((a, b) => {
-        if (a.amount < b.amount) {
-          return -1;
-        }
-        return 1;
-      });
-
-    default:
-      return filteredTransactions ?? [];
-  }
 }
 
 const useTransactionFilterData = () => useContext(TransactionFilterContext);

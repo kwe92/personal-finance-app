@@ -12,6 +12,7 @@ import { useTransactionFilterData } from "../shared/context/transaction_filter_c
 import { useTransactionData } from "../shared/context/transaction_context";
 import { GapH4 } from "../../app/constants/reusable";
 import { ToastService } from "../shared/services/toast_service";
+import { sortByCategories } from "../../app/constants/constants";
 
 // TODO: business logic could potentially be refactored
 
@@ -79,7 +80,8 @@ const TransactionsView = (): JSX.Element => {
               id="sort-drop-down-menu"
               title="Sort by"
               label={sortBy}
-              content={sortByContent}
+              sortBy={sortBy}
+              content={sortByCategories}
               icon={documentIcon}
               onMenuTap={() => toggleMenu(0)}
               onItemTap={setSortBy}
@@ -88,6 +90,7 @@ const TransactionsView = (): JSX.Element => {
               id="filter-drop-down-menu"
               title="Category"
               label={category}
+              sortBy="" // TODO: can we figure out a way to not have to pass with value it
               content={categoryList ?? []}
               icon={filterIcon}
               onMenuTap={() => toggleMenu(1)}
@@ -116,15 +119,5 @@ const TransactionsView = (): JSX.Element => {
     );
   }
 };
-
-//?? could probably be maintained somewhere else, maybe in the view
-const sortByContent = [
-  "Latest",
-  "Oldest",
-  "A to Z",
-  "Z to A",
-  "Highest",
-  "Lowest",
-];
 
 export default TransactionsView;
