@@ -102,14 +102,6 @@ td:nth-child(4) {
 
 }
 
-@media (max-width: 1200px) {
-
-  .view-container {
-    max-height: 100vh;
-  }
-}
-
-
 @media (max-width: 800px) {
 
   .transaction-filters-container {
@@ -170,19 +162,8 @@ td:nth-child(4) {
     height: 72vh;
   }
 
-  .view-container {
-    max-height: 100%;
-  }
-
   .transaction-avatar-name {
     gap: 12px;
-  }
-}
-
-
-@media(max-height:800px) {
-  .view-container {
-    max-height: 100%;
   }
 }
 
