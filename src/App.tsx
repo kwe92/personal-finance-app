@@ -16,6 +16,8 @@ import { BudgetView } from "./features/budget/budget_view";
 import { BudgetViewProvider } from "./features/budget/context/budget_view_context";
 import { PotsView } from "./features/pots/pots_view";
 import { PotViewProvider } from "./features/pots/context/pot_view_context";
+import { RecurringBillsView } from "./features/recurringBills/recurring_bills_view";
+import { RecurringBillsViewProvider } from "./features/recurringBills/context/recurring_bills_context";
 
 function App() {
   const location = useLocation();
@@ -101,6 +103,15 @@ function App() {
                 <PotViewProvider>
                   {Transitions.fade(<PotsView />)}
                 </PotViewProvider>
+              }
+            />
+
+            <Route
+              path="/home/Recurring Bills"
+              element={
+                <RecurringBillsViewProvider>
+                  {Transitions.fade(<RecurringBillsView />)}
+                </RecurringBillsViewProvider>
               }
             />
           </Routes>

@@ -8,6 +8,7 @@ import { useTransactionFilterData } from "../context/transaction_filter_context"
 
 export const DropDownMenu = ({
   id,
+  sortBy,
   title,
   label,
   content,
@@ -16,6 +17,7 @@ export const DropDownMenu = ({
   onItemTap,
 }: {
   id?: string;
+  sortBy: string;
   title: string;
   label: string;
   content: string[];
@@ -23,7 +25,7 @@ export const DropDownMenu = ({
   onMenuTap?: React.MouseEventHandler;
   onItemTap?: Function;
 }): JSX.Element => {
-  const { category, sortBy } = useTransactionFilterData();
+  const { category } = useTransactionFilterData();
 
   const { windowWidth } = useWindowSize();
 

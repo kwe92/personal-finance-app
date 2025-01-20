@@ -1,0 +1,53 @@
+.recurring-bills-summary-card {
+    display: flex;
+    flex-direction: column;
+    width:100%;
+    height: 210px;
+    padding: 24px;
+    background-color: white;
+    border-radius: 12px;
+    gap: 16px;
+}
+
+.recurring-bills-summary-card-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    height: 100%;
+}
+
+.recurring-bills-summary-card-tist-tile {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.recurring-bills-summary-card-tist-tile p:nth-child(1){
+    font-size: 12px;
+    font-weight: normal;
+    color: #696868;
+}
+.recurring-bills-summary-card-tist-tile p:nth-child(2){
+    font-size: 12px;
+    font-weight: bold;
+}
+
+
+.recurring-bills-summary-card p:nth-child(1){
+    font-size: 16;
+    font-weight: bold;
+}
+
+@media (max-width: 1200px) {
+    .recurring-bills-summary-card {
+    padding: 24px;
+    }
+}
+
+@media (max-width: 600px) {
+    .recurring-bills-summary-card {
+    padding: 16px;
+    height: 180px;
+    }
+}

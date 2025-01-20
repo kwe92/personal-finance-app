@@ -1,0 +1,54 @@
+.total-bills-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    height:210px;
+    background-color: #201F24;
+    border-radius: 12px;
+    padding: 24px;
+}
+
+.total-bills-card-content {
+    display: flex;
+    flex-direction: column;
+    width:100%;
+    gap: 12px;
+    /* background-color: orange; */
+}
+
+/* card icon */
+.total-bills-card img {
+    width: 32px;
+    height: 32px;
+}
+
+/* total bill text */
+.total-bills-card-content p:nth-child(1) {
+    color: white;
+    font-size: 14px;
+}
+
+/* amount text */
+.total-bills-card-content p:nth-child(2) {
+    color: white;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+@media (max-width: 600px) {
+    .total-bills-card {
+    padding: 16px;
+    /* TODO: height may need to be lower */
+    height:180px; 
+    }
+
+    .total-bills-card-content p:nth-child(2) {
+        font-size: 24px;
+    }
+
+    .total-bills-card img {
+        width: 24px;
+        height: 24px;
+    }
+}
