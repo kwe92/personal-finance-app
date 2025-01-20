@@ -22,6 +22,15 @@ class ModalClassName {
   static potCardDropDown = ".pot-card-dropdown";
 }
 
+const sortByCategories: SortCategory[] = [
+  "Latest",
+  "Oldest",
+  "A to Z",
+  "Z to A",
+  "Highest",
+  "Lowest",
+];
+
 const colorTagData = [
   new Map([
     ["name", "Green"],
@@ -85,4 +94,4 @@ const colorTagData = [
   ]),
 ];
 
-export { colorTagData, ModalId, ModalClassName };
+export { colorTagData, ModalId, ModalClassName, sortByCategories };
