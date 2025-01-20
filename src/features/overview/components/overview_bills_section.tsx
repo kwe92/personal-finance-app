@@ -2,11 +2,36 @@ import { useNavigate } from "react-router";
 import "./css/overview_bills_section.css";
 
 import OverviewSectionHeader from "./overview_section_header";
+import { useTransactionData } from "../../shared/context/transaction_context";
+import { billsByCategory, sumOfBills } from "../../shared/utility/functions";
 
 // NOTE: note styles are for 1440px!!!!! medium laptop
 
 export const OverviewBillsSection = (): JSX.Element => {
   const navigate = useNavigate();
+
+  const { transactions } = useTransactionData();
+
+  var recurringBills: TransactionData[] = [];
+
+  if (transactions !== null) {
+    recurringBills = transactions!.filter((trnasaction) => {
+      return trnasaction.recurring === true;
+    });
+  }
+
+  const paidBills = billsByCategory(recurringBills, "paid");
+
+  const upcomingBills = billsByCategory(recurringBills, "upcoming");
+
+  const dueSoonBills = billsByCategory(recurringBills, "due");
+
+  const sumOfBillsPaid = sumOfBills(paidBills);
+
+  const sumOfBillsUpcoming = sumOfBills(upcomingBills);
+
+  const sumOfBillsDueSoon = sumOfBills(dueSoonBills);
+
   return (
     <div className="overview-bills-section-container">
       <OverviewSectionHeader
@@ -19,19 +44,19 @@ export const OverviewBillsSection = (): JSX.Element => {
       <div className="overview-bills-section-content">
         <OverviewRecurringBillsListTile
           name="Paid Bills"
-          amount={190}
+          amount={sumOfBillsPaid}
           tabColor="#277C78"
         />
 
         <OverviewRecurringBillsListTile
           name="Total Upcoming"
-          amount={194.98}
+          amount={sumOfBillsUpcoming}
           tabColor="#F2CDAC"
         />
 
         <OverviewRecurringBillsListTile
           name="Due Soon"
-          amount={59.98}
+          amount={sumOfBillsDueSoon}
           tabColor="#82C9D7"
         />
       </div>
