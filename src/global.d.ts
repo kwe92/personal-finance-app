@@ -37,3 +37,11 @@ interface PotData {
 // Types
 
 type RecurringBillCategory = "paid" | "upcoming" | "due";
+
+type SortCategory =
+  | "Latest"
+  | "Oldest"
+  | "A to Z"
+  | "Z to A"
+  | "Highest"
+  | "Lowest";
