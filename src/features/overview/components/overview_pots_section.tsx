@@ -3,9 +3,9 @@ import "./css/overview_view_shared_styles.css";
 
 import iconPots from "../../../assets/images/icon-pot.svg";
 import OverviewSectionHeader from "./overview_section_header";
-import { ColoredLineListTile } from "./colored_line_list_tile";
 import { useNavigate } from "react-router";
 import { usePotData } from "../../shared/context/pot_context";
+import { ColoredLineListTile } from "../../shared/components/colored_line_list_tile";
 
 const OverviewPotsSection = (): JSX.Element => {
   const navigate = useNavigate();
@@ -14,16 +14,7 @@ const OverviewPotsSection = (): JSX.Element => {
 
   const latestPots = pots.slice(0, 4);
 
-  const potListTiles = latestPots.map((potData, i) => {
-    return (
-      <ColoredLineListTile
-        style={{ flex: 1 }}
-        lineColor={potData.theme}
-        title={potData.name}
-        content={`$${potData.total.toFixed(2)}`}
-      />
-    );
-  });
+  const potListTiles = latestPotsListTiles(latestPots);
 
   return (
     <div className="overview-pots-section-main-container">
@@ -38,7 +29,6 @@ const OverviewPotsSection = (): JSX.Element => {
       <div className="overview-pots-second-section">
         <OverviewPotsTotalSaved />
 
-        {/* TODO: continue refactoring and move inline css to css file for this module */}
         <div className="overview-pots-section-listtile-container">
           <div style={{ display: "flex", alignItems: "center" }}>
             {potListTiles.slice(0, 2)}
@@ -47,16 +37,23 @@ const OverviewPotsSection = (): JSX.Element => {
             {potListTiles.slice(2, 4)}
           </div>
         </div>
-
-        {/* TODO: continue refactoring  END */}
-
-        {/* <div className="overview-pots-section-grid-container">
-          {potListTiles}
-        </div> */}
       </div>
     </div>
   );
 };
+
+function latestPotsListTiles(latestPots: PotData[]) {
+  return latestPots.map((potData, i) => {
+    return (
+      <ColoredLineListTile
+        style={{ flex: 1 }}
+        lineColor={potData.theme}
+        title={potData.name}
+        content={`$${potData.total.toFixed(2)}`}
+      />
+    );
+  });
+}
 
 const OverviewPotsTotalSaved = (): JSX.Element => {
   const { pots } = usePotData();

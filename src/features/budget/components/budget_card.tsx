@@ -1,7 +1,5 @@
 import "./css/budget_card.css";
 
-// TODO: move to feature/shared folder along with associated css
-import { ColoredLineListTile } from "../../overview/components/colored_line_list_tile";
 import { LatestSpendingCard } from "./latest_spending_card";
 import { ProgressBar } from "./progress_bar";
 import { useTransactionData } from "../../shared/context/transaction_context";
@@ -10,6 +8,8 @@ import { useBudgetViewData } from "../context/budget_view_context";
 import { CardHeader } from "../../shared/components/card_header";
 import { ToastService } from "../../shared/services/toast_service";
 import { ModalClassName, ModalId } from "../../../app/constants/constants";
+import { ColoredLineListTile } from "../../shared/components/colored_line_list_tile";
+import { BudgetViewModel } from "../budget_view_model";
 
 export const BudgetCard = ({
   index, // required to ensure that only the menu to the associated card will be opened
@@ -21,6 +21,7 @@ export const BudgetCard = ({
   const { transactions } = useTransactionData();
 
   const toastService = ToastService.getInstance();
+
   const {
     resetBudgetModalData,
     setBudgetToEdit,
@@ -32,9 +33,15 @@ export const BudgetCard = ({
     setBudgetToDelete,
   } = useBudgetViewData();
 
-  const filteredTransactionsByCategory = getSortedFilteredTransactions();
+  const filteredTransactionsByCategory =
+    BudgetViewModel.filterTransactionByBudgetCategory(
+      transactions ?? [],
+      budget
+    );
 
-  const expendedAmount = getBudgetCategoryExpendedAmount();
+  const expendedAmount = BudgetViewModel.budgetCategoryExpendedAmount(
+    filteredTransactionsByCategory
+  );
 
   return (
     <div className="budget-card-main">
@@ -75,30 +82,6 @@ export const BudgetCard = ({
       <LatestSpendingCard transactions={filteredTransactionsByCategory ?? []} />
     </div>
   );
-
-  function getBudgetCategoryExpendedAmount(): number {
-    const filteredTransactions = getSortedFilteredTransactions();
-
-    let expendedAmount = 0;
-
-    for (var i = 0; i < filteredTransactions!.length; i++) {
-      expendedAmount += filteredTransactions?.at(i)?.amount ?? 0;
-    }
-
-    return expendedAmount;
-  }
-
-  function getSortedFilteredTransactions(): TransactionData[] {
-    const filteredTransactionsByCategory = transactions?.filter(
-      (transaction) => {
-        return transaction.category === budget?.category;
-      }
-    );
-
-    filteredTransactionsByCategory?.sort((a, b) => sortByDate(a, b));
-
-    return filteredTransactionsByCategory ?? [];
-  }
 
   function handleEditBudgetCard() {
     setEditBudget(true);

@@ -1,0 +1,14 @@
+.recurring-bills-row-date {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    color: #277C78;
+    gap: 8px;
+}
+
+.recurring-bills-row-amount {
+    text-align: end;
+    font-size: 14px;
+    font-weight: bold;
+}

@@ -3,7 +3,7 @@ import { createContext, useContext } from "react";
 import { useBudgetData } from "./budget_context";
 
 interface DoughnutChartContextData {
-  // TODO: figure out why the chartJS.ChartOptions and chartJS.ChartData do not work with react-chartjs-2 Doughnut options and data properties
+  //!! TODO: figure out why the chartJS.ChartOptions and chartJS.ChartData do not work with react-chartjs-2 Doughnut options and data properties
   doughnutChartOptions: any;
   doughnutChartData: any;
   //   doughnutChartOptions: chartJS.ChartOptions;
@@ -22,7 +22,6 @@ const DoughnutChartProvider = ({
 }: {
   children: React.ReactNode;
 }): JSX.Element => {
-  // TODO: ensure that you are only calling the backend once, maybe a repository pattern
   const { budgets } = useBudgetData();
 
   const doughnutChartOptions = {

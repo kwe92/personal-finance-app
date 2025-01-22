@@ -34,38 +34,37 @@
   gap: 12px;
 }
 
-#overview-pots-total-saved-title{
+#overview-pots-total-saved-title {
     color: #696868
   }
 
-#overview-pots-total-saved-content{
+#overview-pots-total-saved-content {
     font-size: 32px;
     font-weight: bold;
     color: #201F24;
   }
 
-.overview-pots-total-saved div{
+.overview-pots-total-saved div {
     display: flex;
     flex-direction: column;
     gap:16px;
 
   }
 
-.overview-pots-total-saved img{
+.overview-pots-total-saved img {
     width: 46px;
     height: 46px;
   }
 
-@media (max-width: 1440px){
-    #overview-pots-total-saved-content{
+@media (max-width: 1440px) {
+    #overview-pots-total-saved-content {
       font-size: 1.75rem;
     }
   }
 
+@media (max-width: 1200px) {
 
-@media (max-width: 1200px){
-
-  .overview-pots-second-section{
+  .overview-pots-second-section {
     gap: 16px;
   }
 
@@ -75,42 +74,40 @@
 
   }
 
-  .overview-pots-section-main-container{
+  .overview-pots-section-main-container {
     padding:16px;
 
   }
 
-  #overview-pots-total-saved-content{
+  #overview-pots-total-saved-content {
     font-size: 24px;
   }
-
 }
 
-@media (max-width: 800px){
-  #overview-pots-total-saved-content{
+@media (max-width: 800px) {
+  #overview-pots-total-saved-content {
     font-size: 16px;
   }
 
-  #overview-pots-total-saved-title{
+  #overview-pots-total-saved-title {
     font-size: 12px;
   }
 
   .overview-pots-section-main-container {
     height: auto;
   }
-
 }
 
-@media (max-width: 600px){
-  .overview-pots-second-section{
+@media (max-width: 600px) {
+  .overview-pots-second-section {
     flex-direction: column;
   }
-  .overview-pots-total-saved{
+  .overview-pots-total-saved {
     width: auto;
     height: auto;
   }
 
-  .overview-pots-total-saved img{
+  .overview-pots-total-saved img {
     width: 32px;
     height: 32px;
 
@@ -119,20 +116,18 @@
   .overview-pots-section-listtile-container {
     width: auto;
   }
-  
-  }
+}
 
-@media (max-width: 450px){
-  .overview-pots-total-saved{
+@media (max-width: 450px) {
+  .overview-pots-total-saved {
       gap: 4px;
   }
   
-  .overview-pots-section-main-container{
+  .overview-pots-section-main-container {
     gap: 8px;
   }
   
-  .overview-pots-total-saved div{
+  .overview-pots-total-saved div {
     gap: 8px;
   }
-
 }

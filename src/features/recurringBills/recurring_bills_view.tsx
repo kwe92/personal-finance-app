@@ -14,32 +14,23 @@ import { RecurringBillsListTile } from "./components/recurring_bills_list_tile";
 import { getBillCategory } from "../shared/utility/functions";
 import { Divider } from "../shared/components/divider";
 
-// TODO: move all the css you need from transactions to the shared css folder and ensure that you rename the classes
+//!! TODO: move all the css you need from transactions to the shared css folder and ensure that you rename the classes
 
 export const RecurringBillsView = (): JSX.Element => {
   const toastService = ToastService.getInstance();
 
   const { windowWidth } = useWindowSize();
 
-  const { sortBy, setSortBy, setQueryString } = useRecurringBillsViewData();
+  const { sortBy, setSortBy, setQueryString, queryString } =
+    useRecurringBillsViewData();
 
   const { recurringBills } = useRecurringBillsViewData();
 
-  const recurringBillsListTiles = recurringBills.map((bill, i) => {
-    return (
-      <>
-        <RecurringBillsListTile
-          bill={bill}
-          billStatus={getBillCategory(bill)}
-        />
-        {recurringBills.length - 1 !== i ? (
-          <Divider style={{ marginTop: "12px" }} />
-        ) : (
-          <></>
-        )}
-      </>
-    );
-  });
+  var recurringBillsListTiles: JSX.Element[] = [];
+
+  if (windowWidth < 650) {
+    recurringBillsListTiles = createRecurringBillsListTiles(recurringBills);
+  }
 
   return (
     <div className="view-container">
@@ -57,7 +48,11 @@ export const RecurringBillsView = (): JSX.Element => {
         <div className="recurring-bills-view-second-section">
           <div className="recurring-bills-view-second-section-content">
             <div className="transaction-filters-container">
-              <SearchBar placeholder="Search bills" onChange={setQueryString} />
+              <SearchBar
+                value={queryString}
+                placeholder="Search bills"
+                onChange={setQueryString}
+              />
 
               <div className="transaction-drop-down-container">
                 <DropDownMenu
@@ -86,10 +81,28 @@ export const RecurringBillsView = (): JSX.Element => {
               </div>
             )}
           </div>
-
-          {/* TODO: add right side content */}
         </div>
       </div>
     </div>
   );
 };
+
+function createRecurringBillsListTiles(recurringBills: TransactionData[]) {
+  const listTiles = recurringBills.map((bill, i) => {
+    return (
+      <>
+        <RecurringBillsListTile
+          bill={bill}
+          billStatus={getBillCategory(bill)}
+        />
+        {recurringBills.length - 1 !== i ? (
+          <Divider style={{ marginTop: "12px" }} />
+        ) : (
+          <></>
+        )}
+      </>
+    );
+  });
+
+  return listTiles;
+}

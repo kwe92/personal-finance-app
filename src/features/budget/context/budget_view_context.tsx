@@ -71,7 +71,6 @@ const BudgetViewProvider = ({
   const [selectedBudgetCategory, setSelectedBudgetCategory] =
     useState<string>("");
 
-  // TODO: maxSpending should be a number and not a string, may require parsing somewhere in the code
   const [maxSpending, setMaxSpending] = useState<string>("");
 
   const [selectedColorTag, setSelectedColorTag] =
@@ -144,7 +143,6 @@ const BudgetViewProvider = ({
         key={i}
         style={{
           padding: "12px 0 12px 0",
-          // TODO: figure out why selectedBudgetCategory === category messes up hovering over li element
           fontWeight: selectedBudgetCategory === category ? "bold" : "normal",
           cursor: "pointer",
         }}

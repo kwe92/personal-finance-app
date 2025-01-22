@@ -1,4 +1,4 @@
-import "./css/overview_view_shared_styles.css";
+import "./css/colored_line_list_tile.css";
 
 export const ColoredLineListTile = (props: {
   lineColor: string;

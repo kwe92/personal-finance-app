@@ -5,8 +5,6 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router";
 
-// TODO: go through the app and ensure spacing everywhere makes sense
-
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );

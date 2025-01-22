@@ -10,11 +10,9 @@ import { TransactionListTile } from "./components/transaction_list_tile";
 import { TransactionTable } from "./components/transaction_table";
 import { useTransactionFilterData } from "../shared/context/transaction_filter_context";
 import { useTransactionData } from "../shared/context/transaction_context";
-import { GapH4 } from "../../app/constants/reusable";
+import { GapH8 } from "../../app/constants/reusable";
 import { ToastService } from "../shared/services/toast_service";
 import { sortByCategories } from "../../app/constants/constants";
-
-// TODO: business logic could potentially be refactored
 
 const TransactionsView = (): JSX.Element => {
   const toastService = ToastService.getInstance();
@@ -37,31 +35,16 @@ const TransactionsView = (): JSX.Element => {
     new Set(transactions?.map((transaction) => transaction.category))
   );
 
+  // ensure "All Transactions" is the first selectable category
   categoryList.unshift("All Transactions");
 
   categoryList.sort((a, b) => a.localeCompare(b));
 
-  var transactionListTiles: JSX.Element[];
+  var transactionListTiles: JSX.Element[] = [];
 
-  if (filteredTransactions !== null) {
-    transactionListTiles = filteredTransactions
-      .filter((transaction) => {
-        return transaction.name
-          .toLowerCase()
-          .includes(transactionQuery.toLowerCase());
-      })
-      .map((transaction, i) => {
-        return (
-          <>
-            <TransactionListTile transaction={transaction} />
-            {filteredTransactions.length - 1 !== i ? (
-              <Divider style={{ margin: "16px 0 16px 0" }} />
-            ) : (
-              <></>
-            )}
-          </>
-        );
-      });
+  // only create transactionListTiles if you will need them
+  if (windowWidth < 650) {
+    transactionListTiles = createListTiles();
   }
 
   return (
@@ -71,6 +54,7 @@ const TransactionsView = (): JSX.Element => {
       <div className="transaction-view-content">
         <div className="transaction-filters-container">
           <SearchBar
+            value={transactionQuery}
             placeholder="Search transactions"
             onChange={setTransactionQuery}
           />
@@ -90,7 +74,6 @@ const TransactionsView = (): JSX.Element => {
               id="filter-drop-down-menu"
               title="Category"
               label={category}
-              sortBy="" // TODO: can we figure out a way to not have to pass with value it
               content={categoryList ?? []}
               icon={filterIcon}
               onMenuTap={() => toggleMenu(1)}
@@ -103,13 +86,30 @@ const TransactionsView = (): JSX.Element => {
           <TransactionTable />
         ) : (
           <div className="transaction-list-tile-wrapper">
-            <GapH4 />
+            <GapH8 />
             {transactionListTiles!}
           </div>
         )}
       </div>
     </div>
   );
+
+  function createListTiles(): JSX.Element[] {
+    const listTiles = filteredTransactions.map((transaction, i) => {
+      return (
+        <>
+          <TransactionListTile transaction={transaction} />
+          {filteredTransactions.length - 1 !== i ? (
+            <Divider style={{ margin: "16px 0 16px 0" }} />
+          ) : (
+            <></>
+          )}
+        </>
+      );
+    });
+
+    return listTiles;
+  }
 
   function toggleMenu(index: number) {
     toastService.toggleDropDownMenu(

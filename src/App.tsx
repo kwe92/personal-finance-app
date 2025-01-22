@@ -56,7 +56,7 @@ function App() {
             <Route
               path="/"
               element={
-                false // TODO: should useContext and some sort of AuthProvider to track the users login state
+                false //!! TODO: should useContext and some sort of AuthProvider to track the users login state
                   ? Transitions.fade(<OverviewView />)
                   : Transitions.fade(<Navigate to="/auth/login" />)
               }
