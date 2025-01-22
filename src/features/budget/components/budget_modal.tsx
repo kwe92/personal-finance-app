@@ -5,7 +5,10 @@ import TextFormField from "../../shared/components/text_form_field";
 import { useBudgetViewData } from "../context/budget_view_context";
 import { useBudgetData } from "../../shared/context/budget_context";
 import Budget from "../../shared/models/budget";
-import { formatDate } from "../../shared/utility/functions";
+import {
+  formatDate,
+  parseStringToCurrency,
+} from "../../shared/utility/functions";
 import { CloseModalButton } from "../../shared/components/close_modal_button";
 import { ModalDropDownMenu } from "../../shared/components/modal_drop_down_menu";
 import { ToastService } from "../../shared/services/toast_service";
@@ -67,7 +70,7 @@ export const BudgetModal = (): JSX.Element => {
           value={maxSpending}
           placeholder="$ e.g. 200.00"
           onChange={(event) => {
-            setMaxSpending(event.target.value);
+            setMaxSpending(parseStringToCurrency(event.target.value));
           }}
         />
 
@@ -103,7 +106,7 @@ export const BudgetModal = (): JSX.Element => {
       return [
         new Budget({
           category: selectedBudgetCategory,
-          maximum: Number.parseFloat(maxSpending),
+          maximum: Number(maxSpending),
           theme: selectedColorTag!.theme,
           createdAt: formatDate(new Date().toLocaleString()),
           updatedAt: formatDate(new Date().toLocaleString()),
@@ -118,7 +121,7 @@ export const BudgetModal = (): JSX.Element => {
 
     const updatedBudget = new Budget({
       category: selectedBudgetCategory,
-      maximum: Number.parseFloat(maxSpending),
+      maximum: Number(maxSpending),
       theme: selectedColorTag!.theme,
       createdAt: budgetToEdit.createdAt,
       updatedAt: formatDate(new Date().toLocaleString()),
@@ -131,9 +134,7 @@ export const BudgetModal = (): JSX.Element => {
   }
 
   function isValidFormData() {
-    return (
-      Number.parseFloat(maxSpending) > 0 && selectedBudgetCategory.length > 0
-    );
+    return Number(maxSpending) > 0 && selectedBudgetCategory.length > 0;
   }
 
   function closeModal() {

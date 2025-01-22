@@ -4,7 +4,11 @@ import { CloseModalButton } from "../../shared/components/close_modal_button";
 import TextFormField from "../../shared/components/text_form_field";
 import { ToastService } from "../../shared/services/toast_service";
 import { usePotViewData } from "../context/pot_view_context";
-import { pctTotal } from "../../shared/utility/functions";
+import {
+  currencyArithmetic,
+  parseStringToCurrency,
+  pctTotal,
+} from "../../shared/utility/functions";
 import MainButton from "../../shared/components/main_button";
 import { usePotData } from "../../shared/context/pot_context";
 import { Pot } from "../../shared/models/pot";
@@ -88,7 +92,7 @@ export const PotsTransactionModal = (): JSX.Element => {
                 : `${percentSaved > basePercentSaved ? "#277C78" : ""}`,
             }}
           >
-            {percentSaved.toFixed(2)}%
+            {percentSaved.toFixed(3)}%
           </p>
 
           <p>Target of ${potToEdit.target.toFixed(2)}</p>
@@ -102,24 +106,27 @@ export const PotsTransactionModal = (): JSX.Element => {
   );
 
   function handleAmountChange(event: React.ChangeEvent<HTMLInputElement>) {
-    //!! TODO: continue working on as the numbers are rounding up, if the user types 25.799 it will be rounded up to 25.80 implicitly
-    const amount = Number(Number(event.target.value).toFixed(2));
+    const amount = Number(parseStringToCurrency(event.target.value));
 
     if (isWithdrawal) {
       if (amount <= potToEdit.total) {
         setTransactionAmount(amount.toString());
 
-        const updatedAmount = potToEdit.total - amount;
+        const updatedAmount = currencyArithmetic(
+          potToEdit.total,
+          amount,
+          "sub"
+        );
 
-        setTotal(updatedAmount.toFixed(2));
+        setTotal(updatedAmount.toString());
       }
     } else {
-      const updatedAmount = potToEdit.total + amount;
+      const updatedAmount = currencyArithmetic(potToEdit.total, amount, "add");
 
       if (updatedAmount <= potToEdit.target) {
-        setTransactionAmount(event.target.value);
+        setTransactionAmount(amount.toString());
 
-        setTotal(updatedAmount.toFixed(2));
+        setTotal(updatedAmount.toString());
       }
     }
   }
@@ -130,7 +137,7 @@ export const PotsTransactionModal = (): JSX.Element => {
     const updatedPot = new Pot({
       name: potToEdit.name,
       target: potToEdit.target,
-      total: Number(Number(total).toFixed(2)),
+      total: Number(total),
       theme: potToEdit.theme,
       // may need to add created and updated dates in the future
       // createdAt: potToEdit.createdAt,
@@ -151,18 +158,3 @@ export const PotsTransactionModal = (): JSX.Element => {
     resetPotModalData();
   }
 };
-
-//!! TODO: continue working of parsing logic
-function parseStringToFixed2(str: string) {
-  const parsedString = str.split(".");
-
-  if (parsedString.length > 1) {
-    const remainder = parsedString[1];
-
-    const r = remainder.substring(0, 2);
-
-    return parsedString[0] + "." + r;
-  }
-
-  return parsedString[0];
-}
