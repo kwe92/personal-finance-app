@@ -79,3 +79,6 @@ type NumberDaysOfMonth =
 | "30"
 | "31";
 
+type ArithmeticOperator = "add" | "addition" | "sub" | "subtraction";
+
+
