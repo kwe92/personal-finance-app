@@ -16,11 +16,8 @@ export const LatestSpendingListTile = ({
     </div>
     {/* amount date section */}
     <div id="right-side">
-      {/* TODO: ensure positive and negative amounts are the right color */}
-      <p style={{}}>${transaction.amount.toFixed(2)}</p>
-      <p style={{ fontWeight: "normal", color: "#696868" }}>
-        {formatDate(transaction?.date ?? "", "dd MMM yyyy")}
-      </p>
+      <p>${transaction.amount.toFixed(2)}</p>
+      <p>{formatDate(transaction?.date ?? "", "dd MMM yyyy")}</p>
     </div>
   </div>
 );
