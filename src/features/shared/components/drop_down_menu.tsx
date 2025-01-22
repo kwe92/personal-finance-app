@@ -4,7 +4,7 @@ import { Divider } from "./divider";
 import useWindowSize from "../hooks/use_window_size";
 import { useTransactionFilterData } from "../context/transaction_filter_context";
 
-// TODO: fix the spacing of category drop down menu items as they are bunched together for some reason
+//!! TODO: fix the spacing of category drop down menu items as they are bunched together for some reason
 
 export const DropDownMenu = ({
   id,
@@ -17,7 +17,7 @@ export const DropDownMenu = ({
   onItemTap,
 }: {
   id?: string;
-  sortBy: string;
+  sortBy?: string;
   title: string;
   label: string;
   content: string[];

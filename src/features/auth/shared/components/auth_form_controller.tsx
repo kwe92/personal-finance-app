@@ -1,6 +1,5 @@
 import { MouseEventHandler, useState } from "react";
 
-// TODO: should be a context to use amanage state
 export class AuthFormController {
   //   showPassword: string;
   //   name: string;

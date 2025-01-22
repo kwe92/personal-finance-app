@@ -13,7 +13,7 @@ export class ColorTagDropDownItem {
     return new ColorTagDropDownItem({
       name: json.get("name"),
       theme: json.get("theme"),
-      isInUse: false, // TODO: check if a color is used with current budget cards
+      isInUse: false,
     });
   }
 }

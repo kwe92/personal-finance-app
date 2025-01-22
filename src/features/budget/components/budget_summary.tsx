@@ -6,10 +6,6 @@ import { useBudgetData } from "../../shared/context/budget_context";
 import { useTransactionData } from "../../shared/context/transaction_context";
 import { useDoughnutChartData } from "../../shared/context/doughnut_chart_context";
 
-// TODO: ensure that you are using real data
-
-// TODO: remove duplicated code
-
 export const BudgetSummary = (): JSX.Element => {
   const { budgets } = useBudgetData();
 
@@ -17,7 +13,6 @@ export const BudgetSummary = (): JSX.Element => {
 
   const { doughnutChartOptions, doughnutChartData } = useDoughnutChartData();
 
-  // TODO: move to budget context
   const maximumBudgetAmount = budgets?.reduce(
     (accumulator, budget) => {
       return (accumulator += budget.maximum);
@@ -25,36 +20,33 @@ export const BudgetSummary = (): JSX.Element => {
     0 // initial accumulator value
   );
 
-  // TODO: move to budget context
   const budgetCategories = budgets?.map((budget) => budget.category);
 
-  // TODO: move to budget context
   const filteredTransactionsByCategory = transactions?.filter((transaction) =>
     budgetCategories?.includes(transaction.category)
   );
 
-  // TODO: move to budget context
   let expendedAmount = 0;
 
-  // TODO: move to budget context
-  // ensure that data is not undefined before iterating over
+  // ensure data is not undefined before iterating over
   if (filteredTransactionsByCategory) {
     filteredTransactionsByCategory.forEach(
       (transaction) => (expendedAmount += transaction.amount)
     );
   }
-  // TODO: move to budget context
   const latestBudgets = budgets?.slice(0, 4);
 
   // get the latest budgets at most 4
   const spendingSummaryListTiles = latestBudgets
     ?.slice(0, 4)
-    .map((budget, i) => (
-      <>
-        <SpendingSummaryListTile budget={budget} />
-        {latestBudgets.length - 1 !== i ? <Divider /> : <></>}
-      </>
-    ));
+    .map((budget, i) => {
+      return (
+        <>
+          <SpendingSummaryListTile budget={budget} />
+          {latestBudgets.length - 1 !== i ? <Divider /> : <></>}
+        </>
+      );
+    });
 
   return (
     // Budget summary main container

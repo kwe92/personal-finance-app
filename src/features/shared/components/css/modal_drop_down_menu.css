@@ -43,7 +43,7 @@
 }
 
 .modal-drop-down-menu-content li:hover {
-    font-weight: bold;
+    font-weight: bold !important;
 }
 
 .modal-drop-down-menu-selector:hover {

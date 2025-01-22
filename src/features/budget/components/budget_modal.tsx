@@ -11,7 +11,7 @@ import { ModalDropDownMenu } from "../../shared/components/modal_drop_down_menu"
 import { ToastService } from "../../shared/services/toast_service";
 import { ModalId } from "../../../app/constants/constants";
 
-// TODO: added validators to the card as to give the user a visual representation of any errors made while filling out the card
+//!! TODO: added validators to the card as to give the user a visual representation of any errors made while filling out the card
 
 export const BudgetModal = (): JSX.Element => {
   const toastService = ToastService.getInstance();
@@ -141,7 +141,6 @@ export const BudgetModal = (): JSX.Element => {
     resetBudgetModalData();
   }
 
-  //!! TODO: clean up modal code
   function toggleMenu(index: number) {
     toastService.toggleDropDownMenu(
       index,
