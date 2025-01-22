@@ -23,6 +23,11 @@
     font-weight: bold;
 }
 
+.latest-spending-list-tile-main #right-side p:nth-child(2){
+    font-weight: normal;
+    color: #696868;
+}
+
 @media(max-width:600px){
     .latest-spending-list-tile-main #left-side {
     font-size: 12px;

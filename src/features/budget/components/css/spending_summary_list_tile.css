@@ -18,6 +18,18 @@
     gap: 4px;
 }
 
+/* list tile vertical line */
+.spending-summary-left-section div:nth-child(1) {
+    width: 4px;
+    height: 100%;
+    border-radius: 12px;
+}
+
+.spending-summary-left-section p:nth-child(2) {
+    font-size: 14px;
+    color: #696868;
+}
+
 .spending-summary-right-section p:nth-child(1) {
     font-size: 16px;
     font-weight: bold;
