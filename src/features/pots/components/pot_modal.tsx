@@ -85,7 +85,6 @@ export const PotModal = () => {
     </div>
   );
 
-  // !! TODO: may need to be refactored
   function toggleMenu(index: number) {
     toastService.toggleDropDownMenu(
       index,
@@ -136,7 +135,7 @@ export const PotModal = () => {
           ? potToEdit.total
           : 0,
       theme: selectedColorTag.theme,
-      // TODO: may need to add created and updated dates in the future
+      // may need to add created and updated dates in the future
       // createdAt: potToEdit.createdAt,
       // updatedAt: formatDate(new Date().toLocaleString()),
     });

@@ -8,8 +8,7 @@ import { pctTotal } from "../../shared/utility/functions";
 import MainButton from "../../shared/components/main_button";
 import { usePotData } from "../../shared/context/pot_context";
 import { Pot } from "../../shared/models/pot";
-
-// TODO: abstract business logic away into functions
+import { PotTransactionProgressBar } from "./pot_transaction_progress_bar";
 
 export const PotsTransactionModal = (): JSX.Element => {
   const { pots, setPots } = usePotData();
@@ -31,6 +30,7 @@ export const PotsTransactionModal = (): JSX.Element => {
   useEffect(() => {
     setTotal(potToEdit.total.toFixed(2));
   }, [potToEdit]);
+
   return (
     <div className="base-modal">
       <div className="base-modal-header">
@@ -60,32 +60,11 @@ export const PotsTransactionModal = (): JSX.Element => {
 
       <TextFormField
         name="widthdrawAmount"
-        label="Amount to Withdraw"
+        label={`Amount to ${isWithdrawal ? "Withdraw" : "Add"}`}
         type="number"
         value={transactionAmount}
         placeholder="$ e.g. 200.00"
-        onChange={(event) => {
-          // TODO: continue working on as the numbers are rounding up, if the user types 25.799 it will be rounded up to 25.80 implicitly
-          const amount = Number(Number(event.target.value).toFixed(2));
-
-          if (isWithdrawal) {
-            if (amount <= potToEdit.total) {
-              setTransactionAmount(amount.toString());
-
-              const updatedAmount = potToEdit.total - amount;
-
-              setTotal(updatedAmount.toFixed(2));
-            }
-          } else {
-            const updatedAmount = potToEdit.total + amount;
-
-            if (updatedAmount <= potToEdit.target) {
-              setTransactionAmount(event.target.value);
-
-              setTotal(updatedAmount.toFixed(2));
-            }
-          }
-        }}
+        onChange={handleAmountChange}
       />
 
       <div className="pot-card-progress">
@@ -122,6 +101,29 @@ export const PotsTransactionModal = (): JSX.Element => {
     </div>
   );
 
+  function handleAmountChange(event: React.ChangeEvent<HTMLInputElement>) {
+    //!! TODO: continue working on as the numbers are rounding up, if the user types 25.799 it will be rounded up to 25.80 implicitly
+    const amount = Number(Number(event.target.value).toFixed(2));
+
+    if (isWithdrawal) {
+      if (amount <= potToEdit.total) {
+        setTransactionAmount(amount.toString());
+
+        const updatedAmount = potToEdit.total - amount;
+
+        setTotal(updatedAmount.toFixed(2));
+      }
+    } else {
+      const updatedAmount = potToEdit.total + amount;
+
+      if (updatedAmount <= potToEdit.target) {
+        setTransactionAmount(event.target.value);
+
+        setTotal(updatedAmount.toFixed(2));
+      }
+    }
+  }
+
   function handleEditPot() {
     const indexOfItemToUpdate = pots!.indexOf(potToEdit);
 
@@ -130,7 +132,7 @@ export const PotsTransactionModal = (): JSX.Element => {
       target: potToEdit.target,
       total: Number(Number(total).toFixed(2)),
       theme: potToEdit.theme,
-      // TODO: may need to add created and updated dates in the future
+      // may need to add created and updated dates in the future
       // createdAt: potToEdit.createdAt,
       // updatedAt: formatDate(new Date().toLocaleString()),
     });
@@ -150,54 +152,7 @@ export const PotsTransactionModal = (): JSX.Element => {
   }
 };
 
-const PotTransactionProgressBar = ({
-  basePercentSaved,
-  totalSaved,
-  target,
-  color,
-}: {
-  basePercentSaved: number;
-  totalSaved: number;
-  target: number;
-  color: string;
-}): JSX.Element => {
-  const { isWithdrawal } = usePotViewData();
-  const percentSaved = pctTotal(totalSaved, target);
-  return (
-    <div
-      style={{
-        position: "relative",
-        width: "100%",
-        height: "12px",
-        backgroundColor: "#F8F4F0",
-        borderRadius: "8px",
-      }}
-    >
-      <div
-        style={{
-          position: "absolute",
-          width: isWithdrawal ? `${percentSaved}%` : `${basePercentSaved}%`,
-          height: "inherit",
-          backgroundColor: percentSaved < 100 ? color : "lightgreen",
-          borderRadius: "8px",
-          zIndex: 2,
-        }}
-      />
-
-      <div
-        style={{
-          position: "absolute",
-          width: isWithdrawal ? `${basePercentSaved}%` : `${percentSaved}%`,
-          height: "inherit",
-          backgroundColor: isWithdrawal ? "#C94736" : "#277C78",
-          borderRadius: "8px",
-        }}
-      />
-    </div>
-  );
-};
-
-// TODO: continue working of parsing logic
+//!! TODO: continue working of parsing logic
 function parseStringToFixed2(str: string) {
   const parsedString = str.split(".");
 
