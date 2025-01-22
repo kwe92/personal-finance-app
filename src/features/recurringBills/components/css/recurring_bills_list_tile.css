@@ -1,0 +1,27 @@
+.recurring-bills-list-tile-main {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.recurring-bills-list-tile-date-amount-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+
+  .recurring-bills-list-tile-date {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    font-size: 12px;
+    color: #277C78;
+    gap: 8px;
+  }
+
+  .recurring-bills-list-tile-amount {
+    text-align: end;
+    font-size: 12px;
+    font-weight: bold;
+  }
