@@ -2,7 +2,6 @@ import { createContext, useContext, useState } from "react";
 import { useTransactionData } from "../../shared/context/transaction_context";
 import {
   billsByCategory,
-  getDaysDifference,
   sortTransactions,
 } from "../../shared/utility/functions";
 

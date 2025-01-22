@@ -1,8 +1,6 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router";
 
-// TODO: will need to be updated when adding other routes with spaces | maybe parse element.textContent
-
 const useAddSelectableListTileListeners = ({
   selector,
   selectedStyle,
@@ -17,11 +15,11 @@ const useAddSelectableListTileListeners = ({
     const elements = document.querySelectorAll(selector);
 
     elements.forEach((element) => {
-      if (
-        location.pathname
-          .toLowerCase()
-          .includes(element.textContent!.toLowerCase())
-      ) {
+      const splitPath = location.pathname.split("%20");
+
+      const path = splitPath.join(" ");
+
+      if (path.toLowerCase().includes(element.textContent!.toLowerCase())) {
         element.classList.add(selectedStyle);
       } else {
         element.classList.remove(selectedStyle);
