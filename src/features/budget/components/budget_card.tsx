@@ -3,7 +3,7 @@ import "./css/budget_card.css";
 import { LatestSpendingCard } from "./latest_spending_card";
 import { ProgressBar } from "./progress_bar";
 import { useTransactionData } from "../../shared/context/transaction_context";
-import { sortByDate } from "../../shared/utility/functions";
+import { currencyArithmetic } from "../../shared/utility/functions";
 import { useBudgetViewData } from "../context/budget_view_context";
 import { CardHeader } from "../../shared/components/card_header";
 import { ToastService } from "../../shared/services/toast_service";
@@ -74,7 +74,11 @@ export const BudgetCard = ({
         <ColoredLineListTile
           lineColor="#F8F4F0"
           title="Remaining"
-          content={`$${(budget.maximum - Math.abs(expendedAmount)).toFixed(2)}`}
+          content={`$${currencyArithmetic(
+            budget.maximum,
+            Math.abs(expendedAmount),
+            "sub"
+          ).toFixed(2)}`}
           style={{ flex: 1 }}
         />
       </div>

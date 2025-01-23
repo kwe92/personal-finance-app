@@ -6,6 +6,7 @@ import { useBudgetData } from "../../shared/context/budget_context";
 import Budget from "../../shared/models/budget";
 import { colorTagData } from "../../../app/constants/constants";
 import { ColorTagDropdownItem } from "../../shared/components/color_tag_drop_down_item";
+import { useFormErrorData } from "../../shared/context/form_error_context";
 
 interface BudgetViewContextInterface {
   selectedBudgetCategory: string;
@@ -85,6 +86,8 @@ const BudgetViewProvider = ({
   const [budgetToDelete, setBudgetToDelete] =
     useState<BudgetData>(defaultBudget);
 
+  const { resetBudgetModalErrors } = useFormErrorData();
+
   // transaction categories that are already in use to budget
   const currentBudgetCategories = new Set(
     budgets?.map((budget) => budget.category)
@@ -135,6 +138,7 @@ const BudgetViewProvider = ({
     setBudgetToEdit(defaultBudget);
     setBudgetToDelete(defaultBudget);
     setEditBudget(false);
+    resetBudgetModalErrors();
   }
 
   const categoryContent = filteredCategoryList?.map((category, i) => (

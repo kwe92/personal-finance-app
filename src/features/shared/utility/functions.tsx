@@ -38,7 +38,9 @@ function sortByDate(
 }
 
 function pctTotal(amount: number, total: number): number {
-  const percentOfTotal = (amount / total) * 100;
+  // const percentOfTotal = (amount / total) * 100;
+
+  const percentOfTotal = ((amount * 100) / (total * 100)) * 100;
 
   return percentOfTotal;
 }
@@ -170,6 +172,67 @@ function sumOfBills(bills: TransactionData[]): number {
   );
 }
 
+/**
+ *
+ * @param value1 the first operand.
+ * @param value2 the second operand.
+ * @param operator the addition or subtraction operator.
+ * @returns value1 plus or minus value2 depending on the chosen arithmatic operator.
+ */
+
+function currencyArithmetic(
+  value1: number,
+  value2: number,
+  operator: ArithmeticOperator
+): number {
+  const shiftedValue1 = value1 * 100;
+
+  const shiftedValue2 = value2 * 100;
+
+  var result: number;
+
+  switch (operator) {
+    case "add":
+      result = (shiftedValue1 + shiftedValue2) / 100;
+      return result;
+
+    case "addition":
+      result = (shiftedValue1 + shiftedValue2) / 100;
+      return result;
+
+    case "sub":
+      result = (shiftedValue1 - shiftedValue2) / 100;
+      return result;
+
+    case "subtraction":
+      result = (shiftedValue1 - shiftedValue2) / 100;
+      return result;
+
+    default:
+      return -1;
+  }
+}
+
+function parseStringToCurrency(amount: string) {
+  const splitAmount = amount.split(".");
+
+  const dollars = splitAmount[0];
+
+  var cents: string = "";
+
+  var total: string = "";
+
+  if (splitAmount.length > 1) {
+    cents = splitAmount[1]?.substring(0, 2);
+
+    total = `${dollars}.${cents}`;
+  } else {
+    total = dollars;
+  }
+
+  return total;
+}
+
 export {
   isPositive,
   formatDate,
@@ -180,4 +243,6 @@ export {
   getBillCategory,
   billsByCategory,
   sumOfBills,
+  currencyArithmetic,
+  parseStringToCurrency,
 };

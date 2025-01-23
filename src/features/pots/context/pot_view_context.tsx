@@ -5,6 +5,7 @@ import { usePotData } from "../../shared/context/pot_context";
 import { colorTagData } from "../../../app/constants/constants";
 import { ColorTagDropdownItem } from "../../shared/components/color_tag_drop_down_item";
 import { Divider } from "../../shared/components/divider";
+import { useFormErrorData } from "../../shared/context/form_error_context";
 
 interface potViewContextInterface {
   potName: string;
@@ -92,6 +93,8 @@ const PotViewProvider = ({
 
   const { pots } = usePotData();
 
+  const { resetPotModalErrors } = useFormErrorData();
+
   const alreadyUsedColorTags = new Set(pots?.map((pot) => pot.theme));
 
   const potColorTags = colorTagData.map((json) =>
@@ -168,6 +171,7 @@ const PotViewProvider = ({
     setTarget("");
     setTotal("");
     setTransactionAmount("");
+    resetPotModalErrors();
   }
 };
 

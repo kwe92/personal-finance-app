@@ -4,11 +4,17 @@ import { CloseModalButton } from "../../shared/components/close_modal_button";
 import TextFormField from "../../shared/components/text_form_field";
 import { ToastService } from "../../shared/services/toast_service";
 import { usePotViewData } from "../context/pot_view_context";
-import { pctTotal } from "../../shared/utility/functions";
+import {
+  currencyArithmetic,
+  parseStringToCurrency,
+  pctTotal,
+} from "../../shared/utility/functions";
 import MainButton from "../../shared/components/main_button";
 import { usePotData } from "../../shared/context/pot_context";
 import { Pot } from "../../shared/models/pot";
 import { PotTransactionProgressBar } from "./pot_transaction_progress_bar";
+import { useFormErrorData } from "../../shared/context/form_error_context";
+import { AmountErrorText } from "./amount_error_text";
 
 export const PotsTransactionModal = (): JSX.Element => {
   const { pots, setPots } = usePotData();
@@ -22,6 +28,15 @@ export const PotsTransactionModal = (): JSX.Element => {
     isWithdrawal,
     resetPotModalData,
   } = usePotViewData();
+
+  const {
+    potTransactionModalAmountError,
+    potTransactionModalWithdrawalError,
+    potTransactionModalDepositError,
+    setPotTransactionModalAmountError,
+    setPotTransactionModalWithdrawalError,
+    setPotTransactionModalDepositError,
+  } = useFormErrorData();
 
   const percentSaved = pctTotal(Number(total), potToEdit.target);
 
@@ -58,14 +73,24 @@ export const PotsTransactionModal = (): JSX.Element => {
         <p>${Number(total).toFixed(2)}</p>
       </div>
 
-      <TextFormField
-        name="widthdrawAmount"
-        label={`Amount to ${isWithdrawal ? "Withdraw" : "Add"}`}
-        type="number"
-        value={transactionAmount}
-        placeholder="$ e.g. 200.00"
-        onChange={handleAmountChange}
-      />
+      <div>
+        <TextFormField
+          name="widthdrawAmount"
+          label={`Amount to ${isWithdrawal ? "Withdraw" : "Add"}`}
+          type="number"
+          value={transactionAmount}
+          placeholder="$ e.g. 200.00"
+          onChange={(event) => {
+            if (potTransactionModalAmountError) {
+              setPotTransactionModalAmountError(false);
+            }
+
+            handleAmountChange(event);
+          }}
+        />
+
+        <AmountErrorText />
+      </div>
 
       <div className="pot-card-progress">
         <PotTransactionProgressBar
@@ -88,7 +113,7 @@ export const PotsTransactionModal = (): JSX.Element => {
                 : `${percentSaved > basePercentSaved ? "#277C78" : ""}`,
             }}
           >
-            {percentSaved.toFixed(2)}%
+            {percentSaved.toFixed(3)}%
           </p>
 
           <p>Target of ${potToEdit.target.toFixed(2)}</p>
@@ -101,36 +126,55 @@ export const PotsTransactionModal = (): JSX.Element => {
     </div>
   );
 
+  //!! TODO: try to clean the branching logic, you wrote this and its hard for you to read.
   function handleAmountChange(event: React.ChangeEvent<HTMLInputElement>) {
-    //!! TODO: continue working on as the numbers are rounding up, if the user types 25.799 it will be rounded up to 25.80 implicitly
-    const amount = Number(Number(event.target.value).toFixed(2));
+    const amount = Number(parseStringToCurrency(event.target.value));
 
     if (isWithdrawal) {
-      if (amount <= potToEdit.total) {
+      if (amount > potToEdit.total) {
+        setPotTransactionModalWithdrawalError(true);
+      } else {
+        if (potTransactionModalWithdrawalError) {
+          setPotTransactionModalWithdrawalError(false);
+        }
+
         setTransactionAmount(amount.toString());
 
-        const updatedAmount = potToEdit.total - amount;
+        const updatedAmount = currencyArithmetic(
+          potToEdit.total,
+          amount,
+          "sub"
+        );
 
-        setTotal(updatedAmount.toFixed(2));
+        setTotal(updatedAmount.toString());
       }
+      return;
+    }
+    const updatedAmount = currencyArithmetic(potToEdit.total, amount, "add");
+
+    if (updatedAmount <= potToEdit.target) {
+      if (potTransactionModalDepositError) {
+        setPotTransactionModalDepositError(false);
+      }
+      setTransactionAmount(amount.toString());
+
+      setTotal(updatedAmount.toString());
     } else {
-      const updatedAmount = potToEdit.total + amount;
-
-      if (updatedAmount <= potToEdit.target) {
-        setTransactionAmount(event.target.value);
-
-        setTotal(updatedAmount.toFixed(2));
-      }
+      setPotTransactionModalDepositError(true);
     }
   }
 
   function handleEditPot() {
+    if (Number(transactionAmount) <= 0) {
+      setPotTransactionModalAmountError(true);
+      return;
+    }
     const indexOfItemToUpdate = pots!.indexOf(potToEdit);
 
     const updatedPot = new Pot({
       name: potToEdit.name,
       target: potToEdit.target,
-      total: Number(Number(total).toFixed(2)),
+      total: Number(total),
       theme: potToEdit.theme,
       // may need to add created and updated dates in the future
       // createdAt: potToEdit.createdAt,
@@ -151,18 +195,3 @@ export const PotsTransactionModal = (): JSX.Element => {
     resetPotModalData();
   }
 };
-
-//!! TODO: continue working of parsing logic
-function parseStringToFixed2(str: string) {
-  const parsedString = str.split(".");
-
-  if (parsedString.length > 1) {
-    const remainder = parsedString[1];
-
-    const r = remainder.substring(0, 2);
-
-    return parsedString[0] + "." + r;
-  }
-
-  return parsedString[0];
-}

@@ -13,7 +13,7 @@ export const PotCard = ({ pot }: { pot: PotData }): JSX.Element => {
 
   const percentSaved = pctTotal(pot.total, pot.target);
 
-  const { pots, setPots } = usePotData();
+  const { pots } = usePotData();
 
   const {
     setEditPot,
@@ -66,7 +66,7 @@ export const PotCard = ({ pot }: { pot: PotData }): JSX.Element => {
               alignItems: "center",
             }}
           >
-            <p>{percentSaved.toFixed(2)}%</p>
+            <p>{percentSaved.toFixed(3)}%</p>
 
             <p>Target of ${pot.target.toFixed(2)}</p>
           </div>

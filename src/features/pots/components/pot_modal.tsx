@@ -3,6 +3,7 @@ import { CloseModalButton } from "../../shared/components/close_modal_button";
 import MainButton from "../../shared/components/main_button";
 import { ModalDropDownMenu } from "../../shared/components/modal_drop_down_menu";
 import TextFormField from "../../shared/components/text_form_field";
+import { useFormErrorData } from "../../shared/context/form_error_context";
 import { usePotData } from "../../shared/context/pot_context";
 import { Pot } from "../../shared/models/pot";
 import { ToastService } from "../../shared/services/toast_service";
@@ -24,6 +25,16 @@ export const PotModal = () => {
     resetPotModalData,
     editPot,
   } = usePotViewData();
+
+  const {
+    potModalNameError,
+    potModalTargetError,
+    potModalColorTagError,
+    setPotModalNameError,
+    setPotModalTargetError,
+    setPotModalColorTagError,
+  } = useFormErrorData();
+
   return (
     <div className="base-modal">
       <div className="base-modal-header">
@@ -47,36 +58,62 @@ export const PotModal = () => {
           e.preventDefault(); // prevent form default behavior, add custom frontend form handling
         }}
       >
-        <TextFormField
-          name="potName"
-          label="Pot Name"
-          type="text"
-          value={potName}
-          placeholder="$ e.g. Rainy Days"
-          onChange={(event) => {
-            setPotName(event.target.value);
-          }}
-        />
+        <div>
+          <TextFormField
+            name="potName"
+            label="Pot Name"
+            type="text"
+            value={potName}
+            placeholder="$ e.g. Rainy Days"
+            onChange={(event) => {
+              setPotModalNameError(false);
+              setPotName(event.target.value);
+            }}
+          />
+          {potModalNameError ? (
+            <p className="error-text">Name field can not be empty.</p>
+          ) : (
+            <></>
+          )}
+        </div>
 
-        <TextFormField
-          name="target"
-          label="Target"
-          type="number"
-          value={target}
-          placeholder="$ e.g. 200.00"
-          onChange={(event) => {
-            setTarget(event.target.value);
-          }}
-        />
+        <div>
+          <TextFormField
+            name="target"
+            label="Target"
+            type="number"
+            value={target}
+            placeholder="$ e.g. 200.00"
+            onChange={(event) => {
+              setPotModalTargetError(false);
+              setTarget(event.target.value);
+            }}
+          />
+          {potModalTargetError ? (
+            <p className="error-text">Set a valid target value.</p>
+          ) : (
+            <></>
+          )}
+        </div>
 
-        <ModalDropDownMenu
-          isColorTag={true}
-          label="Color Tag"
-          tagColor={selectedColorTag.theme}
-          initialValue={selectedColorTag.name}
-          content={colorTagContent}
-          toggleMenu={() => toggleMenu(0)}
-        />
+        <div>
+          <ModalDropDownMenu
+            isColorTag={true}
+            label="Color Tag"
+            tagColor={selectedColorTag.theme}
+            initialValue={selectedColorTag.name}
+            content={colorTagContent}
+            toggleMenu={() => {
+              setPotModalColorTagError(false);
+              toggleMenu(0);
+            }}
+          />
+          {potModalColorTagError ? (
+            <p className="error-text">Select a color tag.</p>
+          ) : (
+            <></>
+          )}
+        </div>
       </form>
 
       <MainButton onTap={handlePotModalSubmit}>
@@ -105,9 +142,22 @@ export const PotModal = () => {
   }
 
   function isValidFormData(): boolean {
-    return Boolean(
-      potName && Number(target) > 0 && selectedColorTag.theme !== "transparent"
-    );
+    const validName = potName.length > 0;
+
+    const validPotTarget = Number(target) > 0;
+
+    const validColorTag = selectedColorTag.theme !== "transparent";
+
+    if (!validName) {
+      setPotModalNameError(true);
+    }
+    if (!validPotTarget) {
+      setPotModalTargetError(true);
+    }
+    if (!validColorTag) {
+      setPotModalColorTagError(true);
+    }
+    return validName && validPotTarget && validColorTag;
   }
 
   function handleAddNewPot() {

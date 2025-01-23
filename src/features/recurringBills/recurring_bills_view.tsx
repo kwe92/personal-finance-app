@@ -14,8 +14,6 @@ import { RecurringBillsListTile } from "./components/recurring_bills_list_tile";
 import { getBillCategory } from "../shared/utility/functions";
 import { Divider } from "../shared/components/divider";
 
-//!! TODO: move all the css you need from transactions to the shared css folder and ensure that you rename the classes
-
 export const RecurringBillsView = (): JSX.Element => {
   const toastService = ToastService.getInstance();
 
