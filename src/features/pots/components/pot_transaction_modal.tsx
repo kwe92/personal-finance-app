@@ -13,6 +13,8 @@ import MainButton from "../../shared/components/main_button";
 import { usePotData } from "../../shared/context/pot_context";
 import { Pot } from "../../shared/models/pot";
 import { PotTransactionProgressBar } from "./pot_transaction_progress_bar";
+import { useFormErrorData } from "../../shared/context/form_error_context";
+import { AmountErrorText } from "./amount_error_text";
 
 export const PotsTransactionModal = (): JSX.Element => {
   const { pots, setPots } = usePotData();
@@ -26,6 +28,15 @@ export const PotsTransactionModal = (): JSX.Element => {
     isWithdrawal,
     resetPotModalData,
   } = usePotViewData();
+
+  const {
+    potTransactionModalAmountError,
+    potTransactionModalWithdrawalError,
+    potTransactionModalDepositError,
+    setPotTransactionModalAmountError,
+    setPotTransactionModalWithdrawalError,
+    setPotTransactionModalDepositError,
+  } = useFormErrorData();
 
   const percentSaved = pctTotal(Number(total), potToEdit.target);
 
@@ -62,14 +73,24 @@ export const PotsTransactionModal = (): JSX.Element => {
         <p>${Number(total).toFixed(2)}</p>
       </div>
 
-      <TextFormField
-        name="widthdrawAmount"
-        label={`Amount to ${isWithdrawal ? "Withdraw" : "Add"}`}
-        type="number"
-        value={transactionAmount}
-        placeholder="$ e.g. 200.00"
-        onChange={handleAmountChange}
-      />
+      <div>
+        <TextFormField
+          name="widthdrawAmount"
+          label={`Amount to ${isWithdrawal ? "Withdraw" : "Add"}`}
+          type="number"
+          value={transactionAmount}
+          placeholder="$ e.g. 200.00"
+          onChange={(event) => {
+            if (potTransactionModalAmountError) {
+              setPotTransactionModalAmountError(false);
+            }
+
+            handleAmountChange(event);
+          }}
+        />
+
+        <AmountErrorText />
+      </div>
 
       <div className="pot-card-progress">
         <PotTransactionProgressBar
@@ -105,11 +126,18 @@ export const PotsTransactionModal = (): JSX.Element => {
     </div>
   );
 
+  //!! TODO: try to clean the branching logic, you wrote this and its hard for you to read.
   function handleAmountChange(event: React.ChangeEvent<HTMLInputElement>) {
     const amount = Number(parseStringToCurrency(event.target.value));
 
     if (isWithdrawal) {
-      if (amount <= potToEdit.total) {
+      if (amount > potToEdit.total) {
+        setPotTransactionModalWithdrawalError(true);
+      } else {
+        if (potTransactionModalWithdrawalError) {
+          setPotTransactionModalWithdrawalError(false);
+        }
+
         setTransactionAmount(amount.toString());
 
         const updatedAmount = currencyArithmetic(
@@ -120,18 +148,27 @@ export const PotsTransactionModal = (): JSX.Element => {
 
         setTotal(updatedAmount.toString());
       }
-    } else {
-      const updatedAmount = currencyArithmetic(potToEdit.total, amount, "add");
+      return;
+    }
+    const updatedAmount = currencyArithmetic(potToEdit.total, amount, "add");
 
-      if (updatedAmount <= potToEdit.target) {
-        setTransactionAmount(amount.toString());
-
-        setTotal(updatedAmount.toString());
+    if (updatedAmount <= potToEdit.target) {
+      if (potTransactionModalDepositError) {
+        setPotTransactionModalDepositError(false);
       }
+      setTransactionAmount(amount.toString());
+
+      setTotal(updatedAmount.toString());
+    } else {
+      setPotTransactionModalDepositError(true);
     }
   }
 
   function handleEditPot() {
+    if (Number(transactionAmount) <= 0) {
+      setPotTransactionModalAmountError(true);
+      return;
+    }
     const indexOfItemToUpdate = pots!.indexOf(potToEdit);
 
     const updatedPot = new Pot({
