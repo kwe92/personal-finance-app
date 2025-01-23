@@ -1,5 +1,6 @@
 import { BudgetProvider } from "./budget_context";
 import { DoughnutChartProvider } from "./doughnut_chart_context";
+import { FormErrorProvider } from "./form_error_context";
 import { PotProvider } from "./pot_context";
 import { TransactionProvider } from "./transaction_context";
 import { TransactionFilterProvider } from "./transaction_filter_context";
@@ -11,15 +12,17 @@ export const MultiContextProvider = ({
 }) => {
   return (
     <>
-      <TransactionProvider>
-        <TransactionFilterProvider>
-          <BudgetProvider>
-            <PotProvider>
-              <DoughnutChartProvider>{children}</DoughnutChartProvider>
-            </PotProvider>
-          </BudgetProvider>
-        </TransactionFilterProvider>
-      </TransactionProvider>
+      <FormErrorProvider>
+        <TransactionProvider>
+          <TransactionFilterProvider>
+            <BudgetProvider>
+              <PotProvider>
+                <DoughnutChartProvider>{children}</DoughnutChartProvider>
+              </PotProvider>
+            </BudgetProvider>
+          </TransactionFilterProvider>
+        </TransactionProvider>
+      </FormErrorProvider>
     </>
   );
 };
