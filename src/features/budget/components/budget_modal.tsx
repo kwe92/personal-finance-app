@@ -13,8 +13,7 @@ import { CloseModalButton } from "../../shared/components/close_modal_button";
 import { ModalDropDownMenu } from "../../shared/components/modal_drop_down_menu";
 import { ToastService } from "../../shared/services/toast_service";
 import { ModalId } from "../../../app/constants/constants";
-
-//!! TODO: added validators to the card as to give the user a visual representation of any errors made while filling out the card
+import { useFormErrorData } from "../../shared/context/form_error_context";
 
 export const BudgetModal = (): JSX.Element => {
   const toastService = ToastService.getInstance();
@@ -32,6 +31,15 @@ export const BudgetModal = (): JSX.Element => {
     editBudet,
     budgetToEdit,
   } = useBudgetViewData();
+
+  const {
+    budgetModalBudgetCategoryError,
+    budgetModalMaxSpendingError,
+    budgetModalColorTagError,
+    setBudgetModalBudgetCategoryError,
+    setBudgetModalMaxSpendingError,
+    setBudgetModalColorTagError,
+  } = useFormErrorData();
 
   return (
     <div className="base-modal">
@@ -56,32 +64,63 @@ export const BudgetModal = (): JSX.Element => {
           e.preventDefault(); // prevent form default behavior, add custom frontend form handling
         }}
       >
-        <ModalDropDownMenu
-          label="Budget Category"
-          content={categoryContent ?? []}
-          initialValue={selectedBudgetCategory}
-          toggleMenu={() => toggleMenu(0)}
-        />
+        <div>
+          <ModalDropDownMenu
+            label="Budget Category"
+            content={categoryContent ?? []}
+            initialValue={selectedBudgetCategory}
+            toggleMenu={() => {
+              setBudgetModalBudgetCategoryError(false);
+              toggleMenu(0);
+            }}
+          />
 
-        <TextFormField
-          name="maxSpend"
-          label="Maximum Spend"
-          type="number"
-          value={maxSpending}
-          placeholder="$ e.g. 200.00"
-          onChange={(event) => {
-            setMaxSpending(parseStringToCurrency(event.target.value));
-          }}
-        />
+          {budgetModalBudgetCategoryError ? (
+            <p className="error-text">Select a budget category.</p>
+          ) : (
+            <></>
+          )}
+        </div>
 
-        <ModalDropDownMenu
-          isColorTag={true}
-          label="Color Tag"
-          tagColor={selectedColorTag?.theme ?? ""}
-          initialValue={selectedColorTag?.name ?? ""}
-          content={colorTagContent ?? []}
-          toggleMenu={() => toggleMenu(1)}
-        />
+        <div>
+          <TextFormField
+            name="maxSpend"
+            label="Maximum Spend"
+            type="number"
+            value={maxSpending}
+            placeholder="$ e.g. 200.00"
+            onChange={(event) => {
+              setBudgetModalMaxSpendingError(false);
+              setMaxSpending(parseStringToCurrency(event.target.value));
+            }}
+          />
+
+          {budgetModalMaxSpendingError ? (
+            <p className="error-text">Set maximum spending amount.</p>
+          ) : (
+            <></>
+          )}
+        </div>
+
+        <div>
+          <ModalDropDownMenu
+            isColorTag={true}
+            label="Color Tag"
+            tagColor={selectedColorTag?.theme ?? ""}
+            initialValue={selectedColorTag?.name ?? ""}
+            content={colorTagContent ?? []}
+            toggleMenu={() => {
+              setBudgetModalColorTagError(false);
+              toggleMenu(1);
+            }}
+          />
+
+          {budgetModalColorTagError ? (
+            <p className="error-text">Select a color tag.</p>
+          ) : (
+            <></>
+          )}
+        </div>
       </form>
 
       <MainButton onTap={handleBudgetCard}>
@@ -134,7 +173,22 @@ export const BudgetModal = (): JSX.Element => {
   }
 
   function isValidFormData() {
-    return Number(maxSpending) > 0 && selectedBudgetCategory.length > 0;
+    const validMaxSpending = Number(maxSpending) > 0;
+
+    const validBudgetCategory = selectedBudgetCategory.length > 0;
+
+    const validColorTag = selectedColorTag.theme != "transparent";
+
+    if (!validBudgetCategory) {
+      setBudgetModalBudgetCategoryError(true);
+    }
+    if (!validMaxSpending) {
+      setBudgetModalMaxSpendingError(true);
+    }
+    if (!validColorTag) {
+      setBudgetModalColorTagError(true);
+    }
+    return validMaxSpending && validBudgetCategory && validColorTag;
   }
 
   function closeModal() {
