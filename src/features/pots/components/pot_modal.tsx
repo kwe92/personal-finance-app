@@ -146,7 +146,7 @@ export const PotModal = () => {
 
     const validPotTarget = Number(target) > 0;
 
-    const validColorTag = selectedColorTag.theme != "transparent";
+    const validColorTag = selectedColorTag.theme !== "transparent";
 
     if (!validName) {
       setPotModalNameError(true);

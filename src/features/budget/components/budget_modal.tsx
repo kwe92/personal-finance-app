@@ -177,7 +177,7 @@ export const BudgetModal = (): JSX.Element => {
 
     const validBudgetCategory = selectedBudgetCategory.length > 0;
 
-    const validColorTag = selectedColorTag.theme != "transparent";
+    const validColorTag = selectedColorTag.theme !== "transparent";
 
     if (!validBudgetCategory) {
       setBudgetModalBudgetCategoryError(true);

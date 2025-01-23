@@ -1,13 +1,9 @@
-import * as chartJS from "chart.js";
 import { createContext, useContext } from "react";
 import { useBudgetData } from "./budget_context";
 
 interface DoughnutChartContextData {
-  //!! TODO: figure out why the chartJS.ChartOptions and chartJS.ChartData do not work with react-chartjs-2 Doughnut options and data properties
   doughnutChartOptions: any;
   doughnutChartData: any;
-  //   doughnutChartOptions: chartJS.ChartOptions;
-  //   doughnutChartData: chartJS.ChartData;
 }
 
 const DoughnutChartContext = createContext<DoughnutChartContextData>({

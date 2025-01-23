@@ -3,7 +3,7 @@ import "./css/budget_card.css";
 import { LatestSpendingCard } from "./latest_spending_card";
 import { ProgressBar } from "./progress_bar";
 import { useTransactionData } from "../../shared/context/transaction_context";
-import { currencyArithmetic, sortByDate } from "../../shared/utility/functions";
+import { currencyArithmetic } from "../../shared/utility/functions";
 import { useBudgetViewData } from "../context/budget_view_context";
 import { CardHeader } from "../../shared/components/card_header";
 import { ToastService } from "../../shared/services/toast_service";
