@@ -36,13 +36,15 @@ export const RecurringBillsView = (): JSX.Element => {
 
       <div className="recurring-bills-view-content">
         {/* left side */}
-        <div className="recurring-bills-view-content-first-section">
+        <div className="recurring-bills-view-first-section">
           {/* TODO: add left side content */}
           <TotalBills />
           <RecurringBillsSummaryCard />
         </div>
 
         {/* right side */}
+        {/* //!!: TODO: there are issues with this section when displayed on a monitor and the width is 600px or less*/}
+
         <div className="recurring-bills-view-second-section">
           <div className="recurring-bills-view-second-section-content">
             <div className="transaction-filters-container">
