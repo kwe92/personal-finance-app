@@ -6,7 +6,7 @@ import OverviewBudgetBillsSection from "./components/overview-budget-bills-secti
 
 const OverviewView = (): JSX.Element => {
   return (
-    <div className="view-container">
+    <div className="view-container" style={{ overflowY: "scroll" }}>
       <h1 style={{ color: "#201F24" }}>Overview</h1>
       <OverviewListTileRow />
       <div className="overview-view-secondary">
