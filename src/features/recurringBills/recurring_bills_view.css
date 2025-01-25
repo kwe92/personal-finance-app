@@ -61,7 +61,13 @@
 }
 
 @media (max-width: 600px) {
-  .recurring-bills-view-second-section-content{
+  .recurring-bills-view-second-section-content {
     padding: 16px;
+  }
+}
+
+@media (max-width:424px) {
+  .recurring-bills-view-first-section {
+    flex-direction: column;
   }
 }
