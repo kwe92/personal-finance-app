@@ -43,8 +43,6 @@ export const RecurringBillsView = (): JSX.Element => {
         </div>
 
         {/* right side */}
-        {/* //!!: TODO: there are issues with this section when displayed on a monitor and the width is 600px or less*/}
-
         <div className="recurring-bills-view-second-section">
           <div className="recurring-bills-view-second-section-content">
             <div className="transaction-filters-container">
@@ -76,7 +74,7 @@ export const RecurringBillsView = (): JSX.Element => {
             {windowWidth > 600 ? (
               <RecurringBillsTable />
             ) : (
-              <div style={{ overflowY: "scroll" }}>
+              <div style={{ overflowY: "inherit" }}>
                 {recurringBillsListTiles}
               </div>
             )}

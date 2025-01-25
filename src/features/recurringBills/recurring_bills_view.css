@@ -5,6 +5,7 @@
   width: 100%;
   height: 100%;
   gap: 24px;
+  overflow-y: scroll;
   /* background-color: orange; */
 }
 
@@ -23,6 +24,7 @@
   height: 100%;
   gap: 24px;
   border-radius: 8px;
+  overflow-y: scroll;
   /* background-color: lightseagreen; */
 }
 
@@ -35,6 +37,7 @@
   border-radius: inherit;
   gap: inherit;
   background-color: white;
+  overflow-y: inherit;
 
 }
 
@@ -42,7 +45,6 @@
   .recurring-bills-view-content {
     flex-direction: column;
     gap: 16px;
-    max-height: 52vh;
   }
 
   .recurring-bills-view-first-section {
@@ -59,9 +61,6 @@
 }
 
 @media (max-width: 600px) {
-  .recurring-bills-view-content {
-    max-height: 57vh;
-  }
   .recurring-bills-view-second-section-content{
     padding: 16px;
   }

@@ -1,3 +1,5 @@
+/* TODO: may need to refactor the td, th, and table css selectors as they seem global */
+
 td {
     border-top: 1px solid #F2F2F2;
   }
@@ -35,6 +37,9 @@ td:nth-child(4) {
     border-radius: 8px;
     gap: 24px;
     background-color: white;
+    /* background-color: orange; */
+    overflow-y: scroll;
+
 }
 
 .transaction-filters-container {
@@ -60,12 +65,10 @@ td:nth-child(4) {
 }
 
 .transaction-table-wrapper {
-  max-height: 74vh;
   overflow-y: scroll;
 }
 
 .transaction-list-tile-wrapper {
-   height: 74vh;
    overflow-y:scroll;
 }
 
@@ -79,10 +82,6 @@ td:nth-child(4) {
 @media (max-width: 1440px) {
   th {
     font-size: 12px; 
-  }
-
-  .transaction-table-wrapper {
-    max-height: 70vh;
   }
 }
 
@@ -111,8 +110,6 @@ td:nth-child(4) {
   .transaction-drop-down-container {
   gap:16px;
 }
-
-
   .transaction-drop-down-container .drop-down-menu-content {
     gap: 12px;
     
@@ -157,11 +154,6 @@ td:nth-child(4) {
 }
 
 @media (max-width: 600px) {
-
-  .transaction-list-tile-wrapper {
-    height: 72vh;
-  }
-
   .transaction-avatar-name {
     gap: 12px;
   }
