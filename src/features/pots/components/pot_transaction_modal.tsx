@@ -126,7 +126,6 @@ export const PotsTransactionModal = (): JSX.Element => {
     </div>
   );
 
-  //!! TODO: try to clean the branching logic, you wrote this and its hard for you to read.
   function handleAmountChange(event: React.ChangeEvent<HTMLInputElement>) {
     const amount = Number(parseStringToCurrency(event.target.value));
 

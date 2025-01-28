@@ -52,3 +52,10 @@
         height: 24px;
     }
 }
+
+@media(max-width: 424px) {
+    .total-bills-card {
+        height: auto;
+        gap: 12px;
+    }
+}

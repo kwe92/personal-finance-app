@@ -17,7 +17,7 @@ const OverviewTransactionsSection = (): JSX.Element => {
 
   const { transactions, isLoading } = useTransactionData();
 
-  var transactionListTiles: JSX.Element[];
+  var transactionListTiles: JSX.Element[] = [];
 
   if (transactions !== null) {
     transactionListTiles = transactions.map((transaction, i) => {

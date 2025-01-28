@@ -28,7 +28,7 @@ export const PotsView = (): JSX.Element => {
   });
 
   return (
-    <div className="view-container">
+    <div className="view-container" style={{ overflowY: "scroll" }}>
       <div className="button-header-section">
         <h1 style={{ color: "#201F24" }}>Pots</h1>
 

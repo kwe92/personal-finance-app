@@ -36,7 +36,7 @@ export const RecurringBillsView = (): JSX.Element => {
 
       <div className="recurring-bills-view-content">
         {/* left side */}
-        <div className="recurring-bills-view-content-first-section">
+        <div className="recurring-bills-view-first-section">
           {/* TODO: add left side content */}
           <TotalBills />
           <RecurringBillsSummaryCard />
@@ -74,7 +74,7 @@ export const RecurringBillsView = (): JSX.Element => {
             {windowWidth > 600 ? (
               <RecurringBillsTable />
             ) : (
-              <div style={{ overflowY: "scroll" }}>
+              <div style={{ overflowY: "inherit" }}>
                 {recurringBillsListTiles}
               </div>
             )}

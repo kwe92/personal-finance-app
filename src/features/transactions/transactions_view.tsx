@@ -10,9 +10,9 @@ import { TransactionListTile } from "./components/transaction_list_tile";
 import { TransactionTable } from "./components/transaction_table";
 import { useTransactionFilterData } from "../shared/context/transaction_filter_context";
 import { useTransactionData } from "../shared/context/transaction_context";
-import { GapH8 } from "../../app/constants/reusable";
 import { ToastService } from "../shared/services/toast_service";
 import { sortByCategories } from "../../app/constants/constants";
+import { GapH8 } from "../../app/constants/reusable";
 
 const TransactionsView = (): JSX.Element => {
   const toastService = ToastService.getInstance();

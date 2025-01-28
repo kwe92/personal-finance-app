@@ -30,6 +30,11 @@ function App() {
     // show navigation menu when route includes home in the path name
     if (location.pathname.includes("home")) {
       setShowNavBar(true);
+    } else {
+      // if the user signs out then set to false
+      if (showNavBar) {
+        setShowNavBar(false);
+      }
     }
   });
 
