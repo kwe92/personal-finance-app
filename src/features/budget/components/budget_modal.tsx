@@ -76,7 +76,7 @@ export const BudgetModal = (): JSX.Element => {
           />
 
           {budgetModalBudgetCategoryError ? (
-            <p className="error-text">Select a budget category.</p>
+            <p className="error-text">Select a budget category</p>
           ) : (
             <></>
           )}
@@ -96,7 +96,7 @@ export const BudgetModal = (): JSX.Element => {
           />
 
           {budgetModalMaxSpendingError ? (
-            <p className="error-text">Set maximum spending amount.</p>
+            <p className="error-text">Set maximum spending amount</p>
           ) : (
             <></>
           )}
@@ -116,7 +116,7 @@ export const BudgetModal = (): JSX.Element => {
           />
 
           {budgetModalColorTagError ? (
-            <p className="error-text">Select a color tag.</p>
+            <p className="error-text">Select a color tag</p>
           ) : (
             <></>
           )}

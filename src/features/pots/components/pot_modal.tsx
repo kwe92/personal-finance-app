@@ -71,7 +71,7 @@ export const PotModal = () => {
             }}
           />
           {potModalNameError ? (
-            <p className="error-text">Name field can not be empty.</p>
+            <p className="error-text">Name field can not be empty</p>
           ) : (
             <></>
           )}
@@ -90,7 +90,7 @@ export const PotModal = () => {
             }}
           />
           {potModalTargetError ? (
-            <p className="error-text">Set a valid target value.</p>
+            <p className="error-text">Set a valid target value</p>
           ) : (
             <></>
           )}
@@ -109,7 +109,7 @@ export const PotModal = () => {
             }}
           />
           {potModalColorTagError ? (
-            <p className="error-text">Select a color tag.</p>
+            <p className="error-text">Select a color tag</p>
           ) : (
             <></>
           )}
