@@ -6,13 +6,24 @@ import * as gaps from "../../../../app/constants/reusable";
 import MainButton from "../../../shared/components/main_button";
 import { useNavigate } from "react-router";
 import TextButton from "../../../shared/components/text_button";
+import { useAuthValidationData } from "../../context/auth_validation_context";
 
 //!! TODO: add verify password section
 
-//!! TODO: add form validation
+//!! TODO: continue working on auth form validation
 
 const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
   const navigate = useNavigate();
+
+  const {
+    isEmailEmpty,
+    isPasswordEmpty,
+    isNameEmpty,
+    setIsEmailEmpty,
+    setIsPasswordEmpty,
+    setIsNameEmpty,
+    resetValidators,
+  } = useAuthValidationData();
 
   const [showPassword, setShowPassword] = useState("password");
 
@@ -23,14 +34,24 @@ const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
   const [password, setPassword] = useState<string>("");
 
   function handleNameChange(e: React.ChangeEvent<HTMLInputElement>) {
+    if (isNameEmpty) {
+      setIsNameEmpty(false);
+    }
     setName(e.target.value);
   }
 
   function handleEmailChange(e: React.ChangeEvent<HTMLInputElement>) {
+    if (isEmailEmpty) {
+      setIsEmailEmpty(false);
+    }
     setEmail(e.target.value);
   }
 
   function handlePasswordChange(e: React.ChangeEvent<HTMLInputElement>) {
+    if (isPasswordEmpty) {
+      setIsPasswordEmpty(false);
+    }
+
     setPassword(e.target.value);
   }
 
@@ -59,6 +80,11 @@ const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
               value={name}
               onChange={handleNameChange}
             />
+            {isNameEmpty ? (
+              <p className="error-text">Enter your name</p>
+            ) : (
+              <></>
+            )}
           </>
         ) : (
           <></>
@@ -73,6 +99,11 @@ const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
           value={email}
           onChange={handleEmailChange}
         />
+        {isEmailEmpty ? (
+          <p className="error-text">Enter a valid email</p>
+        ) : (
+          <></>
+        )}
 
         <gaps.GapH16 />
 
@@ -85,6 +116,12 @@ const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
           onChange={handlePasswordChange}
           onIconTap={handleShowPassword}
         />
+
+        {isPasswordEmpty ? (
+          <p className="error-text">Enter a valid password</p>
+        ) : (
+          <></>
+        )}
 
         {!isLogin ? (
           <>
@@ -109,17 +146,31 @@ const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
         <MainButton
           type="submit"
           onTap={() => {
-            setName("");
-            setEmail("");
-            setPassword("");
+            if (email.length === 0) {
+              setIsEmailEmpty(true);
+            }
 
-            //!! TODO: replace with validation and real auth checks
+            if (password.length === 0) {
+              setIsPasswordEmpty(true);
+            }
+
+            if (name.length === 0) {
+              setIsNameEmpty(true);
+            }
+
+            //!! TODO: change logic to be sign in with test account or sign up depending on what the user is doing
 
             if (
               isLogin &&
               email === "test@test.io" &&
               password === "Password11!!"
             ) {
+              setName("");
+              setEmail("");
+              setPassword("");
+
+              //!! TODO: replace with validation and real auth checks
+
               navigate("/home");
             }
           }}
@@ -147,6 +198,7 @@ const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
             <span>
               <TextButton
                 onTap={() => {
+                  resetValidators();
                   navigate(isLogin ? "/auth/signUp" : "/auth/login");
                 }}
               >
