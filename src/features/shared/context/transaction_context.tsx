@@ -20,7 +20,9 @@ const TransactionProvider = ({
   const [transactions, setTransactions] = useState<TransactionData[] | null>(
     null
   );
-  const [isLoading, setIsLoading] = useState(true);
+
+  const [isLoading, setIsLoading] = useState(false);
+
   const [error, setError] = useState<any>(null);
 
   const fetchTransactions = async () => {

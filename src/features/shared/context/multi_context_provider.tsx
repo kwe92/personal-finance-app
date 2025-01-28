@@ -1,3 +1,4 @@
+import { AuthValidationProvider } from "../../auth/context/auth_validation_context";
 import { BudgetProvider } from "./budget_context";
 import { DoughnutChartProvider } from "./doughnut_chart_context";
 import { FormErrorProvider } from "./form_error_context";
@@ -12,17 +13,19 @@ export const MultiContextProvider = ({
 }) => {
   return (
     <>
-      <FormErrorProvider>
-        <TransactionProvider>
-          <TransactionFilterProvider>
-            <BudgetProvider>
-              <PotProvider>
-                <DoughnutChartProvider>{children}</DoughnutChartProvider>
-              </PotProvider>
-            </BudgetProvider>
-          </TransactionFilterProvider>
-        </TransactionProvider>
-      </FormErrorProvider>
+      <AuthValidationProvider>
+        <FormErrorProvider>
+          <TransactionProvider>
+            <TransactionFilterProvider>
+              <BudgetProvider>
+                <PotProvider>
+                  <DoughnutChartProvider>{children}</DoughnutChartProvider>
+                </PotProvider>
+              </BudgetProvider>
+            </TransactionFilterProvider>
+          </TransactionProvider>
+        </FormErrorProvider>
+      </AuthValidationProvider>
     </>
   );
 };

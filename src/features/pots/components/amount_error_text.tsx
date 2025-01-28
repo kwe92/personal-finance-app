@@ -13,7 +13,7 @@ export const AmountErrorText = (): JSX.Element => {
   return (
     <>
       {potTransactionModalAmountError ? (
-        <p className="error-text">Set a valid amount value.</p>
+        <p className="error-text">Set a valid amount value</p>
       ) : (
         <></>
       )}
@@ -21,7 +21,7 @@ export const AmountErrorText = (): JSX.Element => {
       {potTransactionModalWithdrawalError ? (
         <p className="error-text">
           You can not withdraw more than the deposited amount of $
-          {potToEdit.total.toFixed(2)}.
+          {potToEdit.total.toFixed(2)}
         </p>
       ) : (
         <></>
@@ -30,7 +30,7 @@ export const AmountErrorText = (): JSX.Element => {
       {potTransactionModalDepositError ? (
         <p className="error-text">
           You can deposit more than the target amount of $
-          {potToEdit.target.toFixed(2)}.
+          {potToEdit.target.toFixed(2)}
         </p>
       ) : (
         <></>
