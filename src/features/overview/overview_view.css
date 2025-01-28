@@ -5,6 +5,13 @@
   gap: 24px;
 }
 
+.overview-view-header-section {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
+
 @media(max-width: 1200px) {
     .overview-view-secondary {
         flex-direction: column;
