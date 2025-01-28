@@ -6,6 +6,7 @@ import useAddSelectableListTileListeners from "../hooks/use_selectable_list_tile
 import * as navIcons from "./nav_bar_icons";
 import SelectableListTile from "./selectable_list_tile";
 import { useNavigate } from "react-router";
+import { SignOutButton } from "./sign_out_button";
 
 const SideNavBar = (): JSX.Element => {
   useAddSelectableListTileListeners({
@@ -48,16 +49,19 @@ const SideNavBar = (): JSX.Element => {
 
   return (
     <div className="side-nav-bar">
-      <img
-        src={logo}
-        style={{
-          width: "8vw",
-          height: "3vh",
-          paddingLeft: "32px",
-        }}
-      />
-      <div style={{ height: "32px" }} />
-      {navListTileItems}
+      <div>
+        <img
+          src={logo}
+          style={{
+            width: "8vw",
+            height: "3vh",
+            paddingLeft: "32px",
+          }}
+        />
+        <div style={{ height: "32px" }} />
+        {navListTileItems}
+      </div>
+      <SignOutButton />
     </div>
   );
 };
