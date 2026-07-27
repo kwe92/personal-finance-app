@@ -25,12 +25,15 @@ const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
     resetValidators,
     setIsLoginEmailIncorrect,
     setIsLoginPasswordIncorrect,
+    isPasswordMismatch,
+    setIsPasswordMismatch,
   } = useAuthValidationData();
 
   const [showPassword, setShowPassword] = useState("password");
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [verifyPassword, setVerifyPassword] = useState<string>("");
   const [authError, setAuthError] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -99,6 +102,29 @@ const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
         )}
 
         {authError ? <p className="error-text">{authError}</p> : <></>}
+
+        {!isLogin ? (
+          <>
+            <gaps.GapH16 />
+
+            <TextFormField
+              showPasswordIcon={true}
+              name="verifyPassword"
+              label="Verify Password"
+              type={showPassword}
+              value={verifyPassword}
+              onChange={handleVerifyPasswordChange}
+              onIconTap={handleShowPassword}
+            />
+            {isPasswordMismatch ? (
+              <p className="error-text">Passwords do not match</p>
+            ) : (
+              <></>
+            )}
+          </>
+        ) : (
+          <></>
+        )}
 
         {!isLogin ? (
           <>
@@ -192,6 +218,13 @@ const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
     setShowPassword(showPassword === "text" ? "password" : "text");
   }
 
+  function handleVerifyPasswordChange(e: React.ChangeEvent<HTMLInputElement>) {
+    if (isPasswordMismatch) {
+      setIsPasswordMismatch(false);
+    }
+    setVerifyPassword(e.target.value);
+  }
+
   async function handleForm(
     event:
       | React.FormEvent<HTMLFormElement>
@@ -206,16 +239,18 @@ const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
     const hasPassword = passwordValue.length > 0;
     const hasValidName = isLogin ? true : name.trim().length > 0;
     const hasValidPasswordLength = isLogin ? true : passwordValue.length >= 8;
+    const passwordsMatch = isLogin ? true : passwordValue === verifyPassword;
 
     setIsEmailEmpty(!hasEmail);
     setIsPasswordEmpty(!hasPassword);
     setIsShortPassword(!hasValidPasswordLength);
     setIsNameEmpty(!hasValidName);
+    setIsPasswordMismatch(!passwordsMatch && !isLogin);
     setAuthError("");
     setIsLoginEmailIncorrect(false);
     setIsLoginPasswordIncorrect(false);
 
-    if (!hasEmail || !hasPassword || !hasValidName || !hasValidPasswordLength) {
+    if (!hasEmail || !hasPassword || !hasValidName || !hasValidPasswordLength || !passwordsMatch) {
       return;
     }
 
@@ -231,6 +266,7 @@ const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
       setName("");
       setEmail("");
       setPassword("");
+      setVerifyPassword("");
       resetValidators();
       navigate("/home");
     } catch (error: unknown) {
