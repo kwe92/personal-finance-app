@@ -1,6 +1,7 @@
 import "./css/main_button.css";
 
 const MainButton = (props: {
+  disabled: boolean;
   children?: React.ReactNode;
   type?: "submit" | "reset" | "button" | undefined;
   style?: React.CSSProperties;
@@ -8,6 +9,7 @@ const MainButton = (props: {
 }): JSX.Element => {
   return (
     <button
+      disabled={props.disabled}
       className="main-button"
       style={props.style}
       type={props.type}
