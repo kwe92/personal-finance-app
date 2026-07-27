@@ -54,6 +54,8 @@ const AuthValidationProvider = ({
     setIsPasswordEmpty(false);
     setIsNameEmpty(false);
     setIsShortPassword(false);
+    setIsLoginEmailIncorrect(false);
+    setIsLoginPasswordIncorrect(false);
   }
 
   return (
