@@ -7,6 +7,7 @@ const AuthValidationContext = createContext<{
   isShortPassword: boolean;
   isLoginPasswordIncorrect: boolean;
   isNameEmpty: boolean;
+  isPasswordMismatch: boolean;
   setIsEmailEmpty: (truthValue: boolean) => void;
   setIsLoginEmailIncorrect: (truthValue: boolean) => void;
   setIsPasswordEmpty: (truthValue: boolean) => void;
@@ -21,12 +22,14 @@ const AuthValidationContext = createContext<{
   isShortPassword: false,
   isLoginPasswordIncorrect: false,
   isNameEmpty: false,
+  isPasswordMismatch: false,
   setIsEmailEmpty: () => {},
   setIsLoginEmailIncorrect: () => {},
   setIsPasswordEmpty: () => {},
   setIsShortPassword: () => {},
   setIsLoginPasswordIncorrect: () => {},
   setIsNameEmpty: () => {},
+  setIsPasswordMismatch: () => {},
   resetValidators: () => {},
 });
 
@@ -49,6 +52,8 @@ const AuthValidationProvider = ({
 
   const [isNameEmpty, setIsNameEmpty] = useState<boolean>(false);
 
+  const [isPasswordMismatch, setIsPasswordMismatch] = useState<boolean>(false);
+
   function resetValidators() {
     setIsEmailEmpty(false);
     setIsPasswordEmpty(false);
@@ -56,6 +61,7 @@ const AuthValidationProvider = ({
     setIsShortPassword(false);
     setIsLoginEmailIncorrect(false);
     setIsLoginPasswordIncorrect(false);
+    setIsPasswordMismatch(false);
   }
 
   return (
@@ -67,12 +73,14 @@ const AuthValidationProvider = ({
         isShortPassword,
         isLoginPasswordIncorrect,
         isNameEmpty,
+        isPasswordMismatch,
         setIsEmailEmpty,
         setIsLoginEmailIncorrect,
         setIsPasswordEmpty,
         setIsShortPassword,
         setIsLoginPasswordIncorrect,
         setIsNameEmpty,
+        setIsPasswordMismatch,
         resetValidators,
       }}
     >
