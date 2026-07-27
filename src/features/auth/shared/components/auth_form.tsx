@@ -7,13 +7,11 @@ import MainButton from "../../../shared/components/main_button";
 import { useNavigate } from "react-router";
 import TextButton from "../../../shared/components/text_button";
 import { useAuthValidationData } from "../../context/auth_validation_context";
-
-//!! TODO: add verify password section
-
-//!! TODO: continue working on auth form validation
+import { useAuth } from "../../context/auth_context";
 
 const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
   const navigate = useNavigate();
+  const { login, signUp } = useAuth();
 
   const {
     isEmailEmpty,
@@ -25,19 +23,19 @@ const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
     setIsShortPassword,
     setIsNameEmpty,
     resetValidators,
+    setIsLoginEmailIncorrect,
+    setIsLoginPasswordIncorrect,
   } = useAuthValidationData();
 
   const [showPassword, setShowPassword] = useState("password");
-
   const [name, setName] = useState<string>("");
-
   const [email, setEmail] = useState<string>("");
-
   const [password, setPassword] = useState<string>("");
+  const [authError, setAuthError] = useState<string>("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   return (
     <div className="auth-form-container">
-      {/* form */}
       <form
         className="form-theme"
         onSubmit={(e) => {
@@ -100,6 +98,8 @@ const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
           <></>
         )}
 
+        {authError ? <p className="error-text">{authError}</p> : <></>}
+
         {!isLogin ? (
           <>
             <gaps.GapH12 />
@@ -121,8 +121,12 @@ const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
 
         <gaps.GapH32 />
 
-        <MainButton type="submit" onTap={handleForm}>
-          {isLogin ? "Login" : "Create Account"}
+        <MainButton type="submit" onTap={handleForm} disabled={isSubmitting}>
+          {isSubmitting
+            ? "Please wait..."
+            : isLogin
+              ? "Login"
+              : "Create Account"}
         </MainButton>
 
         <gaps.GapH32 />
@@ -131,7 +135,6 @@ const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
           style={{
             display: "flex",
             flex: 1,
-            // backgroundColor: "lightsteelblue",
             placeContent: "center",
             placeItems: "end",
           }}
@@ -146,6 +149,7 @@ const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
               <TextButton
                 onTap={() => {
                   resetValidators();
+                  setAuthError("");
                   navigate(isLogin ? "/auth/signUp" : "/auth/login");
                 }}
               >
@@ -188,41 +192,89 @@ const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
     setShowPassword(showPassword === "text" ? "password" : "text");
   }
 
-  function validateSignIn(): boolean {
-    return email === "test@test.io" && password === "Password11!!";
-  }
+  async function handleForm(
+    event:
+      | React.FormEvent<HTMLFormElement>
+      | React.MouseEvent<HTMLButtonElement>,
+  ) {
+    event.preventDefault();
 
-  function validateSignUp(): boolean {
-    return name.length > 0 && email.length > 0 && password.length >= 8;
-  }
+    const emailValue = email.trim();
+    const passwordValue = password;
 
-  function handleForm(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
-    if (email.length === 0) {
-      setIsEmailEmpty(true);
+    const hasEmail = emailValue.length > 0;
+    const hasPassword = passwordValue.length > 0;
+    const hasValidName = isLogin ? true : name.trim().length > 0;
+    const hasValidPasswordLength = isLogin ? true : passwordValue.length >= 8;
+
+    setIsEmailEmpty(!hasEmail);
+    setIsPasswordEmpty(!hasPassword);
+    setIsShortPassword(!hasValidPasswordLength);
+    setIsNameEmpty(!hasValidName);
+    setAuthError("");
+    setIsLoginEmailIncorrect(false);
+    setIsLoginPasswordIncorrect(false);
+
+    if (!hasEmail || !hasPassword || !hasValidName || !hasValidPasswordLength) {
+      return;
     }
 
-    if (password.length === 0) {
-      setIsPasswordEmpty(true);
-    }
+    setIsSubmitting(true);
 
-    if (password.length < 8) {
-      setIsShortPassword(true);
-    }
+    try {
+      if (isLogin) {
+        await login(emailValue, passwordValue);
+      } else {
+        await signUp(emailValue, passwordValue);
+      }
 
-    if (name.length === 0) {
-      setIsNameEmpty(true);
-    }
-
-    //!! TODO: change logic to be sign in with test account or sign up depending on what the user is doing
-
-    if (isLogin ? validateSignIn() : validateSignUp()) {
       setName("");
       setEmail("");
       setPassword("");
-
-      //!! TODO: replace with validation and real auth checks
-
+      resetValidators();
       navigate("/home");
+    } catch (error: unknown) {
+      const code =
+        typeof error === "object" && error !== null && "code" in error
+          ? String((error as { code?: string }).code)
+          : "";
+      let message = "Unable to sign in right now. Please try again.";
+
+      switch (code) {
+        case "auth/invalid-email":
+          message = "Please enter a valid email address.";
+          setIsLoginEmailIncorrect(true);
+          break;
+        case "auth/user-disabled":
+          message = "This account has been disabled.";
+          break;
+        case "auth/user-not-found":
+        case "auth/wrong-password":
+        case "auth/invalid-credential":
+          message = isLogin
+            ? "Email or password is incorrect."
+            : "That email/password combination could not be used.";
+          setIsLoginEmailIncorrect(true);
+          setIsLoginPasswordIncorrect(true);
+          break;
+        case "auth/email-already-in-use":
+          message = "An account already exists with this email.";
+          setIsLoginEmailIncorrect(true);
+          break;
+        case "auth/weak-password":
+          message = "Password should be at least 6 characters.";
+          setIsShortPassword(true);
+          break;
+        case "auth/network-request-failed":
+          message = "Network error. Please try again.";
+          break;
+        default:
+          break;
+      }
+
+      setAuthError(message);
+    } finally {
+      setIsSubmitting(false);
     }
   }
 };
