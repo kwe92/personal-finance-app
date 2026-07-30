@@ -18,6 +18,7 @@ import { PotsView } from "./features/pots/pots_view";
 import { PotViewProvider } from "./features/pots/context/pot_view_context";
 import { RecurringBillsView } from "./features/recurringBills/recurring_bills_view";
 import { RecurringBillsViewProvider } from "./features/recurringBills/context/recurring_bills_context";
+import BackendHealthTestView from "./features/shared/components/backend_health_test_view";
 
 function App() {
   const location = useLocation();
@@ -89,6 +90,10 @@ function App() {
             <Route
               path="/home/Overview"
               element={Transitions.fade(<OverviewView />)}
+            />
+            <Route
+              path="/home/backend-health-test"
+              element={Transitions.fade(<BackendHealthTestView />)}
             />
             <Route
               path="/home/Transactions"
