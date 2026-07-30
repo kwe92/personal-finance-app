@@ -5,8 +5,9 @@ import {
   createUserWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 import type { User, UserCredential } from "firebase/auth";
-import { auth } from "../../../firebase";
+import { auth, db } from "../../../firebase";
 
 interface AuthContextType {
   user: User | null;
@@ -23,8 +24,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const signUp = (email: string, password: string) => {
-    return createUserWithEmailAndPassword(auth, email, password);
+  const signUp = async (email: string, password: string) => {
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password,
+    );
+
+    const { user } = userCredential;
+
+    await setDoc(
+      doc(db, "users", user.uid),
+      {
+        email: user.email,
+        is_plaid_linked: false,
+        createdAt: new Date(),
+      },
+      { merge: true },
+    );
+
+    return userCredential;
   };
 
   const login = (email: string, password: string) => {
