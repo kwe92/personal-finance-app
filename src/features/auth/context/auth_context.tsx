@@ -15,6 +15,7 @@ interface AuthContextType {
   signUp: (email: string, password: string) => Promise<UserCredential>;
   login: (email: string, password: string) => Promise<UserCredential>;
   logout: () => Promise<void>;
+  refreshPlaidStatus: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -56,6 +57,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     return signOut(auth);
   };
 
+  const refreshPlaidStatus = async () => {
+    if (!user) {
+      setIsPlaidLinked(false);
+      return;
+    }
+
+    try {
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      const userData = userDoc.exists() ? userDoc.data() : null;
+      setIsPlaidLinked(Boolean(userData?.is_plaid_linked));
+    } catch (error) {
+      setIsPlaidLinked(false);
+    }
+  };
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (!currentUser) {
@@ -81,7 +97,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   return (
     <AuthContext.Provider
-      value={{ user, isPlaidLinked, login, signUp, logout }}
+      value={{ user, isPlaidLinked, login, signUp, logout, refreshPlaidStatus }}
     >
       {!loading && children}
     </AuthContext.Provider>
