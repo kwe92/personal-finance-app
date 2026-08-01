@@ -90,6 +90,7 @@ const RoutesContainer = ({
       <Route
         path="/auth/login"
         element={Transitions.fade(renderAuthLayout(<LoginView />))}
+        // element={Transitions.fade(renderAuthLayout(<BackendHealthTestView />))}
       />
 
       <Route
