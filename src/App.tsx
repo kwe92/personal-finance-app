@@ -4,6 +4,7 @@ import { Navigate, Route, Routes, useLocation } from "react-router";
 import { AnimatePresence } from "framer-motion";
 import LoginView from "./features/auth/login/login_view";
 import SignUpView from "./features/auth/signUp/sign_up_view";
+import WelcomeView from "./features/auth/welcome/welcome_view";
 import Transitions from "./app/theme/transitions";
 import OverviewView from "./features/overview/overview_view";
 import TransactionsView from "./features/transactions/transactions_view";
@@ -12,6 +13,7 @@ import AuthImage from "./features/auth/shared/components/auth_image";
 import AuthAppBar from "./features/shared/components/auth_app_bar";
 import BottomNavBar from "./features/shared/components/bottom_nav_bar";
 import { MultiContextProvider } from "./features/shared/context/multi_context_provider";
+import { useAuth } from "./features/auth/context/auth_context";
 import { BudgetView } from "./features/budget/budget_view";
 import { BudgetViewProvider } from "./features/budget/context/budget_view_context";
 import { PotsView } from "./features/pots/pots_view";
@@ -58,77 +60,90 @@ function App() {
 
       <AnimatePresence mode="wait">
         <MultiContextProvider>
-          <Routes location={location} key={location.pathname}>
-            <Route
-              path="/"
-              element={
-                false //!! TODO: should useContext and some sort of AuthProvider to track the users login state
-                  ? Transitions.fade(<OverviewView />)
-                  : Transitions.fade(<Navigate to="/auth/login" />)
-              }
-            />
-
-            <Route
-              path="/auth/*"
-              element={Transitions.fade(<Navigate to={"/auth/login"} />)}
-            />
-
-            <Route
-              path="/auth/login"
-              element={Transitions.fade(<LoginView />)}
-            />
-
-            <Route
-              path="/auth/signUp"
-              element={Transitions.fade(<SignUpView />)}
-            />
-
-            <Route
-              path="/home/*"
-              element={Transitions.fade(<Navigate to={"/home/Overview"} />)}
-            />
-            <Route
-              path="/home/Overview"
-              element={Transitions.fade(<OverviewView />)}
-            />
-            <Route
-              path="/home/backend-health-test"
-              element={Transitions.fade(<BackendHealthTestView />)}
-            />
-            <Route
-              path="/home/Transactions"
-              element={Transitions.fade(<TransactionsView />)}
-            />
-            <Route
-              path="/home/Budgets"
-              element={
-                <BudgetViewProvider>
-                  {Transitions.fade(<BudgetView />)}
-                </BudgetViewProvider>
-              }
-            />
-            <Route
-              path="/home/Pots"
-              element={
-                <PotViewProvider>
-                  {Transitions.fade(<PotsView />)}
-                </PotViewProvider>
-              }
-            />
-
-            <Route
-              path="/home/Recurring Bills"
-              element={
-                <RecurringBillsViewProvider>
-                  {Transitions.fade(<RecurringBillsView />)}
-                </RecurringBillsViewProvider>
-              }
-            />
-          </Routes>
+          <RoutesContainer location={location} />
         </MultiContextProvider>
       </AnimatePresence>
     </div>
   );
 }
+
+const RoutesContainer = ({
+  location,
+}: {
+  location: ReturnType<typeof useLocation>;
+}) => {
+  const { user, isPlaidLinked } = useAuth();
+
+  const requirePlaid = (element: JSX.Element) =>
+    user && isPlaidLinked ? (
+      element
+    ) : (
+      <Navigate to={user ? "/welcome" : "/auth/login"} />
+    );
+
+  return (
+    <Routes location={location} key={location.pathname}>
+      <Route
+        path="/"
+        element={Transitions.fade(<Navigate to="/auth/login" />)}
+      />
+
+      <Route
+        path="/auth/*"
+        element={Transitions.fade(<Navigate to={"/auth/login"} />)}
+      />
+
+      <Route path="/auth/login" element={Transitions.fade(<LoginView />)} />
+
+      <Route path="/auth/signUp" element={Transitions.fade(<SignUpView />)} />
+
+      <Route path="/welcome" element={Transitions.fade(<WelcomeView />)} />
+
+      <Route
+        path="/home/*"
+        element={
+          isPlaidLinked
+            ? Transitions.fade(<Navigate to={"/home/Overview"} />)
+            : Transitions.fade(<Navigate to={"/welcome"} />)
+        }
+      />
+
+      <Route
+        path="/home/Overview"
+        element={requirePlaid(Transitions.fade(<OverviewView />))}
+      />
+      <Route
+        path="/home/backend-health-test"
+        element={requirePlaid(Transitions.fade(<BackendHealthTestView />))}
+      />
+      <Route
+        path="/home/Transactions"
+        element={requirePlaid(Transitions.fade(<TransactionsView />))}
+      />
+      <Route
+        path="/home/Budgets"
+        element={requirePlaid(
+          <BudgetViewProvider>
+            {Transitions.fade(<BudgetView />)}
+          </BudgetViewProvider>,
+        )}
+      />
+      <Route
+        path="/home/Pots"
+        element={requirePlaid(
+          <PotViewProvider>{Transitions.fade(<PotsView />)}</PotViewProvider>,
+        )}
+      />
+      <Route
+        path="/home/Recurring Bills"
+        element={requirePlaid(
+          <RecurringBillsViewProvider>
+            {Transitions.fade(<RecurringBillsView />)}
+          </RecurringBillsViewProvider>,
+        )}
+      />
+    </Routes>
+  );
+};
 
 export default App;
