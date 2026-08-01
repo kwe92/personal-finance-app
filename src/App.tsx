@@ -1,5 +1,4 @@
 import "./app/theme/css/App.css";
-import { useEffect, useState } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router";
 import { AnimatePresence } from "framer-motion";
 import LoginView from "./features/auth/login/login_view";
@@ -25,39 +24,8 @@ import BackendHealthTestView from "./features/shared/components/backend_health_t
 function App() {
   const location = useLocation();
 
-  const [showNavBar, setShowNavBar] = useState(false);
-
-  console.log(`location path name: ${location.pathname}`);
-
-  useEffect(() => {
-    // show navigation menu when route includes home in the path name
-    if (location.pathname.includes("home")) {
-      setShowNavBar(true);
-    } else {
-      // if the user signs out then set to false
-      if (showNavBar) {
-        setShowNavBar(false);
-      }
-    }
-  });
-
   return (
     <div className="app">
-      {/* if showNavBar is false then the user should only be within the authentication part of the app */}
-      {!showNavBar && (
-        <>
-          <AuthImage /> <AuthAppBar />
-        </>
-      )}
-
-      {/* if showNavBar is true then the user should be logged in*/}
-      {showNavBar && (
-        <>
-          <SideNavBar />
-          <BottomNavBar />
-        </>
-      )}
-
       <AnimatePresence mode="wait">
         <MultiContextProvider>
           <RoutesContainer location={location} />
@@ -67,79 +35,124 @@ function App() {
   );
 }
 
+const AuthLayout = ({ children }: { children: JSX.Element }) => (
+  <>
+    <AuthImage />
+    <AuthAppBar />
+    {children}
+  </>
+);
+
+const AppLayout = ({ children }: { children: JSX.Element }) => (
+  <>
+    <SideNavBar />
+    <BottomNavBar />
+    {children}
+  </>
+);
+
+const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
+  const { user, isPlaidLinked } = useAuth();
+
+  if (!user) {
+    return <Navigate to="/auth/login" replace />;
+  }
+
+  if (!isPlaidLinked) {
+    return <Navigate to="/welcome" replace />;
+  }
+
+  return children;
+};
+
+const renderAuthLayout = (element: JSX.Element) => (
+  <AuthLayout>{element}</AuthLayout>
+);
+
+const renderProtectedAppLayout = (element: JSX.Element) => (
+  <ProtectedRoute>
+    <AppLayout>{element}</AppLayout>
+  </ProtectedRoute>
+);
+
 const RoutesContainer = ({
   location,
 }: {
   location: ReturnType<typeof useLocation>;
 }) => {
-  const { user, isPlaidLinked } = useAuth();
-
-  const requirePlaid = (element: JSX.Element) =>
-    user && isPlaidLinked ? (
-      element
-    ) : (
-      <Navigate to={user ? "/welcome" : "/auth/login"} />
-    );
-
   return (
     <Routes location={location} key={location.pathname}>
       <Route
         path="/"
-        element={Transitions.fade(<Navigate to="/auth/login" />)}
+        element={Transitions.fade(<Navigate to="/auth/login" replace />)}
       />
 
       <Route
-        path="/auth/*"
-        element={Transitions.fade(<Navigate to={"/auth/login"} />)}
+        path="/auth/login"
+        element={Transitions.fade(renderAuthLayout(<LoginView />))}
       />
 
-      <Route path="/auth/login" element={Transitions.fade(<LoginView />)} />
-
-      <Route path="/auth/signUp" element={Transitions.fade(<SignUpView />)} />
-
-      <Route path="/welcome" element={Transitions.fade(<WelcomeView />)} />
+      <Route
+        path="/auth/signUp"
+        element={Transitions.fade(renderAuthLayout(<SignUpView />))}
+      />
 
       <Route
-        path="/home/*"
-        element={
-          isPlaidLinked
-            ? Transitions.fade(<Navigate to={"/home/Overview"} />)
-            : Transitions.fade(<Navigate to={"/welcome"} />)
-        }
+        path="/welcome"
+        element={Transitions.fade(renderAuthLayout(<WelcomeView />))}
+      />
+
+      <Route
+        path="/home"
+        element={Transitions.fade(
+          renderProtectedAppLayout(<Navigate to="/home/Overview" replace />),
+        )}
       />
 
       <Route
         path="/home/Overview"
-        element={requirePlaid(Transitions.fade(<OverviewView />))}
+        element={Transitions.fade(renderProtectedAppLayout(<OverviewView />))}
       />
       <Route
         path="/home/backend-health-test"
-        element={requirePlaid(Transitions.fade(<BackendHealthTestView />))}
+        element={Transitions.fade(
+          renderProtectedAppLayout(<BackendHealthTestView />),
+        )}
       />
       <Route
         path="/home/Transactions"
-        element={requirePlaid(Transitions.fade(<TransactionsView />))}
+        element={Transitions.fade(
+          renderProtectedAppLayout(<TransactionsView />),
+        )}
       />
       <Route
         path="/home/Budgets"
-        element={requirePlaid(
-          <BudgetViewProvider>
-            {Transitions.fade(<BudgetView />)}
-          </BudgetViewProvider>,
+        element={Transitions.fade(
+          renderProtectedAppLayout(
+            <BudgetViewProvider>
+              <BudgetView />
+            </BudgetViewProvider>,
+          ),
         )}
       />
       <Route
         path="/home/Pots"
-        element={requirePlaid(
-          <PotViewProvider>{Transitions.fade(<PotsView />)}</PotViewProvider>,
+        element={Transitions.fade(
+          renderProtectedAppLayout(
+            <PotViewProvider>
+              <PotsView />
+            </PotViewProvider>,
+          ),
         )}
       />
       <Route
         path="/home/Recurring Bills"
-        element={requirePlaid(
-          <RecurringBillsViewProvider>
-            {Transitions.fade(<RecurringBillsView />)}
-          </RecurringBillsViewProvider>,
+        element={Transitions.fade(
+          renderProtectedAppLayout(
+            <RecurringBillsViewProvider>
+              <RecurringBillsView />
+            </RecurringBillsViewProvider>,
+          ),
         )}
       />
     </Routes>
