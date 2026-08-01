@@ -21,6 +21,7 @@ const BackendHealthTestView = (): JSX.Element => {
 
     try {
       const response = await healthCheck();
+      // console.log("healthCheck response", response);
       setStatus("success");
       setMessage(JSON.stringify(response, null, 2));
     } catch (error) {
