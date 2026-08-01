@@ -5,7 +5,7 @@ import {
   createUserWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import type { User, UserCredential } from "firebase/auth";
 import { auth, db } from "../../../firebase";
 
@@ -16,6 +16,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<UserCredential>;
   logout: () => Promise<void>;
   refreshPlaidStatus: () => Promise<void>;
+  markPlaidLinked: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -72,6 +73,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
+  const markPlaidLinked = async () => {
+    if (!user) {
+      throw new Error("User is not available.");
+    }
+
+    await updateDoc(doc(db, "users", user.uid), {
+      is_plaid_linked: true,
+      plaidLinkedAt: new Date(),
+    });
+
+    setIsPlaidLinked(true);
+  };
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (!currentUser) {
@@ -97,7 +111,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   return (
     <AuthContext.Provider
-      value={{ user, isPlaidLinked, login, signUp, logout, refreshPlaidStatus }}
+      value={{
+        user,
+        isPlaidLinked,
+        login,
+        signUp,
+        logout,
+        refreshPlaidStatus,
+        markPlaidLinked,
+      }}
     >
       {!loading && children}
     </AuthContext.Provider>
