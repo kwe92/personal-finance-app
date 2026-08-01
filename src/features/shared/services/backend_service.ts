@@ -76,7 +76,10 @@ export async function createLinkToken(payload: { userId?: string }) {
 export async function setAccessToken(payload: { publicToken: string; userId?: string }) {
   return apiRequest<{ message?: string; accessToken?: string }>('/api/plaid/set-access-token', {
     method: 'POST',
-    body: JSON.stringify(payload),
+    body: JSON.stringify({
+      publicToken: payload.publicToken,
+      userId: payload.userId,
+    }),
   });
 }
 
