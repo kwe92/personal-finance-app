@@ -1,6 +1,12 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router";
+import { usePlaidLink } from "react-plaid-link";
 import MainButton from "../../shared/components/main_button";
+import { useAuth } from "../context/auth_context";
+import {
+  createLinkToken,
+  setAccessToken,
+} from "../../shared/services/backend_service";
 import "./welcome_view.css";
 
 const slides = [
@@ -26,7 +32,11 @@ const slides = [
 
 const WelcomeView = (): JSX.Element => {
   const navigate = useNavigate();
+  const { user, refreshPlaidStatus } = useAuth();
   const [activeSlide, setActiveSlide] = useState(0);
+  const [linkToken, setLinkToken] = useState<string | null>(null);
+  const [isLinkLoading, setIsLinkLoading] = useState(false);
+  const [linkError, setLinkError] = useState<string | null>(null);
 
   const currentSlide = useMemo(() => slides[activeSlide], [activeSlide]);
 
@@ -36,6 +46,59 @@ const WelcomeView = (): JSX.Element => {
 
   const goToPreviousSlide = () => {
     setActiveSlide((prev) => (prev - 1 + slides.length) % slides.length);
+  };
+
+  const { open, ready } = usePlaidLink({
+    token: linkToken ?? "",
+    onSuccess: async (publicToken) => {
+      try {
+        if (!publicToken) {
+          throw new Error("Plaid did not return a public token.");
+        }
+
+        if (!user?.uid) {
+          throw new Error("User is not available.");
+        }
+
+        await setAccessToken({ publicToken, userId: user.uid });
+        await refreshPlaidStatus();
+        navigate("/home/Overview");
+      } catch (error) {
+        setLinkError("Unable to complete Plaid setup. Please try again.");
+      }
+    },
+    onExit: () => {
+      setLinkToken(null);
+    },
+  });
+
+  useEffect(() => {
+    if (linkToken && ready) {
+      open();
+    }
+  }, [linkToken, open, ready]);
+
+  const handlePlaidSetup = async () => {
+    if (!user?.uid) {
+      setLinkError("Please sign in first.");
+      return;
+    }
+
+    setLinkError(null);
+    setIsLinkLoading(true);
+
+    try {
+      const result = await createLinkToken({ userId: user.uid });
+      if (!result.linkToken) {
+        throw new Error("Unable to start Plaid setup.");
+      }
+
+      setLinkToken(result.linkToken);
+    } catch (error) {
+      setLinkError("Unable to start Plaid setup. Please try again.");
+    } finally {
+      setIsLinkLoading(false);
+    }
   };
 
   return (
@@ -80,14 +143,14 @@ const WelcomeView = (): JSX.Element => {
             </button>
           </div>
 
+          {linkError ? <p className="welcome-error">{linkError}</p> : null}
+
           <MainButton
-            disabled={false}
+            disabled={isLinkLoading}
             type="button"
-            onTap={() => {
-              navigate("/home/Overview");
-            }}
+            onTap={handlePlaidSetup}
           >
-            Continue to Plaid setup
+            {isLinkLoading ? "Opening Plaid…" : "Continue to Plaid setup"}
           </MainButton>
         </div>
       </div>
