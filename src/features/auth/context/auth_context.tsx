@@ -5,12 +5,13 @@ import {
   createUserWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import type { User, UserCredential } from "firebase/auth";
 import { auth, db } from "../../../firebase";
 
 interface AuthContextType {
   user: User | null;
+  isPlaidLinked: boolean;
   signUp: (email: string, password: string) => Promise<UserCredential>;
   login: (email: string, password: string) => Promise<UserCredential>;
   logout: () => Promise<void>;
@@ -22,6 +23,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [isPlaidLinked, setIsPlaidLinked] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
 
   const signUp = async (email: string, password: string) => {
@@ -55,15 +57,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (!currentUser) {
+        setUser(null);
+        setIsPlaidLinked(false);
+        setLoading(false);
+        return;
+      }
+
       setUser(currentUser);
-      setLoading(false);
+      try {
+        const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+        const userData = userDoc.exists() ? userDoc.data() : null;
+        setIsPlaidLinked(Boolean(userData?.is_plaid_linked));
+      } catch (error) {
+        setIsPlaidLinked(false);
+      } finally {
+        setLoading(false);
+      }
     });
     return () => unsubscribe();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, login, signUp, logout }}>
+    <AuthContext.Provider
+      value={{ user, isPlaidLinked, login, signUp, logout }}
+    >
       {!loading && children}
     </AuthContext.Provider>
   );
