@@ -32,7 +32,7 @@ const slides = [
 
 const WelcomeView = (): JSX.Element => {
   const navigate = useNavigate();
-  const { user, refreshPlaidStatus } = useAuth();
+  const { user, markPlaidLinked } = useAuth();
   const [activeSlide, setActiveSlide] = useState(0);
   const [linkToken, setLinkToken] = useState<string | null>(null);
   const [isLinkLoading, setIsLinkLoading] = useState(false);
@@ -60,8 +60,16 @@ const WelcomeView = (): JSX.Element => {
           throw new Error("User is not available.");
         }
 
-        await setAccessToken({ publicToken, userId: user.uid });
-        await refreshPlaidStatus();
+        const result = await setAccessToken({ publicToken, userId: user.uid });
+
+        if (
+          !result?.message?.toLowerCase().includes("stored") &&
+          !result?.accessToken
+        ) {
+          throw new Error("The backend did not confirm Plaid setup completed.");
+        }
+
+        await markPlaidLinked();
         navigate("/home/Overview");
       } catch (error) {
         setLinkError("Unable to complete Plaid setup. Please try again.");
