@@ -1,7 +1,7 @@
 .app {
   width: 100vw;
-  height: 100vh;
-  align-items: start;
+  min-height: 100vh;
+  align-items: stretch;
   display: flex;
   box-sizing: border-box;
   /* background-color: black; */
