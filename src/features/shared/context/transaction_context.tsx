@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { createContext } from "react";
-import appData from "../../../app/data.json";
+import { getTransactions } from "../services/backend_service";
 
 const TransactionContext = createContext<{
   transactions: TransactionData[] | null;
@@ -18,7 +18,7 @@ const TransactionProvider = ({
   children?: React.ReactNode;
 }): JSX.Element => {
   const [transactions, setTransactions] = useState<TransactionData[] | null>(
-    null
+    null,
   );
 
   const [isLoading, setIsLoading] = useState(false);
@@ -29,22 +29,12 @@ const TransactionProvider = ({
     setIsLoading(true);
 
     try {
-      // comment to simulate a delay
-      setTransactions(appData.transactions);
-      setIsLoading(false);
-
-      // uncomment to simulate a delay
-
-      // await new Promise((_) =>
-      //   setTimeout(() => {
-      //     console.log("fetchTransactions 1");
-      //     setTransactions(appData.transactions);
-      //     setIsLoading(false);
-      //     console.log("fetchTransactions 2");
-      //   }, 2000)
-      // );
+      const response = await getTransactions();
+      setTransactions(response.transactions ?? []);
     } catch (error) {
       setError(error);
+      setTransactions([]);
+    } finally {
       setIsLoading(false);
     }
   };

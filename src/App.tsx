@@ -47,7 +47,7 @@ const AppLayout = ({ children }: { children: JSX.Element }) => (
   <>
     <SideNavBar />
     <BottomNavBar />
-    {children}
+    {Transitions.fade(children)}
   </>
 );
 
@@ -82,78 +82,59 @@ const RoutesContainer = ({
 }) => {
   return (
     <Routes location={location} key={location.pathname}>
-      <Route
-        path="/"
-        element={Transitions.fade(<Navigate to="/auth/login" replace />)}
-      />
+      <Route path="/" element={<Navigate to="/auth/login" replace />} />
 
       <Route
         path="/auth/login"
-        element={Transitions.fade(renderAuthLayout(<LoginView />))}
-        // element={Transitions.fade(renderAuthLayout(<BackendHealthTestView />))}
+        element={renderAuthLayout(<LoginView />)}
+        // element={renderAuthLayout(<BackendHealthTestView />)}
       />
 
-      <Route
-        path="/auth/signUp"
-        element={Transitions.fade(renderAuthLayout(<SignUpView />))}
-      />
+      <Route path="/auth/signUp" element={renderAuthLayout(<SignUpView />)} />
 
-      <Route
-        path="/welcome"
-        element={Transitions.fade(renderAuthLayout(<WelcomeView />))}
-      />
+      <Route path="/welcome" element={renderAuthLayout(<WelcomeView />)} />
 
       <Route
         path="/home"
-        element={Transitions.fade(
-          renderProtectedAppLayout(<Navigate to="/home/Overview" replace />),
+        element={renderProtectedAppLayout(
+          <Navigate to="/home/Overview" replace />,
         )}
       />
 
       <Route
         path="/home/Overview"
-        element={Transitions.fade(renderProtectedAppLayout(<OverviewView />))}
+        element={renderProtectedAppLayout(<OverviewView />)}
       />
       <Route
         path="/home/backend-health-test"
-        element={Transitions.fade(
-          renderProtectedAppLayout(<BackendHealthTestView />),
-        )}
+        element={renderProtectedAppLayout(<BackendHealthTestView />)}
       />
       <Route
         path="/home/Transactions"
-        element={Transitions.fade(
-          renderProtectedAppLayout(<TransactionsView />),
-        )}
+        element={renderProtectedAppLayout(<TransactionsView />)}
       />
       <Route
         path="/home/Budgets"
-        element={Transitions.fade(
-          renderProtectedAppLayout(
-            <BudgetViewProvider>
-              <BudgetView />
-            </BudgetViewProvider>,
-          ),
+        element={renderProtectedAppLayout(
+          <BudgetViewProvider>
+            <BudgetView />
+          </BudgetViewProvider>,
         )}
       />
       <Route
         path="/home/Pots"
-        element={Transitions.fade(
-          renderProtectedAppLayout(
-            <PotViewProvider>
-              <PotsView />
-            </PotViewProvider>,
-          ),
+        element={renderProtectedAppLayout(
+          <PotViewProvider>
+            <PotsView />
+          </PotViewProvider>,
         )}
       />
       <Route
         path="/home/Recurring Bills"
-        element={Transitions.fade(
-          renderProtectedAppLayout(
-            <RecurringBillsViewProvider>
-              <RecurringBillsView />
-            </RecurringBillsViewProvider>,
-          ),
+        element={renderProtectedAppLayout(
+          <RecurringBillsViewProvider>
+            <RecurringBillsView />
+          </RecurringBillsViewProvider>,
         )}
       />
     </Routes>
