@@ -9,6 +9,8 @@ import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import type { User, UserCredential } from "firebase/auth";
 import { auth, db } from "../../../firebase";
 
+//! TODO: Fix issue with loging into differrent users messing up the routing on the sane device
+
 interface AuthContextType {
   user: User | null;
   isPlaidLinked: boolean;

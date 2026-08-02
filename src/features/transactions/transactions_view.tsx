@@ -14,6 +14,8 @@ import { ToastService } from "../shared/services/toast_service";
 import { sortByCategories } from "../../app/constants/constants";
 import { GapH8 } from "../../app/constants/reusable";
 
+// ! TODO: add Plaid Transactions
+
 const TransactionsView = (): JSX.Element => {
   const toastService = ToastService.getInstance();
 
@@ -32,7 +34,7 @@ const TransactionsView = (): JSX.Element => {
   const { transactions } = useTransactionData();
 
   const categoryList = Array.from(
-    new Set(transactions?.map((transaction) => transaction.category))
+    new Set(transactions?.map((transaction) => transaction.category)),
   );
 
   // ensure "All Transactions" is the first selectable category
@@ -115,7 +117,7 @@ const TransactionsView = (): JSX.Element => {
     toastService.toggleDropDownMenu(
       index,
       ".dropdown",
-      ".drop-down-menu-content"
+      ".drop-down-menu-content",
     );
   }
 };
