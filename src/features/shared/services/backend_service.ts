@@ -83,8 +83,8 @@ export async function setAccessToken(payload: { publicToken: string; userId?: st
   });
 }
 
-export async function getTransactions(payload: { userId?: string }) {
-  return apiRequest<{ transactions?: unknown[]; message?: string }>('/api/plaid/transactions', {
+export async function getTransactions(payload: { userId?: string } = {}) {
+  return apiRequest<{ transactions?: TransactionData[]; message?: string }>('/api/plaid/transactions', {
     method: 'POST',
     body: JSON.stringify(payload),
   });
