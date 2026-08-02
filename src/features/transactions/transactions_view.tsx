@@ -31,10 +31,38 @@ const TransactionsView = (): JSX.Element => {
     setTransactionQuery,
   } = useTransactionFilterData();
 
-  const { transactions } = useTransactionData();
+  const { transactions, isLoading } = useTransactionData();
+
+  if (isLoading) {
+    return (
+      <div className="view-container">
+        <h1>Transactions</h1>
+        <div
+          className="transaction-view-content"
+          style={{ minHeight: "240px" }}
+        >
+          <div
+            style={{
+              display: "flex",
+              flex: 1,
+              minHeight: "240px",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#696868",
+              fontSize: "16px",
+            }}
+          >
+            Loading transactions...
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const transactionData = transactions ?? [];
 
   const categoryList = Array.from(
-    new Set(transactions?.map((transaction) => transaction.category)),
+    new Set(transactionData.map((transaction) => transaction.category)),
   );
 
   // ensure "All Transactions" is the first selectable category
