@@ -250,7 +250,13 @@ const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
     setIsLoginEmailIncorrect(false);
     setIsLoginPasswordIncorrect(false);
 
-    if (!hasEmail || !hasPassword || !hasValidName || !hasValidPasswordLength || !passwordsMatch) {
+    if (
+      !hasEmail ||
+      !hasPassword ||
+      !hasValidName ||
+      !hasValidPasswordLength ||
+      !passwordsMatch
+    ) {
       return;
     }
 
@@ -269,6 +275,7 @@ const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
       setVerifyPassword("");
       resetValidators();
       navigate("/home");
+      // navigate("/home/backend-health-test"); // TODO: Comment out, only for testing backend
     } catch (error: unknown) {
       const code =
         typeof error === "object" && error !== null && "code" in error
