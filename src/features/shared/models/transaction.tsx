@@ -5,6 +5,7 @@ class Transaction {
   date: string;
   amount: number;
   recurring: boolean;
+  type: TransactionData["type"];
 
   constructor(data: TransactionData) {
     this.avatar = data.avatar;
@@ -13,6 +14,7 @@ class Transaction {
     this.date = data.date;
     this.amount = data.amount;
     this.recurring = data.recurring;
+    this.type = data.type;
   }
 
   static fromJSON(json: Map<String, any>) {
@@ -23,6 +25,7 @@ class Transaction {
       date: json.get("date") as string,
       amount: json.get("amount") as number,
       recurring: json.get("recurring") as boolean,
+      type: (json.get("type") as TransactionData["type"]) ?? "expense",
     });
   }
 }
