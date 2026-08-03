@@ -84,7 +84,21 @@ export async function setAccessToken(payload: { publicToken: string; userId?: st
 }
 
 export async function getTransactions(payload: { userId?: string } = {}) {
-  return apiRequest<{ transactions?: TransactionData[]; message?: string }>('/api/plaid/transactions', {
+  return apiRequest<TransactionsResponse>('/api/plaid/transactions', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function getRecurringBills(payload: { userId?: string } = {}) {
+  return apiRequest<RecurringBillsResponse>('/api/plaid/recurring-bills', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function getOverviewSummary(payload: { userId?: string } = {}) {
+  return apiRequest<{ summary?: OverviewSummary; message?: string }>('/api/plaid/overview-summary', {
     method: 'POST',
     body: JSON.stringify(payload),
   });
