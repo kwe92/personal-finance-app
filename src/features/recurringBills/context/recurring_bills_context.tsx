@@ -1,5 +1,5 @@
-import { createContext, useContext, useState } from "react";
-import { useTransactionData } from "../../shared/context/transaction_context";
+import { createContext, useContext, useEffect, useState } from "react";
+import { getRecurringBills } from "../../shared/services/backend_service";
 import {
   billsByCategory,
   sortTransactions,
@@ -30,21 +30,40 @@ const RecurringBillsViewProvider = ({
 }: {
   children: React.ReactNode;
 }): JSX.Element => {
-  const { transactions } = useTransactionData();
-
+  const [recurringBillsData, setRecurringBillsData] = useState<
+    TransactionData[]
+  >([]);
   const [sortBy, setSortBy] = useState<SortCategory>("Latest");
 
   const [queryString, setQueryString] = useState<string>("");
 
-  var recurringBills: TransactionData[] = [];
+  useEffect(() => {
+    let isMounted = true;
 
-  if (transactions !== null) {
-    recurringBills = transactions!.filter((trnasaction) => {
-      return trnasaction.recurring === true;
-    });
-  }
+    const fetchRecurringBills = async () => {
+      try {
+        const response = await getRecurringBills();
 
-  recurringBills = queriedBills(recurringBills, queryString);
+        if (!isMounted) {
+          return;
+        }
+
+        setRecurringBillsData(response.recurringBills ?? []);
+      } catch (error) {
+        if (isMounted) {
+          setRecurringBillsData([]);
+        }
+      }
+    };
+
+    fetchRecurringBills();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  let recurringBills = queriedBills(recurringBillsData, queryString);
 
   const paidBills = billsByCategory(recurringBills, "paid");
 
@@ -81,7 +100,7 @@ const RecurringBillsViewProvider = ({
 
 function queriedBills(
   bills: TransactionData[],
-  billQuery: string
+  billQuery: string,
 ): TransactionData[] {
   return bills?.filter((bill) => {
     const queriedBills = bill.name
