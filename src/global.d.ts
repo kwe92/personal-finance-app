@@ -11,13 +11,35 @@ declare module "*.jpeg";
 // Interfaces
 
 interface TransactionData {
-    avatar: string;
-    name: string;
-    category: string;
-    date: string;
-    amount: number;
-    recurring: boolean;
-  }
+  id?: string;
+  avatar: string;
+  name: string;
+  category: string;
+  date: string;
+  amount: number;
+  recurring: boolean;
+  type: "expense" | "income" | "transfer";
+  frequency?: "monthly" | "weekly" | "yearly";
+  nextDate?: string;
+  status?: "paid" | "upcoming" | "due";
+}
+
+interface OverviewSummary {
+  balance: number;
+  income: number;
+  expenses: number;
+  savings: number;
+}
+
+interface TransactionsResponse {
+  transactions: TransactionData[];
+  summary?: OverviewSummary;
+}
+
+interface RecurringBillsResponse {
+  recurringBills: TransactionData[];
+  summary?: OverviewSummary;
+}
 
 interface ColorTagDropDownItemData {
   name: string;
