@@ -90,16 +90,13 @@ export async function getTransactions(payload: { userId?: string } = {}) {
   });
 }
 
-export async function getRecurringBills(payload: { userId?: string } = {}) {
+export async function getRecurringBills() {
   return apiRequest<RecurringBillsResponse>('/api/plaid/recurring-bills', {
-    method: 'POST',
-    body: JSON.stringify(payload),
-  });
+    method: 'GET'  });
 }
 
-export async function getOverviewSummary(payload: { userId?: string } = {}) {
+export async function getOverviewSummary() {
   return apiRequest<{ summary?: OverviewSummary; message?: string }>('/api/plaid/overview-summary', {
-    method: 'POST',
-    body: JSON.stringify(payload),
+    method: 'GET'
   });
 }
