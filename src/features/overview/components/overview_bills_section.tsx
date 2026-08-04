@@ -1,24 +1,49 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import "./css/overview_bills_section.css";
 
 import OverviewSectionHeader from "./overview_section_header";
-import { useTransactionData } from "../../shared/context/transaction_context";
 import { billsByCategory, sumOfBills } from "../../shared/utility/functions";
+import { getRecurringBills } from "../../shared/services/backend_service";
 
 // NOTE: note styles are for 1440px!!!!! medium laptop
-
+// ! TODO: use recurring bills context
 export const OverviewBillsSection = (): JSX.Element => {
   const navigate = useNavigate();
+  const [recurringBills, setRecurringBills] = useState<TransactionData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const { transactions } = useTransactionData();
+  useEffect(() => {
+    let isMounted = true;
 
-  var recurringBills: TransactionData[] = [];
+    const fetchRecurringBills = async () => {
+      setIsLoading(true);
 
-  if (transactions !== null) {
-    recurringBills = transactions!.filter((trnasaction) => {
-      return trnasaction.recurring === true;
-    });
-  }
+      try {
+        const response = await getRecurringBills();
+
+        if (!isMounted) {
+          return;
+        }
+
+        setRecurringBills(response.recurringBills ?? []);
+      } catch (error) {
+        if (isMounted) {
+          setRecurringBills([]);
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    fetchRecurringBills();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const paidBills = billsByCategory(recurringBills, "paid");
 
@@ -44,19 +69,19 @@ export const OverviewBillsSection = (): JSX.Element => {
       <div className="overview-bills-section-content">
         <OverviewRecurringBillsListTile
           name="Paid Bills"
-          amount={sumOfBillsPaid}
+          amount={isLoading ? "Loading..." : sumOfBillsPaid}
           tabColor="#277C78"
         />
 
         <OverviewRecurringBillsListTile
           name="Total Upcoming"
-          amount={sumOfBillsUpcoming}
+          amount={isLoading ? "Loading..." : sumOfBillsUpcoming}
           tabColor="#F2CDAC"
         />
 
         <OverviewRecurringBillsListTile
           name="Due Soon"
-          amount={sumOfBillsDueSoon}
+          amount={isLoading ? "Loading..." : sumOfBillsDueSoon}
           tabColor="#82C9D7"
         />
       </div>
@@ -70,7 +95,7 @@ const OverviewRecurringBillsListTile = ({
   tabColor,
 }: {
   name: string;
-  amount: number;
+  amount: number | string;
   tabColor: string;
 }): JSX.Element => {
   return (
@@ -80,9 +105,9 @@ const OverviewRecurringBillsListTile = ({
     >
       <div className="overview-recurring-bills-list-tile-content">
         <p style={{ fontSize: "14px", color: "#696868" }}>{name}</p>
-        <p style={{ fontSize: "14px", fontWeight: "bold" }}>{`$${amount.toFixed(
-          2
-        )}`}</p>
+        <p style={{ fontSize: "14px", fontWeight: "bold" }}>
+          {typeof amount === "number" ? `$${amount.toFixed(2)}` : amount}
+        </p>
       </div>
     </div>
   );
