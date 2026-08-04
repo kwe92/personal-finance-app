@@ -1,19 +1,29 @@
 import OverviewListTile from "./overview_list_tile";
 import "./css/overview_list_tile_row.css";
-import * as gaps from "../../../app/constants/reusable";
+import { useOverviewData } from "../context/overview_context";
 
 const OverviewListTileRow = (): JSX.Element => {
+  const { summary, isLoading } = useOverviewData();
+
+  const formatCurrency = (value: number) => `$${value.toFixed(2)}`;
+
   return (
     <div className="overview-list-tile-row-container">
       <OverviewListTile
         title="Current Balance"
-        content="$4,836.00"
+        content={isLoading ? "Loading..." : formatCurrency(summary.balance)}
         isInvertedColors={true}
       />
 
-      <OverviewListTile title="Income" content="$3.814.25" />
+      <OverviewListTile
+        title="Income"
+        content={isLoading ? "Loading..." : formatCurrency(summary.income)}
+      />
 
-      <OverviewListTile title="Expenses" content="$1,700.50" />
+      <OverviewListTile
+        title="Expenses"
+        content={isLoading ? "Loading..." : formatCurrency(summary.expenses)}
+      />
     </div>
   );
 };
