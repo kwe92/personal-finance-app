@@ -96,7 +96,7 @@ export async function getRecurringBills() {
 }
 
 export async function getOverviewSummary() {
-  return apiRequest<{ summary?: OverviewSummary; message?: string }>('/api/plaid/overview-summary', {
+  return apiRequest<OverviewSummary>('/api/plaid/overview-summary', {
     method: 'GET'
   });
 }
