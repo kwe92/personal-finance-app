@@ -20,6 +20,7 @@ import { PotViewProvider } from "./features/pots/context/pot_view_context";
 import { RecurringBillsView } from "./features/recurringBills/recurring_bills_view";
 import { RecurringBillsViewProvider } from "./features/recurringBills/context/recurring_bills_context";
 import BackendHealthTestView from "./features/shared/components/backend_health_test_view";
+import { OverviewProvider } from "./features/overview/context/overview_context";
 
 function App() {
   const location = useLocation();
@@ -103,7 +104,11 @@ const RoutesContainer = ({
 
       <Route
         path="/home/Overview"
-        element={renderProtectedAppLayout(<OverviewView />)}
+        element={renderProtectedAppLayout(
+          <OverviewProvider>
+            <OverviewView />
+          </OverviewProvider>,
+        )}
       />
       <Route
         path="/home/backend-health-test"
