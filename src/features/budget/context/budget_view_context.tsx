@@ -1,30 +1,27 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { useTransactionData } from "../../shared/context/transaction_context";
-import { Divider } from "../../shared/components/divider";
 import { ColorTagDropDownItem } from "../../shared/models/colored_tag_drop_down_item";
 import { useBudgetData } from "../../shared/context/budget_context";
-import Budget from "../../shared/models/budget";
 import { colorTagData } from "../../../app/constants/constants";
-import { ColorTagDropdownItem } from "../../shared/components/color_tag_drop_down_item";
 import { useFormErrorData } from "../../shared/context/form_error_context";
 
 interface BudgetViewContextInterface {
   selectedBudgetCategory: string;
   maxSpending: string;
   selectedColorTag: ColorTagDropDownItem;
-  editBudet: boolean;
+  editBudget: boolean;
   budgetToEdit: BudgetData;
   budgetToDelete: BudgetData;
-  categoryContent: JSX.Element[];
-  colorTagContent: JSX.Element[];
+  filteredCategoryList: string[];
   budgetColorTags: ColorTagDropDownItem[];
-  setSelectedBudgetCategory: Function;
-  setMaxSpending: Function;
-  setSelectedColorTag: Function;
-  setEditBudget: Function;
-  setBudgetToEdit: Function;
-  setBudgetToDelete: Function;
-  resetBudgetModalData: Function;
+  setSelectedBudgetCategory: (category: string) => void;
+  setMaxSpending: (spending: string) => void;
+  setSelectedColorTag: (colorTag: ColorTagDropDownItem) => void;
+  setEditBudget: (isEdit: boolean) => void;
+  setBudgetToEdit: (budget: BudgetData) => void;
+  setBudgetToDelete: (budget: BudgetData) => void;
+  resetBudgetModalData: () => void;
+  populateEditForm: (budget: BudgetData) => void;
 }
 
 const defaultColorTag = new ColorTagDropDownItem({
@@ -41,16 +38,14 @@ const defaultBudget: BudgetData = {
   updatedAt: "",
 };
 
-// create context with required default values
 const BudgetViewContext = createContext<BudgetViewContextInterface>({
   selectedBudgetCategory: "",
   maxSpending: "",
   selectedColorTag: defaultColorTag,
-  editBudet: false,
+  editBudget: false,
   budgetToEdit: defaultBudget,
   budgetToDelete: defaultBudget,
-  categoryContent: [],
-  colorTagContent: [],
+  filteredCategoryList: [],
   budgetColorTags: [],
   setSelectedBudgetCategory: () => {},
   setMaxSpending: () => {},
@@ -59,6 +54,7 @@ const BudgetViewContext = createContext<BudgetViewContextInterface>({
   setBudgetToEdit: () => {},
   setBudgetToDelete: () => {},
   resetBudgetModalData: () => {},
+  populateEditForm: () => {},
 });
 
 const BudgetViewProvider = ({
@@ -67,71 +63,51 @@ const BudgetViewProvider = ({
   children?: React.ReactNode;
 }): JSX.Element => {
   const { transactions } = useTransactionData();
+  const { budgets } = useBudgetData();
+  const { resetBudgetModalErrors } = useFormErrorData();
 
-  // create state variables and their associated set state functions
   const [selectedBudgetCategory, setSelectedBudgetCategory] =
     useState<string>("");
-
   const [maxSpending, setMaxSpending] = useState<string>("");
-
   const [selectedColorTag, setSelectedColorTag] =
     useState<ColorTagDropDownItem>(defaultColorTag);
-
-  const { budgets } = useBudgetData();
-
-  const [editBudet, setEditBudget] = useState<boolean>(false);
-
+  const [editBudget, setEditBudget] = useState<boolean>(false);
   const [budgetToEdit, setBudgetToEdit] = useState<BudgetData>(defaultBudget);
-
   const [budgetToDelete, setBudgetToDelete] =
     useState<BudgetData>(defaultBudget);
 
-  const { resetBudgetModalErrors } = useFormErrorData();
+  // Derived filtered categories list
+  const filteredCategoryList = useMemo(() => {
+    const currentBudgetCategories = new Set(
+      budgets?.map((budget) => budget.category),
+    );
+    const uniqueCategoryList = Array.from(
+      new Set(transactions?.map((transaction) => transaction.category) ?? []),
+    );
 
-  // transaction categories that are already in use to budget
-  const currentBudgetCategories = new Set(
-    budgets?.map((budget) => budget.category),
-  );
+    return uniqueCategoryList
+      .filter((category) => !currentBudgetCategories.has(category))
+      .sort((a, b) => a.localeCompare(b));
+  }, [budgets, transactions]);
 
-  // unique transaction categories
-  const UniqueCategoryList = Array.from(
-    new Set(transactions?.map((transaction) => transaction.category)),
-  );
+  // Derived color tags list (without direct mutations)
+  const budgetColorTags = useMemo(() => {
+    const alreadyUsedColorTags = new Set(
+      budgets?.map((budget) => budget.theme),
+    );
 
-  // filter out budget categories already in use
-  const filteredCategoryList = UniqueCategoryList.filter(
-    (category) => !currentBudgetCategories.has(category),
-  );
+    return colorTagData
+      .map((json) => {
+        const item = ColorTagDropDownItem.fromJSON(json);
+        if (alreadyUsedColorTags.has(item.theme)) {
+          item.isInUse = true;
+        }
+        return item;
+      })
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }, [budgets]);
 
-  // sort categories alphabetically
-  filteredCategoryList.sort((a, b) => a.localeCompare(b));
-
-  const alreadyUsedColorTags = new Set(budgets?.map((budget) => budget.theme));
-
-  const budgetColorTags = colorTagData.map((json) =>
-    ColorTagDropDownItem.fromJSON(json),
-  );
-
-  // mark color as used if in the list of budgets
-  budgetColorTags.forEach((colorTagItem) => {
-    if (alreadyUsedColorTags?.has(colorTagItem.theme)) {
-      colorTagItem.isInUse = true;
-    }
-  });
-
-  budgetColorTags.sort((a, b) => a.name.localeCompare(b.name));
-
-  useEffect(
-    () =>
-      // set initial budget card data values
-      resetBudgetModalData(),
-    [],
-  );
-
-  /**
-   * Set budget card data to default values.
-   */
-  function resetBudgetModalData() {
+  const resetBudgetModalData = () => {
     setSelectedBudgetCategory("");
     setSelectedColorTag(defaultColorTag);
     setMaxSpending("");
@@ -139,58 +115,33 @@ const BudgetViewProvider = ({
     setBudgetToDelete(defaultBudget);
     setEditBudget(false);
     resetBudgetModalErrors();
-  }
+  };
 
-  const categoryContent = filteredCategoryList?.map((category, i) => (
-    <div>
-      <li
-        key={i}
-        style={{
-          padding: "12px 0 12px 0",
-          fontWeight: selectedBudgetCategory === category ? "bold" : "normal",
-          cursor: "pointer",
-        }}
-        onClick={() => setSelectedBudgetCategory(category)}
-      >
-        {category}
-      </li>
-      {filteredCategoryList.length - 1 !== i ? <Divider /> : <></>}
-    </div>
-  ));
+  const populateEditForm = (budget: BudgetData) => {
+    setEditBudget(true);
+    setBudgetToEdit(budget);
+    setSelectedBudgetCategory(budget.category);
+    setMaxSpending(budget.maximum.toString());
+    const matchingTag = budgetColorTags.find(
+      (colorTag) => colorTag.theme === budget.theme,
+    );
+    setSelectedColorTag(matchingTag ?? defaultColorTag);
+  };
 
-  const colorTagContent = budgetColorTags?.map((colorTag, i) => (
-    <div>
-      <li
-        key={i}
-        style={{
-          padding: "12px 0 12px 0",
-        }}
-        onClick={() => {
-          if (!colorTag.isInUse) setSelectedColorTag(colorTag);
-        }}
-      >
-        <ColorTagDropdownItem
-          name={colorTag.name}
-          theme={colorTag.theme}
-          isInUse={colorTag.isInUse}
-        />
-      </li>
-      {budgetColorTags.length - 1 !== i ? <Divider /> : <></>}
-    </div>
-  ));
+  useEffect(() => {
+    resetBudgetModalData();
+  }, []);
 
   return (
     <BudgetViewContext.Provider
-      // override default context default values
       value={{
         selectedBudgetCategory,
         maxSpending,
         selectedColorTag,
-        editBudet,
+        editBudget,
         budgetToEdit,
         budgetToDelete,
-        categoryContent,
-        colorTagContent,
+        filteredCategoryList,
         budgetColorTags,
         setSelectedBudgetCategory,
         setMaxSpending,
@@ -199,6 +150,7 @@ const BudgetViewProvider = ({
         setBudgetToEdit,
         setBudgetToDelete,
         resetBudgetModalData,
+        populateEditForm,
       }}
     >
       {children}
