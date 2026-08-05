@@ -11,18 +11,24 @@ import { useBudgetData } from "../shared/context/budget_context";
 import { ToastService } from "../shared/services/toast_service";
 import { ModalId } from "../../app/constants/constants";
 import { DeleteModal } from "../shared/components/delete_modal";
+
 export const BudgetView = (): JSX.Element => {
   const modalId = ModalId.budgetModal;
-
   const toastService = ToastService.getInstance();
 
   const { budgets, deleteBudgetHandler } = useBudgetData();
-
   const { resetBudgetModalData, budgetToDelete } = useBudgetViewData();
 
-  const budgetCards = budgets?.map((budget, i) => {
-    return <BudgetCard index={i} budget={budget} />;
-  });
+  async function handleDeleteBudget() {
+    if (!budgetToDelete?.id) return;
+
+    try {
+      await deleteBudgetHandler(budgetToDelete.id);
+      resetBudgetModalData();
+    } catch (err) {
+      console.error("Failed to delete budget item:", err);
+    }
+  }
 
   return (
     <>
@@ -39,8 +45,11 @@ export const BudgetView = (): JSX.Element => {
         </div>
         <BudgetSummary />
 
-        {budgetCards}
+        {budgets?.map((budget, i) => (
+          <BudgetCard key={budget.id ?? i} index={i} budget={budget} />
+        ))}
       </div>
+
       <ModalWrapper id={modalId}>
         <BudgetModal />
       </ModalWrapper>
@@ -55,16 +64,4 @@ export const BudgetView = (): JSX.Element => {
       </ModalWrapper>
     </>
   );
-
-  async function handleDeleteBudget() {
-    if (!budgetToDelete?.id) return;
-
-    try {
-      await deleteBudgetHandler(budgetToDelete.id);
-
-      // 2. (Optional) Close modal or reset 'budgetToDelete' state here
-    } catch (err) {
-      console.error("Failed to delete budget item:", err);
-    }
-  }
 };
