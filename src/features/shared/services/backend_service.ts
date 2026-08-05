@@ -100,3 +100,29 @@ export async function getOverviewSummary() {
     method: 'GET'
   });
 }
+
+export async function getBudgets() {
+  return apiRequest<{ budgets: BudgetData[] }>('/api/budgets', {
+    method: 'GET',
+  });
+}
+
+export async function updateBudget(id: string, payload: BudgetPayload) {
+  return apiRequest<{ message: string }>(`/api/budgets/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function deleteBudget(id: string) {
+  return apiRequest<{ message: string }>(`/api/budgets/${id}`, {
+    method: 'DELETE',
+  });
+}
+
+export async function createBudget(payload: BudgetPayload) {
+  return apiRequest<{ message: string; budget: BudgetData }>('/api/budgets', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}
