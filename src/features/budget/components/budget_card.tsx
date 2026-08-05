@@ -12,41 +12,60 @@ import { ColoredLineListTile } from "../../shared/components/colored_line_list_t
 import { BudgetViewModel } from "../budget_view_model";
 
 export const BudgetCard = ({
-  index, // required to ensure that only the menu to the associated card will be opened
+  index,
   budget,
 }: {
   index: number;
   budget: BudgetData;
 }) => {
   const { transactions } = useTransactionData();
-
   const toastService = ToastService.getInstance();
 
-  const {
-    resetBudgetModalData,
-    setBudgetToEdit,
-    setSelectedBudgetCategory,
-    setMaxSpending,
-    setSelectedColorTag,
-    budgetColorTags,
-    setEditBudget,
-    setBudgetToDelete,
-  } = useBudgetViewData();
+  const { resetBudgetModalData, populateEditForm, setBudgetToDelete } =
+    useBudgetViewData();
 
   const filteredTransactionsByCategory =
     BudgetViewModel.filterTransactionByBudgetCategory(
       transactions ?? [],
-      budget
+      budget,
     );
 
   const expendedAmount = BudgetViewModel.budgetCategoryExpendedAmount(
-    filteredTransactionsByCategory
+    filteredTransactionsByCategory,
   );
+
+  function closeMenu() {
+    const dropdownContent = document.querySelectorAll(
+      ModalClassName.cardDropDownMenu,
+    )[index];
+
+    dropdownContent?.classList.remove("show");
+  }
+
+  function toggleMenu(idx: number) {
+    toastService.toggleDropDownMenu(
+      idx,
+      ModalClassName.budgetCardDropDown,
+      ModalClassName.cardDropDownMenu,
+    );
+  }
+
+  function handleEditBudgetCard() {
+    populateEditForm(budget);
+    closeMenu();
+    toastService.toogleModal(ModalId.budgetModal, resetBudgetModalData);
+  }
+
+  function handleDeleteBudgetCard() {
+    setBudgetToDelete(budget);
+    closeMenu();
+    toastService.toogleModal(ModalId.deleteBudgetModal, resetBudgetModalData);
+  }
 
   return (
     <div className="budget-card-main">
       <CardHeader
-        color={budget!.theme}
+        color={budget.theme}
         name={budget.category}
         dropdownText="Budget"
         dropdownClassName="budget-card-dropdown"
@@ -65,7 +84,7 @@ export const BudgetCard = ({
 
       <div className="budget-card-list-tile-section">
         <ColoredLineListTile
-          lineColor={budget!.theme}
+          lineColor={budget.theme}
           title="Spent"
           content={`$${Math.abs(expendedAmount).toFixed(2)}`}
           style={{ flex: 1 }}
@@ -77,7 +96,7 @@ export const BudgetCard = ({
           content={`$${currencyArithmetic(
             budget.maximum,
             Math.abs(expendedAmount),
-            "sub"
+            "sub",
           ).toFixed(2)}`}
           style={{ flex: 1 }}
         />
@@ -86,46 +105,4 @@ export const BudgetCard = ({
       <LatestSpendingCard transactions={filteredTransactionsByCategory ?? []} />
     </div>
   );
-
-  function handleEditBudgetCard() {
-    setEditBudget(true);
-    setBudgetToEdit(budget);
-    setSelectedBudgetCategory(budget.category);
-    setMaxSpending(budget.maximum);
-    setSelectedColorTag(
-      budgetColorTags.find((colorTag) => {
-        return colorTag.theme === budget.theme;
-      })
-    );
-
-    closeMenu();
-
-    toastService.toogleModal(ModalId.budgetModal, resetBudgetModalData);
-  }
-
-  function handleDeleteBudgetCard() {
-    setBudgetToDelete(budget);
-
-    const toastService = ToastService.getInstance();
-
-    closeMenu();
-
-    toastService.toogleModal(ModalId.deleteBudgetModal, resetBudgetModalData);
-  }
-
-  function closeMenu() {
-    const dropdownContent = document.querySelectorAll(
-      ModalClassName.cardDropDownMenu
-    )[index];
-
-    dropdownContent!.classList.toggle("show");
-  }
-
-  function toggleMenu(index: number) {
-    toastService.toggleDropDownMenu(
-      index,
-      ModalClassName.budgetCardDropDown,
-      ModalClassName.cardDropDownMenu
-    );
-  }
 };
