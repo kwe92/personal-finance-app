@@ -123,7 +123,7 @@ export const BudgetModal = (): JSX.Element => {
         </div>
       </form>
 
-      <MainButton onTap={handleBudgetCard}>
+      <MainButton onTap={handleBudgetCard} disabled={false}>
         {!editBudet ? "Add Budget" : "Save Changes"}
       </MainButton>
     </div>
@@ -200,7 +200,7 @@ export const BudgetModal = (): JSX.Element => {
     toastService.toggleDropDownMenu(
       index,
       ".modal-drop-down-menu",
-      ".modal-drop-down-menu-content"
+      ".modal-drop-down-menu-content",
     );
   }
 };
