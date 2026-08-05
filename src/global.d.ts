@@ -48,11 +48,12 @@ interface ColorTagDropDownItemData {
 }
 
 interface BudgetData {
+  id?: string;
   category: string;
   maximum: number;
   theme: string;
   createdAt: string;
-  updatedAt:string;
+  updatedAt: string;
 }
 
 interface DateObject {
