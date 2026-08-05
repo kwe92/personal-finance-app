@@ -56,6 +56,13 @@ interface BudgetData {
   updatedAt: string;
 }
 
+interface BudgetPayload {
+  category: string;
+  maximum: number;
+  theme: string;
+}
+
+
 interface DateObject {
   date: string;
 }
