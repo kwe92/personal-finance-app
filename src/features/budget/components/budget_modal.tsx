@@ -4,11 +4,7 @@ import MainButton from "../../shared/components/main_button";
 import TextFormField from "../../shared/components/text_form_field";
 import { useBudgetViewData } from "../context/budget_view_context";
 import { useBudgetData } from "../../shared/context/budget_context";
-import Budget from "../../shared/models/budget";
-import {
-  formatDate,
-  parseStringToCurrency,
-} from "../../shared/utility/functions";
+import { parseStringToCurrency } from "../../shared/utility/functions";
 import { CloseModalButton } from "../../shared/components/close_modal_button";
 import { ModalDropDownMenu } from "../../shared/components/modal_drop_down_menu";
 import { ToastService } from "../../shared/services/toast_service";
@@ -18,7 +14,7 @@ import { useFormErrorData } from "../../shared/context/form_error_context";
 export const BudgetModal = (): JSX.Element => {
   const toastService = ToastService.getInstance();
 
-  const { budgets, setBudgets } = useBudgetData();
+  const { addBudgetHandler, updateBudgetHandler } = useBudgetData();
 
   const {
     categoryContent,
@@ -123,7 +119,7 @@ export const BudgetModal = (): JSX.Element => {
         </div>
       </form>
 
-      <MainButton onTap={handleBudgetCard}>
+      <MainButton onTap={handleBudgetCard} disabled={false}>
         {!editBudet ? "Add Budget" : "Save Changes"}
       </MainButton>
     </div>
@@ -140,36 +136,34 @@ export const BudgetModal = (): JSX.Element => {
     }
   }
 
-  function addNewBudgetItem() {
-    setBudgets((prevState: BudgetData[]) => {
-      return [
-        new Budget({
-          category: selectedBudgetCategory,
-          maximum: Number(maxSpending),
-          theme: selectedColorTag!.theme,
-          createdAt: formatDate(new Date().toLocaleString()),
-          updatedAt: formatDate(new Date().toLocaleString()),
-        }),
-        ...prevState,
-      ];
-    });
+  async function addNewBudgetItem() {
+    try {
+      await addBudgetHandler({
+        category: selectedBudgetCategory,
+        maximum: Number(maxSpending),
+        theme: selectedColorTag!.theme,
+      });
+
+      // (Optional) Reset form fields or close modal here
+    } catch (error) {
+      console.error("Failed to add budget item:", error);
+    }
   }
 
-  function editExistingBudgetItem() {
-    const indexOfItemToUpdate = budgets!.indexOf(budgetToEdit);
+  async function editExistingBudgetItem() {
+    if (!budgetToEdit?.id) return;
 
-    const updatedBudget = new Budget({
-      category: selectedBudgetCategory,
-      maximum: Number(maxSpending),
-      theme: selectedColorTag!.theme,
-      createdAt: budgetToEdit.createdAt,
-      updatedAt: formatDate(new Date().toLocaleString()),
-    });
+    try {
+      await updateBudgetHandler(budgetToEdit.id, {
+        category: selectedBudgetCategory,
+        maximum: Number(maxSpending),
+        theme: selectedColorTag!.theme,
+      });
 
-    budgets!.splice(indexOfItemToUpdate, 1, updatedBudget);
-
-    // needs to be unpacked or the doughnut chart will not update
-    setBudgets([...budgets!]);
+      // Close modal or reset fields here
+    } catch (err) {
+      console.error("Failed to update budget item:", err);
+    }
   }
 
   function isValidFormData() {
@@ -200,7 +194,7 @@ export const BudgetModal = (): JSX.Element => {
     toastService.toggleDropDownMenu(
       index,
       ".modal-drop-down-menu",
-      ".modal-drop-down-menu-content"
+      ".modal-drop-down-menu-content",
     );
   }
 };

@@ -33,13 +33,13 @@ const defaultColorTag = new ColorTagDropDownItem({
   isInUse: false,
 });
 
-const defaultBudget = new Budget({
+const defaultBudget: BudgetData = {
   category: "",
   maximum: 0,
   theme: "",
   createdAt: "",
   updatedAt: "",
-});
+};
 
 // create context with required default values
 const BudgetViewContext = createContext<BudgetViewContextInterface>({
@@ -90,17 +90,17 @@ const BudgetViewProvider = ({
 
   // transaction categories that are already in use to budget
   const currentBudgetCategories = new Set(
-    budgets?.map((budget) => budget.category)
+    budgets?.map((budget) => budget.category),
   );
 
   // unique transaction categories
   const UniqueCategoryList = Array.from(
-    new Set(transactions?.map((transaction) => transaction.category))
+    new Set(transactions?.map((transaction) => transaction.category)),
   );
 
   // filter out budget categories already in use
   const filteredCategoryList = UniqueCategoryList.filter(
-    (category) => !currentBudgetCategories.has(category)
+    (category) => !currentBudgetCategories.has(category),
   );
 
   // sort categories alphabetically
@@ -109,7 +109,7 @@ const BudgetViewProvider = ({
   const alreadyUsedColorTags = new Set(budgets?.map((budget) => budget.theme));
 
   const budgetColorTags = colorTagData.map((json) =>
-    ColorTagDropDownItem.fromJSON(json)
+    ColorTagDropDownItem.fromJSON(json),
   );
 
   // mark color as used if in the list of budgets
@@ -125,7 +125,7 @@ const BudgetViewProvider = ({
     () =>
       // set initial budget card data values
       resetBudgetModalData(),
-    []
+    [],
   );
 
   /**

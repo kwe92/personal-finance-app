@@ -16,7 +16,7 @@ export const BudgetView = (): JSX.Element => {
 
   const toastService = ToastService.getInstance();
 
-  const { budgets, setBudgets } = useBudgetData();
+  const { budgets, deleteBudgetHandler } = useBudgetData();
 
   const { resetBudgetModalData, budgetToDelete } = useBudgetViewData();
 
@@ -56,10 +56,15 @@ export const BudgetView = (): JSX.Element => {
     </>
   );
 
-  function handleDeleteBudget() {
-    const updatedBudget = budgets?.filter((currentBudgetItem) => {
-      return currentBudgetItem !== budgetToDelete;
-    });
-    setBudgets(updatedBudget!);
+  async function handleDeleteBudget() {
+    if (!budgetToDelete?.id) return;
+
+    try {
+      await deleteBudgetHandler(budgetToDelete.id);
+
+      // 2. (Optional) Close modal or reset 'budgetToDelete' state here
+    } catch (err) {
+      console.error("Failed to delete budget item:", err);
+    }
   }
 };

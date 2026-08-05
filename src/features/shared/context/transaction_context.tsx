@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { createContext } from "react";
 import { getTransactions } from "../services/backend_service";
+import { useAuth } from "../../auth/context/auth_context";
 
 const TransactionContext = createContext<{
   transactions: TransactionData[] | null;
@@ -20,6 +21,8 @@ const TransactionProvider = ({
   const [transactions, setTransactions] = useState<TransactionData[] | null>(
     null,
   );
+
+  const { user } = useAuth();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -41,7 +44,7 @@ const TransactionProvider = ({
 
   useEffect(() => {
     fetchTransactions();
-  }, []);
+  }, [user]);
 
   return (
     <TransactionContext.Provider value={{ transactions, isLoading, error }}>
