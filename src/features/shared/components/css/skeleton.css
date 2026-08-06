@@ -1,0 +1,47 @@
+:root {
+  /* --skeleton-width: 200px; */
+  --skeleton-height: 100%;
+  --skeleton-radius: 16px;
+  --skeleton-bg-start: #e8e8e8;
+  --skeleton-bg-middle: #f5f5f5;
+    /* --skeleton-bg-start: #d01a1a;
+  --skeleton-bg-middle: #3c0de5; */
+  --skeleton-animation-duration: 1.5s;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-box {
+  display: inline-block;
+  vertical-align: middle;
+  width: var(--skeleton-width, 100%);
+  height: var(--skeleton-height, 100%);
+  border-radius: var(--skeleton-radius);
+  background: linear-gradient(
+    90deg,
+    var(--skeleton-bg-start) 25%,
+    var(--skeleton-bg-middle) 37%,
+    var(--skeleton-bg-start) 63%
+  );
+  background-size: 200% 100%;
+  animation: shimmer var(--skeleton-animation-duration) ease-in-out infinite;
+}
+/* 
+@media (max-width: 1440px) {
+  .skeleton-box {
+    --skeleton-height: 1.125rem;
+  }
+}
+
+@media (max-width: 800px) {
+  .skeleton-box {
+    --skeleton-height: 1rem;
+  }
+} */

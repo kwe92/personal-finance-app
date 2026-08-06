@@ -2,6 +2,7 @@ import OverviewListTile from "./overview_list_tile";
 import "./css/overview_list_tile_row.css";
 import { useOverviewData } from "../context/overview_context";
 import { usePotData } from "../../shared/context/pot_context";
+import Skeleton from "../../shared/components/skeleton";
 
 const OverviewListTileRow = (): JSX.Element => {
   const { summary, isLoading: isSummaryLoading } = useOverviewData();
@@ -22,7 +23,11 @@ const OverviewListTileRow = (): JSX.Element => {
       <OverviewListTile
         title="Current Balance"
         content={
-          isDataLoading ? "Loading..." : formatCurrency(availableBalance)
+          isDataLoading ? (
+            <Skeleton width={"60%"} />
+          ) : (
+            formatCurrency(availableBalance)
+          )
         }
         isInvertedColors={true}
       />
@@ -30,14 +35,22 @@ const OverviewListTileRow = (): JSX.Element => {
       <OverviewListTile
         title="Income"
         content={
-          isSummaryLoading ? "Loading..." : formatCurrency(summary.income)
+          isSummaryLoading ? (
+            <Skeleton width={"60%"} />
+          ) : (
+            formatCurrency(summary.income)
+          )
         }
       />
 
       <OverviewListTile
         title="Expenses"
         content={
-          isSummaryLoading ? "Loading..." : formatCurrency(summary.expenses)
+          isSummaryLoading ? (
+            <Skeleton width={"60%"} />
+          ) : (
+            formatCurrency(summary.expenses)
+          )
         }
       />
     </div>

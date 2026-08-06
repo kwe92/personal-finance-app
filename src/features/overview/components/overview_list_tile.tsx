@@ -1,3 +1,4 @@
+import React from "react";
 import "./css/overview_list_tile.css";
 
 const OverviewListTile = ({
@@ -6,7 +7,7 @@ const OverviewListTile = ({
   isInvertedColors = false,
 }: {
   title: string;
-  content: string;
+  content: React.ReactNode;
   isInvertedColors?: boolean;
 }): JSX.Element => {
   const backgroundColor = !isInvertedColors ? "white" : "#201F24";
