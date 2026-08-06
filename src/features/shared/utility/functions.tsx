@@ -14,7 +14,7 @@ function formatDate(date: string, format?: string): string {
 function sortByDate(
   a: DateObject,
   b: DateObject,
-  order: SortOrder = "desc"
+  order: SortOrder = "desc",
 ): number {
   const aDate = new Date(a.date);
 
@@ -82,7 +82,7 @@ function getDaysDifference(date1: Date, date2: Date) {
 
 function sortTransactions(
   filteredTransactions: TransactionData[],
-  sortBy: SortCategory
+  sortBy: SortCategory,
 ) {
   switch (sortBy) {
     case "Latest":
@@ -142,7 +142,7 @@ function getBillCategory(bill: TransactionData): RecurringBillCategory {
 
 function billsByCategory(
   recurringBills: TransactionData[],
-  recurringBillCategory: RecurringBillCategory
+  recurringBillCategory: RecurringBillCategory,
 ): TransactionData[] {
   return recurringBills.filter((bill) => {
     const now = new Date(Date.now());
@@ -168,7 +168,7 @@ function sumOfBills(bills: TransactionData[]): number {
   return Math.abs(
     bills.reduce((accumulator, bill) => {
       return accumulator + bill.amount;
-    }, 0)
+    }, 0),
   );
 }
 
@@ -183,7 +183,7 @@ function sumOfBills(bills: TransactionData[]): number {
 function currencyArithmetic(
   value1: number,
   value2: number,
-  operator: ArithmeticOperator
+  operator: ArithmeticOperator,
 ): number {
   const shiftedValue1 = value1 * 100;
 
@@ -246,3 +246,37 @@ export {
   currencyArithmetic,
   parseStringToCurrency,
 };
+
+/**
+ * Sanitizes a bill/transaction name:
+ * 1. Keeps only letters (A-Z, a-z), hyphens (-), and spaces.
+ * 2. Removes extra consecutive spaces.
+ * 3. Converts ALL-CAPS words to Title Case ("AUTOMATIC" -> "Automatic").
+ * 4. Preserves camelCase / mixed-case words ("SparkFun" -> "SparkFun").
+ */
+export function cleanName(name: string): string {
+  if (!name) return "";
+
+  const lettersOnly = name.replace(/[^a-zA-Z\s-]/g, "");
+
+  const normalizedSpaces = lettersOnly.replace(/\s+/g, " ").trim();
+
+  return normalizedSpaces
+    .split(" ")
+    .map((word) =>
+      word
+        .split("-")
+        .map((subWord) => {
+          if (!subWord) return "";
+
+          if (subWord === subWord.toUpperCase()) {
+            return (
+              subWord.charAt(0).toUpperCase() + subWord.slice(1).toLowerCase()
+            );
+          }
+          return subWord.charAt(0).toUpperCase() + subWord.slice(1);
+        })
+        .join("-"),
+    )
+    .join(" ");
+}
