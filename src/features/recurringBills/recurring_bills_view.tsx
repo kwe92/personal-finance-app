@@ -1,3 +1,4 @@
+import React from "react";
 import "./recurring_bills_view.css";
 import "../shared/css/view_container.css";
 import documentIcon from "../../assets/images/icon-sort-mobile.svg";
@@ -13,16 +14,21 @@ import useWindowSize from "../shared/hooks/use_window_size";
 import { RecurringBillsListTile } from "./components/recurring_bills_list_tile";
 import { getBillCategory } from "../shared/utility/functions";
 import { Divider } from "../shared/components/divider";
+import Spinner from "../shared/components/spinner";
 
 export const RecurringBillsView = (): JSX.Element => {
   const toastService = ToastService.getInstance();
 
   const { windowWidth } = useWindowSize();
 
-  const { sortBy, setSortBy, setQueryString, queryString } =
-    useRecurringBillsViewData();
-
-  const { recurringBills } = useRecurringBillsViewData();
+  const {
+    sortBy,
+    setSortBy,
+    setQueryString,
+    queryString,
+    recurringBills,
+    isLoading,
+  } = useRecurringBillsViewData();
 
   var recurringBillsListTiles: JSX.Element[] = [];
 
@@ -64,14 +70,17 @@ export const RecurringBillsView = (): JSX.Element => {
                     toastService.toggleDropDownMenu(
                       0,
                       ".dropdown",
-                      ".drop-down-menu-content"
+                      ".drop-down-menu-content",
                     );
                   }}
                   onItemTap={setSortBy}
                 />
               </div>
             </div>
-            {windowWidth > 600 ? (
+
+            {isLoading ? (
+              <Spinner />
+            ) : windowWidth > 600 ? (
               <RecurringBillsTable />
             ) : (
               <div style={{ overflowY: "inherit" }}>
@@ -88,7 +97,7 @@ export const RecurringBillsView = (): JSX.Element => {
 function createRecurringBillsListTiles(recurringBills: TransactionData[]) {
   const listTiles = recurringBills.map((bill, i) => {
     return (
-      <>
+      <React.Fragment key={bill.id ?? i}>
         <RecurringBillsListTile
           bill={bill}
           billStatus={getBillCategory(bill)}
@@ -98,7 +107,7 @@ function createRecurringBillsListTiles(recurringBills: TransactionData[]) {
         ) : (
           <></>
         )}
-      </>
+      </React.Fragment>
     );
   });
 
