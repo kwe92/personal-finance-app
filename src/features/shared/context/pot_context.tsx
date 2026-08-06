@@ -1,19 +1,30 @@
-import { useContext, useEffect, useState } from "react";
-import { createContext } from "react";
-import appData from "../../../app/data.json";
+import { useContext, useEffect, useState, createContext } from "react";
+import {
+  createPot,
+  deletePot,
+  getPots,
+  updatePot,
+} from "../services/backend_service";
+import { useAuth } from "../../auth/context/auth_context";
 
-type SetPotsState = React.Dispatch<React.SetStateAction<PotData[]>>;
-
-const PotContext = createContext<{
+interface PotContextInterface {
   pots: PotData[];
   isLoading: boolean;
   error: string | null;
-  setPots: SetPotsState;
-}>({
+  setPots: React.Dispatch<React.SetStateAction<PotData[]>>;
+  deletePotHandler: (id: string) => Promise<void>;
+  addPotHandler: (payload: PotPayload) => Promise<PotData>;
+  updatePotHandler: (id: string, payload: PotPayload) => Promise<void>;
+}
+
+const PotContext = createContext<PotContextInterface>({
   pots: [],
   isLoading: true,
   error: null,
   setPots: () => {},
+  deletePotHandler: async () => {},
+  addPotHandler: async () => ({}) as PotData,
+  updatePotHandler: async () => {},
 });
 
 const PotProvider = ({
@@ -22,40 +33,82 @@ const PotProvider = ({
   children?: React.ReactNode;
 }): JSX.Element => {
   const [pots, setPots] = useState<PotData[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<any>(null);
+  const { user } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchPots = async () => {
     setIsLoading(true);
+    setError(null);
 
     try {
-      // comment to simulate a delay
-      setPots(appData.pots);
-
+      const response = await getPots();
+      setPots(response.pots ?? []);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to fetch pots");
+      setPots([]);
+    } finally {
       setIsLoading(false);
+    }
+  };
 
-      // uncomment to simulate a delay
+  const deletePotHandler = async (id: string) => {
+    try {
+      await deletePot(id);
+      setPots((prev) => prev.filter((pot) => pot.id !== id && pot.id !== id));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to delete pot");
+      throw err;
+    }
+  };
 
-      // await new Promise((_) =>
-      //   setTimeout(() => {
-      //     console.log("fetchPots 1");
-      //     setPots(appData.Pots);
-      //     setIsLoading(false);
-      //     console.log("fetchPots 2");
-      //   }, 2000)
-      // );
-    } catch (error) {
-      setError(error);
-      setIsLoading(false);
+  const addPotHandler = async (payload: PotPayload): Promise<PotData> => {
+    try {
+      const response = await createPot(payload);
+      const newPot = response.pot;
+      setPots((prev) => [newPot, ...prev]);
+      return newPot;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to add pot");
+      throw err;
+    }
+  };
+
+  const updatePotHandler = async (
+    id: string,
+    payload: PotPayload,
+  ): Promise<void> => {
+    try {
+      const response = await updatePot(id, payload);
+      const updatedPot = response.pot;
+
+      setPots((prevPots) =>
+        prevPots.map((pot) =>
+          pot.id === id || pot.id === id ? updatedPot : pot,
+        ),
+      );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to update pot");
+      throw err;
     }
   };
 
   useEffect(() => {
     fetchPots();
-  }, []);
+  }, [user]);
 
   return (
-    <PotContext.Provider value={{ pots, setPots, isLoading, error }}>
+    <PotContext.Provider
+      value={{
+        pots,
+        setPots,
+        deletePotHandler,
+        addPotHandler,
+        updatePotHandler,
+        isLoading,
+        error,
+      }}
+    >
       {children}
     </PotContext.Provider>
   );
