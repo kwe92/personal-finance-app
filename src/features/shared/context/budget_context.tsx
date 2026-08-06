@@ -65,22 +65,16 @@ const BudgetProvider = ({
     setBudgets((prev) => [newBudget, ...prev]);
     return newBudget;
   };
-
   const updateBudgetHandler = async (
     id: string,
     payload: BudgetPayload,
   ): Promise<void> => {
-    await updateBudget(id, payload);
+    const response = await updateBudget(id, payload);
+    const updatedBudget = response.budget;
 
     setBudgets((prevBudgets) =>
       prevBudgets.map((budget) =>
-        budget.id === id
-          ? {
-              ...budget,
-              ...payload,
-              updatedAt: new Date().toISOString(),
-            }
-          : budget,
+        budget.id === id || budget.id === id ? updatedBudget : budget,
       ),
     );
   };
