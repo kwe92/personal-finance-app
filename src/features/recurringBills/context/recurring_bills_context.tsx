@@ -14,6 +14,7 @@ const RecurringBillsViewContext = createContext<{
   setSortBy: (sortCategory: SortCategory) => void;
   queryString: string;
   setQueryString: React.ChangeEventHandler<HTMLInputElement>;
+  isLoading: boolean;
 }>({
   recurringBills: [],
   paidBills: [],
@@ -23,6 +24,7 @@ const RecurringBillsViewContext = createContext<{
   setSortBy: () => {},
   queryString: "",
   setQueryString: () => {},
+  isLoading: true,
 });
 
 const RecurringBillsViewProvider = ({
@@ -33,6 +35,7 @@ const RecurringBillsViewProvider = ({
   const [recurringBillsData, setRecurringBillsData] = useState<
     TransactionData[]
   >([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [sortBy, setSortBy] = useState<SortCategory>("Latest");
 
   const [queryString, setQueryString] = useState<string>("");
@@ -41,6 +44,8 @@ const RecurringBillsViewProvider = ({
     let isMounted = true;
 
     const fetchRecurringBills = async () => {
+      setIsLoading(true);
+
       try {
         const response = await getRecurringBills();
 
@@ -52,6 +57,10 @@ const RecurringBillsViewProvider = ({
       } catch (error) {
         if (isMounted) {
           setRecurringBillsData([]);
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
         }
       }
     };
@@ -86,6 +95,7 @@ const RecurringBillsViewProvider = ({
         setSortBy,
         queryString,
         setQueryString: handleQueryChange,
+        isLoading,
       }}
     >
       {children}
