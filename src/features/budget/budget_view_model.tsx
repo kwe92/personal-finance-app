@@ -4,25 +4,23 @@ export class BudgetViewModel {
   private constructor() {}
 
   static budgetCategoryExpendedAmount(transactions: TransactionData[]): number {
-    const expendedAmount = transactions.reduce((accumulator, transaction) => {
-      return accumulator + transaction.amount;
-    }, 0);
-
-    return expendedAmount;
+    if (!transactions || transactions.length === 0) return 0;
+    return transactions.reduce(
+      (accumulator, transaction) => accumulator + transaction.amount,
+      0,
+    );
   }
 
   static filterTransactionByBudgetCategory(
     transactions: TransactionData[],
-    budget: BudgetData
+    budget: BudgetData,
   ): TransactionData[] {
-    const filteredTransactionsByCategory = transactions?.filter(
-      (transaction) => {
-        return transaction.category === budget?.category;
-      }
+    if (!transactions || !budget) return [];
+
+    const filteredTransactionsByCategory = transactions.filter(
+      (transaction) => transaction.category === budget.category,
     );
 
-    filteredTransactionsByCategory?.sort((a, b) => sortByDate(a, b));
-
-    return filteredTransactionsByCategory ?? [];
+    return filteredTransactionsByCategory.sort((a, b) => sortByDate(a, b));
   }
 }

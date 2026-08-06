@@ -1,3 +1,4 @@
+import React from "react";
 import "./css/budget_summary.css";
 import { Doughnut } from "react-chartjs-2";
 import { SpendingSummaryListTile } from "./spending_summary_list_tile";
@@ -8,51 +9,36 @@ import { useDoughnutChartData } from "../../shared/context/doughnut_chart_contex
 
 export const BudgetSummary = (): JSX.Element => {
   const { budgets } = useBudgetData();
-
   const { transactions } = useTransactionData();
-
   const { doughnutChartOptions, doughnutChartData } = useDoughnutChartData();
 
   const maximumBudgetAmount = budgets?.reduce(
-    (accumulator, budget) => {
-      return (accumulator += budget.maximum);
-    },
-    0 // initial accumulator value
+    (accumulator, budget) => accumulator + budget.maximum,
+    0,
   );
 
-  const budgetCategories = budgets?.map((budget) => budget.category);
-
-  const filteredTransactionsByCategory = transactions?.filter((transaction) =>
-    budgetCategories?.includes(transaction.category)
+  const budgetCategories = new Set(
+    budgets?.map((budget) => budget.category) ?? [],
   );
 
-  let expendedAmount = 0;
+  const expendedAmount = (transactions ?? []).reduce((acc, transaction) => {
+    if (budgetCategories.has(transaction.category)) {
+      return acc + transaction.amount;
+    }
+    return acc;
+  }, 0);
 
-  // ensure data is not undefined before iterating over
-  if (filteredTransactionsByCategory) {
-    filteredTransactionsByCategory.forEach(
-      (transaction) => (expendedAmount += transaction.amount)
-    );
-  }
-  const latestBudgets = budgets?.slice(0, 4);
+  const latestBudgets = budgets?.slice(0, 4) ?? [];
 
-  // get the latest budgets at most 4
-  const spendingSummaryListTiles = latestBudgets
-    ?.slice(0, 4)
-    .map((budget, i) => {
-      return (
-        <>
-          <SpendingSummaryListTile budget={budget} />
-          {latestBudgets.length - 1 !== i ? <Divider /> : <></>}
-        </>
-      );
-    });
+  const spendingSummaryListTiles = latestBudgets.map((budget, i) => (
+    <React.Fragment key={budget.id || budget.category || i}>
+      <SpendingSummaryListTile budget={budget} />
+      {latestBudgets.length - 1 !== i && <Divider />}
+    </React.Fragment>
+  ));
 
   return (
-    // Budget summary main container
     <div className="budget-summary-main">
-      {/* Doughnut Chart */}
-
       <div className="budget-summary-chart-container">
         <Doughnut
           options={doughnutChartOptions}
@@ -60,17 +46,15 @@ export const BudgetSummary = (): JSX.Element => {
           style={{ padding: "0px", marginBottom: "10px" }}
         />
       </div>
-      <div className="budget-summary-total-spending">
-        <p className="budget-summary-bold-text"> Total Spending</p>
 
+      <div className="budget-summary-total-spending">
+        <p className="budget-summary-bold-text">Total Spending</p>
         <div>
-          {" "}
-          <p>${Math.abs(expendedAmount).toFixed(2)} </p>
+          <p>${Math.abs(expendedAmount).toFixed(2)}</p>
           <p>of ${maximumBudgetAmount?.toFixed(2)} limit</p>
         </div>
       </div>
 
-      {/* spending summary section */}
       <div className="budget-spending-summary">
         <p className="budget-summary-bold-text">Spending Summary</p>
         {spendingSummaryListTiles}

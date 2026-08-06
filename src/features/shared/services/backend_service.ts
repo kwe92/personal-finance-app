@@ -108,7 +108,7 @@ export async function getBudgets() {
 }
 
 export async function updateBudget(id: string, payload: BudgetPayload) {
-  return apiRequest<{ message: string }>(`/api/budgets/${id}`, {
+  return apiRequest<{ message: string; budget: BudgetData }>(`/api/budgets/${id}`, {
     method: 'PUT',
     body: JSON.stringify(payload),
   });

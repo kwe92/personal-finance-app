@@ -1,19 +1,18 @@
 import { useNavigate } from "react-router";
-import signOutIcon from "../../../assets/images/sign_out_icon.svg";
 import "./css/sign_out_button.css";
-
-// TODO: set log in status to logged out and clear any cached tokens for real users
+import { useAuth } from "../../auth/context/auth_context";
 
 export const SignOutButton = (): JSX.Element => {
   const navigate = useNavigate();
+  const { logout } = useAuth();
   return (
     <div
       className="sign-out-button"
       onClick={(event) => {
+        logout();
         navigate("/auth/login");
       }}
     >
-      {/* <img src={signOutIcon} /> */}
       <svg
         version="1.0"
         xmlns="http://www.w3.org/2000/svg"

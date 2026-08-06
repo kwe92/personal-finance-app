@@ -10,22 +10,25 @@ import { ModalDropDownMenu } from "../../shared/components/modal_drop_down_menu"
 import { ToastService } from "../../shared/services/toast_service";
 import { ModalId } from "../../../app/constants/constants";
 import { useFormErrorData } from "../../shared/context/form_error_context";
+import { ColorTagDropdownItem } from "../../shared/components/color_tag_drop_down_item";
+import { Divider } from "../../shared/components/divider";
 
 export const BudgetModal = (): JSX.Element => {
   const toastService = ToastService.getInstance();
-
   const { addBudgetHandler, updateBudgetHandler } = useBudgetData();
 
   const {
-    categoryContent,
-    colorTagContent,
+    filteredCategoryList,
+    budgetColorTags,
     selectedBudgetCategory,
-    resetBudgetModalData,
+    setSelectedBudgetCategory,
     selectedColorTag,
+    setSelectedColorTag,
     maxSpending,
     setMaxSpending,
-    editBudet,
+    editBudget,
     budgetToEdit,
+    resetBudgetModalData,
   } = useBudgetViewData();
 
   const {
@@ -37,44 +40,139 @@ export const BudgetModal = (): JSX.Element => {
     setBudgetModalColorTagError,
   } = useFormErrorData();
 
+  const categoryContent = filteredCategoryList.map((category, i) => (
+    <div key={category}>
+      <li
+        style={{
+          padding: "12px 0 12px 0",
+          fontWeight: selectedBudgetCategory === category ? "bold" : "normal",
+          cursor: "pointer",
+        }}
+        onClick={() => setSelectedBudgetCategory(category)}
+      >
+        {category}
+      </li>
+      {filteredCategoryList.length - 1 !== i && <Divider />}
+    </div>
+  ));
+
+  const colorTagContent = budgetColorTags.map((colorTag, i) => (
+    <div key={colorTag.theme || i}>
+      <li
+        style={{
+          padding: "12px 0 12px 0",
+          cursor: colorTag.isInUse ? "not-allowed" : "pointer",
+        }}
+        onClick={() => {
+          if (!colorTag.isInUse) setSelectedColorTag(colorTag);
+        }}
+      >
+        <ColorTagDropdownItem
+          name={colorTag.name}
+          theme={colorTag.theme}
+          isInUse={colorTag.isInUse}
+        />
+      </li>
+      {budgetColorTags.length - 1 !== i && <Divider />}
+    </div>
+  ));
+
+  function closeModal() {
+    toastService.closeModal(ModalId.budgetModal);
+    resetBudgetModalData();
+  }
+
+  function toggleMenu(index: number) {
+    toastService.toggleDropDownMenu(
+      index,
+      ".modal-drop-down-menu",
+      ".modal-drop-down-menu-content",
+    );
+  }
+
+  function isValidFormData() {
+    const validMaxSpending = Number(maxSpending) > 0;
+    const validBudgetCategory = selectedBudgetCategory.length > 0;
+    const validColorTag =
+      selectedColorTag.theme !== "transparent" && selectedColorTag.theme !== "";
+
+    if (!validBudgetCategory) setBudgetModalBudgetCategoryError(true);
+    if (!validMaxSpending) setBudgetModalMaxSpendingError(true);
+    if (!validColorTag) setBudgetModalColorTagError(true);
+
+    return validMaxSpending && validBudgetCategory && validColorTag;
+  }
+
+  async function addNewBudgetItem() {
+    try {
+      await addBudgetHandler({
+        category: selectedBudgetCategory,
+        maximum: Number(maxSpending),
+        theme: selectedColorTag.theme,
+      });
+    } catch (error) {
+      console.error("Failed to add budget item:", error);
+    }
+  }
+
+  async function editExistingBudgetItem() {
+    if (!budgetToEdit?.id) return;
+
+    try {
+      await updateBudgetHandler(budgetToEdit.id, {
+        category: selectedBudgetCategory,
+        maximum: Number(maxSpending),
+        theme: selectedColorTag.theme,
+      });
+    } catch (err) {
+      console.error("Failed to update budget item:", err);
+    }
+  }
+
+  async function handleBudgetCard() {
+    if (isValidFormData()) {
+      if (editBudget) {
+        await editExistingBudgetItem();
+      } else {
+        await addNewBudgetItem();
+      }
+      closeModal();
+    }
+  }
+
   return (
     <div className="base-modal">
       <div className="base-modal-header">
-        <p>{!editBudet ? "Add New Budget" : "Edit Budget"}</p>
-
+        <p>{!editBudget ? "Add New Budget" : "Edit Budget"}</p>
         <CloseModalButton onTap={closeModal} />
       </div>
 
       <p style={{ fontSize: "14px", color: "#696868" }}>
-        {!editBudet
+        {!editBudget
           ? "Choose a category to set a spending budget. These categories can help you monitor spending."
           : "As your budgets change, feel free to update your spending limits."}
       </p>
+
       <form
         style={{
           display: "flex",
           flexDirection: "column",
           gap: "16px",
         }}
-        onSubmit={(e) => {
-          e.preventDefault(); // prevent form default behavior, add custom frontend form handling
-        }}
+        onSubmit={(e) => e.preventDefault()}
       >
         <div>
           <ModalDropDownMenu
             label="Budget Category"
-            content={categoryContent ?? []}
+            content={categoryContent}
             initialValue={selectedBudgetCategory}
             toggleMenu={() => {
               setBudgetModalBudgetCategoryError(false);
               toggleMenu(0);
             }}
           />
-
-          {budgetModalBudgetCategoryError ? (
+          {budgetModalBudgetCategoryError && (
             <p className="error-text">Select a budget category</p>
-          ) : (
-            <></>
           )}
         </div>
 
@@ -90,11 +188,8 @@ export const BudgetModal = (): JSX.Element => {
               setMaxSpending(parseStringToCurrency(event.target.value));
             }}
           />
-
-          {budgetModalMaxSpendingError ? (
+          {budgetModalMaxSpendingError && (
             <p className="error-text">Set maximum spending amount</p>
-          ) : (
-            <></>
           )}
         </div>
 
@@ -104,97 +199,21 @@ export const BudgetModal = (): JSX.Element => {
             label="Color Tag"
             tagColor={selectedColorTag?.theme ?? ""}
             initialValue={selectedColorTag?.name ?? ""}
-            content={colorTagContent ?? []}
+            content={colorTagContent}
             toggleMenu={() => {
               setBudgetModalColorTagError(false);
               toggleMenu(1);
             }}
           />
-
-          {budgetModalColorTagError ? (
+          {budgetModalColorTagError && (
             <p className="error-text">Select a color tag</p>
-          ) : (
-            <></>
           )}
         </div>
       </form>
 
       <MainButton onTap={handleBudgetCard} disabled={false}>
-        {!editBudet ? "Add Budget" : "Save Changes"}
+        {!editBudget ? "Add Budget" : "Save Changes"}
       </MainButton>
     </div>
   );
-
-  function handleBudgetCard() {
-    if (isValidFormData()) {
-      if (editBudet) {
-        editExistingBudgetItem();
-      } else {
-        addNewBudgetItem();
-      }
-      closeModal();
-    }
-  }
-
-  async function addNewBudgetItem() {
-    try {
-      await addBudgetHandler({
-        category: selectedBudgetCategory,
-        maximum: Number(maxSpending),
-        theme: selectedColorTag!.theme,
-      });
-
-      // (Optional) Reset form fields or close modal here
-    } catch (error) {
-      console.error("Failed to add budget item:", error);
-    }
-  }
-
-  async function editExistingBudgetItem() {
-    if (!budgetToEdit?.id) return;
-
-    try {
-      await updateBudgetHandler(budgetToEdit.id, {
-        category: selectedBudgetCategory,
-        maximum: Number(maxSpending),
-        theme: selectedColorTag!.theme,
-      });
-
-      // Close modal or reset fields here
-    } catch (err) {
-      console.error("Failed to update budget item:", err);
-    }
-  }
-
-  function isValidFormData() {
-    const validMaxSpending = Number(maxSpending) > 0;
-
-    const validBudgetCategory = selectedBudgetCategory.length > 0;
-
-    const validColorTag = selectedColorTag.theme !== "transparent";
-
-    if (!validBudgetCategory) {
-      setBudgetModalBudgetCategoryError(true);
-    }
-    if (!validMaxSpending) {
-      setBudgetModalMaxSpendingError(true);
-    }
-    if (!validColorTag) {
-      setBudgetModalColorTagError(true);
-    }
-    return validMaxSpending && validBudgetCategory && validColorTag;
-  }
-
-  function closeModal() {
-    toastService.closeModal(ModalId.budgetModal);
-    resetBudgetModalData();
-  }
-
-  function toggleMenu(index: number) {
-    toastService.toggleDropDownMenu(
-      index,
-      ".modal-drop-down-menu",
-      ".modal-drop-down-menu-content",
-    );
-  }
 };

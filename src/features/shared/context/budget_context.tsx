@@ -7,7 +7,7 @@ import {
 } from "../services/backend_service";
 import { useAuth } from "../../auth/context/auth_context";
 
-const BudgetContext = createContext<{
+interface BudgetContextInterface {
   budgets: BudgetData[];
   isLoading: boolean;
   error: string | null;
@@ -15,7 +15,9 @@ const BudgetContext = createContext<{
   deleteBudgetHandler: (id: string) => Promise<void>;
   addBudgetHandler: (payload: BudgetPayload) => Promise<BudgetData>;
   updateBudgetHandler: (id: string, payload: BudgetPayload) => Promise<void>;
-}>({
+}
+
+const BudgetContext = createContext<BudgetContextInterface>({
   budgets: [],
   isLoading: true,
   error: null,
@@ -33,16 +35,17 @@ const BudgetProvider = ({
   const [budgets, setBudgets] = useState<BudgetData[]>([]);
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchBudgets = async () => {
     setIsLoading(true);
+    setError(null);
 
     try {
       const response = await getBudgets();
       setBudgets(response.budgets ?? []);
-    } catch (error) {
-      setError(error);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to fetch budgets");
       setBudgets([]);
     } finally {
       setIsLoading(false);
@@ -50,7 +53,7 @@ const BudgetProvider = ({
   };
 
   const deleteBudgetHandler = async (id: string) => {
-    await deleteBudget(id ?? "");
+    await deleteBudget(id);
     setBudgets((prev) => prev.filter((budget) => budget.id !== id));
   };
 
@@ -62,23 +65,16 @@ const BudgetProvider = ({
     setBudgets((prev) => [newBudget, ...prev]);
     return newBudget;
   };
-
   const updateBudgetHandler = async (
     id: string,
     payload: BudgetPayload,
   ): Promise<void> => {
-    await updateBudget(id, payload);
+    const response = await updateBudget(id, payload);
+    const updatedBudget = response.budget;
 
-    // Automatically update local state so charts and lists re-render cleanly
     setBudgets((prevBudgets) =>
       prevBudgets.map((budget) =>
-        budget.id === id
-          ? {
-              ...budget,
-              ...payload,
-              updatedAt: new Date().toISOString(),
-            }
-          : budget,
+        budget.id === id || budget.id === id ? updatedBudget : budget,
       ),
     );
   };
