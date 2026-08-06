@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import "./css/overview_bills_section.css";
 
 import OverviewSectionHeader from "./overview_section_header";
 import { billsByCategory, sumOfBills } from "../../shared/utility/functions";
 import { getRecurringBills } from "../../shared/services/backend_service";
+import Skeleton from "../../shared/components/skeleton";
 
 // NOTE: note styles are for 1440px!!!!! medium laptop
 // ! TODO: use recurring bills context
@@ -69,19 +70,19 @@ export const OverviewBillsSection = (): JSX.Element => {
       <div className="overview-bills-section-content">
         <OverviewRecurringBillsListTile
           name="Paid Bills"
-          amount={isLoading ? "Loading..." : sumOfBillsPaid}
+          amount={isLoading ? <Skeleton /> : sumOfBillsPaid}
           tabColor="#277C78"
         />
 
         <OverviewRecurringBillsListTile
           name="Total Upcoming"
-          amount={isLoading ? "Loading..." : sumOfBillsUpcoming}
+          amount={isLoading ? <Skeleton /> : sumOfBillsUpcoming}
           tabColor="#F2CDAC"
         />
 
         <OverviewRecurringBillsListTile
           name="Due Soon"
-          amount={isLoading ? "Loading..." : sumOfBillsDueSoon}
+          amount={isLoading ? <Skeleton /> : sumOfBillsDueSoon}
           tabColor="#82C9D7"
         />
       </div>
@@ -95,7 +96,7 @@ const OverviewRecurringBillsListTile = ({
   tabColor,
 }: {
   name: string;
-  amount: number | string;
+  amount: React.ReactNode;
   tabColor: string;
 }): JSX.Element => {
   return (
@@ -105,7 +106,7 @@ const OverviewRecurringBillsListTile = ({
     >
       <div className="overview-recurring-bills-list-tile-content">
         <p style={{ fontSize: "14px", color: "#696868" }}>{name}</p>
-        <p style={{ fontSize: "14px", fontWeight: "bold" }}>
+        <p className="overview-recurring-bills-list-tile-amount">
           {typeof amount === "number" ? `$${amount.toFixed(2)}` : amount}
         </p>
       </div>
