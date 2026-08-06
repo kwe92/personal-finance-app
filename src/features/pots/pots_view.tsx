@@ -14,18 +14,26 @@ import { PotsTransactionModal } from "./components/pot_transaction_modal";
 
 export const PotsView = (): JSX.Element => {
   const modalId = ModalId.potModal;
-
   const toastService = ToastService.getInstance();
 
-  const { pots, setPots } = usePotData();
-
+  const { pots, deletePotHandler } = usePotData();
   const { resetPotModalData, potToDelete } = usePotViewData();
 
-  var potCards: React.ReactNode[] = [];
+  const potCards = pots?.map((potData, i) => (
+    <PotCard key={potData.id ?? potData.id ?? i} pot={potData} />
+  ));
 
-  potCards = pots.map((potData, i) => {
-    return <PotCard pot={potData} />;
-  });
+  async function handleDeletePot() {
+    const targetId = potToDelete?.id ?? potToDelete?.id;
+    if (!targetId) return;
+
+    try {
+      await deletePotHandler(targetId);
+      resetPotModalData();
+    } catch (err) {
+      console.error("Failed to delete pot:", err);
+    }
+  }
 
   return (
     <div className="view-container" style={{ overflowY: "scroll" }}>
@@ -60,11 +68,4 @@ export const PotsView = (): JSX.Element => {
       </ModalWrapper>
     </div>
   );
-
-  function handleDeletePot() {
-    const updatedPots = pots?.filter((currentPotItem) => {
-      return currentPotItem !== potToDelete;
-    });
-    setPots(updatedPots!);
-  }
 };

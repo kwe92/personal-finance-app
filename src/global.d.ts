@@ -10,6 +10,27 @@ declare module "*.jpeg";
 
 // Interfaces
 
+interface OverviewSummary {
+  balance: number;
+  income: number;
+  expenses: number;
+  savings: number;
+}
+
+interface RecurringBillsResponse {
+  recurringBills: TransactionData[];
+  summary?: OverviewSummary;
+}
+
+interface ColorTagDropDownItemData {
+  name: string;
+  theme: string;
+  isInUse: boolean;
+}
+
+
+// Transaction Interfaces
+
 interface TransactionData {
   id?: string;
   avatar: string;
@@ -24,28 +45,12 @@ interface TransactionData {
   status?: "paid" | "upcoming" | "due";
 }
 
-interface OverviewSummary {
-  balance: number;
-  income: number;
-  expenses: number;
-  savings: number;
-}
-
 interface TransactionsResponse {
   transactions: TransactionData[];
   summary?: OverviewSummary;
 }
 
-interface RecurringBillsResponse {
-  recurringBills: TransactionData[];
-  summary?: OverviewSummary;
-}
-
-interface ColorTagDropDownItemData {
-  name: string;
-  theme: string;
-  isInUse: boolean;
-}
+// Budget Interfaces
 
 interface BudgetData {
   id?: string;
@@ -62,20 +67,30 @@ interface BudgetPayload {
   theme: string;
 }
 
-
-interface DateObject {
-  date: string;
+// Pot Interfaces
+interface PotData {
+  id?: string;
+  name: string;
+  target: number;
+  total: number;
+  theme: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
-interface PotData {
+interface PotPayload {
   name: string;
   target: number;
   total: number;
   theme: string;
 }
 
-// Types
 
+interface DateObject {
+  date: string;
+}
+
+// Types as ENUMS
 type RecurringBillCategory = "paid" | "upcoming" | "due";
 
 type SortCategory =

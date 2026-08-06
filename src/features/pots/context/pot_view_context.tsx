@@ -1,34 +1,31 @@
-import { createContext, useContext, useState } from "react";
-import { Pot } from "../../shared/models/pot";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { ColorTagDropDownItem } from "../../shared/models/colored_tag_drop_down_item";
 import { usePotData } from "../../shared/context/pot_context";
 import { colorTagData } from "../../../app/constants/constants";
-import { ColorTagDropdownItem } from "../../shared/components/color_tag_drop_down_item";
-import { Divider } from "../../shared/components/divider";
 import { useFormErrorData } from "../../shared/context/form_error_context";
 
-interface potViewContextInterface {
+interface PotViewContextInterface {
   potName: string;
   target: string;
   total: string;
-  selectedColorTag: ColorTagDropDownItemData;
+  selectedColorTag: ColorTagDropDownItem;
   editPot: boolean;
   isWithdrawal: boolean;
   potToEdit: PotData;
   potToDelete: PotData;
-  colorTagContent: JSX.Element[];
   potColorTags: ColorTagDropDownItem[];
   transactionAmount: string;
-  setPotName: Function;
-  setTarget: Function;
-  setTotal: Function;
-  setSelectedColorTag: Function;
-  setEditPot: Function;
-  setIsWithdrawal: Function;
-  setPotToEdit: Function;
-  setPotToDelete: Function;
-  setTransactionAmount: Function;
-  resetPotModalData: Function;
+  setPotName: (name: string) => void;
+  setTarget: (target: string) => void;
+  setTotal: (total: string) => void;
+  setSelectedColorTag: (colorTag: ColorTagDropDownItem) => void;
+  setEditPot: (edit: boolean) => void;
+  setIsWithdrawal: (isWithdrawal: boolean) => void;
+  setPotToEdit: (pot: PotData) => void;
+  setPotToDelete: (pot: PotData) => void;
+  setTransactionAmount: (amount: string) => void;
+  resetPotModalData: () => void;
+  populateEditForm: (pot: PotData) => void;
 }
 
 const defaultColorTag = new ColorTagDropDownItem({
@@ -37,13 +34,14 @@ const defaultColorTag = new ColorTagDropDownItem({
   isInUse: false,
 });
 
-const defaultPot = new Pot({
+const defaultPot: PotData = {
   name: "",
   target: 0,
   total: 0,
   theme: "transparent",
-});
-const PotViewContext = createContext<potViewContextInterface>({
+};
+
+const PotViewContext = createContext<PotViewContextInterface>({
   potName: "",
   target: "",
   total: "",
@@ -52,7 +50,6 @@ const PotViewContext = createContext<potViewContextInterface>({
   isWithdrawal: false,
   potToEdit: defaultPot,
   potToDelete: defaultPot,
-  colorTagContent: [],
   potColorTags: [],
   transactionAmount: "",
   setPotName: () => {},
@@ -65,6 +62,7 @@ const PotViewContext = createContext<potViewContextInterface>({
   setPotToDelete: () => {},
   setTransactionAmount: () => {},
   resetPotModalData: () => {},
+  populateEditForm: () => {},
 });
 
 const PotViewProvider = ({
@@ -72,64 +70,64 @@ const PotViewProvider = ({
 }: {
   children: React.ReactNode;
 }): JSX.Element => {
-  const [potName, setPotName] = useState<string>("");
-
-  const [target, setTarget] = useState<string>("");
-
-  const [total, setTotal] = useState<string>("");
-
-  const [selectedColorTag, setSelectedColorTag] =
-    useState<ColorTagDropDownItemData>(defaultColorTag);
-
-  const [editPot, setEditPot] = useState<boolean>(false);
-
-  const [isWithdrawal, setIsWithdrawal] = useState<boolean>(false);
-
-  const [potToEdit, setPotToEdit] = useState<PotData>(defaultPot);
-
-  const [potToDelete, setPotToDelete] = useState<PotData>(defaultPot);
-
-  const [transactionAmount, setTransactionAmount] = useState<string>("");
-
   const { pots } = usePotData();
-
   const { resetPotModalErrors } = useFormErrorData();
 
-  const alreadyUsedColorTags = new Set(pots?.map((pot) => pot.theme));
+  const [potName, setPotName] = useState<string>("");
+  const [target, setTarget] = useState<string>("");
+  const [total, setTotal] = useState<string>("");
+  const [selectedColorTag, setSelectedColorTag] =
+    useState<ColorTagDropDownItem>(defaultColorTag);
+  const [editPot, setEditPot] = useState<boolean>(false);
+  const [isWithdrawal, setIsWithdrawal] = useState<boolean>(false);
+  const [potToEdit, setPotToEdit] = useState<PotData>(defaultPot);
+  const [potToDelete, setPotToDelete] = useState<PotData>(defaultPot);
+  const [transactionAmount, setTransactionAmount] = useState<string>("");
 
-  const potColorTags = colorTagData.map((json) =>
-    ColorTagDropDownItem.fromJSON(json)
-  );
+  // Derived color tags list (without direct mutations)
+  const potColorTags = useMemo(() => {
+    const alreadyUsedColorTags = new Set(pots?.map((pot) => pot.theme));
 
-  // mark color as used if in the list of budgets
-  potColorTags.forEach((colorTagItem) => {
-    if (alreadyUsedColorTags?.has(colorTagItem.theme)) {
-      colorTagItem.isInUse = true;
-    }
-  });
+    return colorTagData
+      .map((json) => {
+        const item = ColorTagDropDownItem.fromJSON(json);
+        if (alreadyUsedColorTags.has(item.theme)) {
+          item.isInUse = true;
+        }
+        return item;
+      })
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }, [pots]);
 
-  potColorTags.sort((a, b) => a.name.localeCompare(b.name));
+  const resetPotModalData = () => {
+    setEditPot(false);
+    setIsWithdrawal(false);
+    setPotToEdit(defaultPot);
+    setPotToDelete(defaultPot);
+    setPotName("");
+    setSelectedColorTag(defaultColorTag);
+    setTarget("");
+    setTotal("");
+    setTransactionAmount("");
+    resetPotModalErrors();
+  };
 
-  const colorTagContent = potColorTags?.map((colorTag, i) => (
-    <div>
-      <li
-        key={i}
-        style={{
-          padding: "12px 0 12px 0",
-        }}
-        onClick={() => {
-          if (!colorTag.isInUse) setSelectedColorTag(colorTag);
-        }}
-      >
-        <ColorTagDropdownItem
-          name={colorTag.name}
-          theme={colorTag.theme}
-          isInUse={colorTag.isInUse}
-        />
-      </li>
-      {potColorTags.length - 1 !== i ? <Divider /> : <></>}
-    </div>
-  ));
+  const populateEditForm = (pot: PotData) => {
+    setEditPot(true);
+    setPotToEdit(pot);
+    setPotName(pot.name);
+    setTarget(pot.target.toString());
+    setTotal(pot.total.toString());
+
+    const matchingTag = potColorTags.find(
+      (colorTag) => colorTag.theme === pot.theme,
+    );
+    setSelectedColorTag(matchingTag ?? defaultColorTag);
+  };
+
+  useEffect(() => {
+    resetPotModalData();
+  }, []);
 
   return (
     <PotViewContext.Provider
@@ -142,7 +140,6 @@ const PotViewProvider = ({
         isWithdrawal,
         potToEdit,
         potToDelete,
-        colorTagContent,
         potColorTags,
         transactionAmount,
         setPotName,
@@ -155,24 +152,12 @@ const PotViewProvider = ({
         setPotToDelete,
         setTransactionAmount,
         resetPotModalData,
+        populateEditForm,
       }}
     >
       {children}
     </PotViewContext.Provider>
   );
-
-  function resetPotModalData() {
-    setEditPot(false);
-    setIsWithdrawal(false);
-    setPotToEdit(defaultPot);
-    setPotToDelete(defaultPot);
-    setPotName("");
-    setSelectedColorTag(defaultColorTag);
-    setTarget("");
-    setTotal("");
-    setTransactionAmount("");
-    resetPotModalErrors();
-  }
 };
 
 const usePotViewData = () => useContext(PotViewContext);

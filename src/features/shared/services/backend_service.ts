@@ -82,25 +82,27 @@ export async function setAccessToken(payload: { publicToken: string; userId?: st
     }),
   });
 }
-
+// Transaction API
 export async function getTransactions(payload: { userId?: string } = {}) {
   return apiRequest<TransactionsResponse>('/api/plaid/transactions', {
     method: 'POST',
     body: JSON.stringify(payload),
   });
 }
-
+// Bills API
 export async function getRecurringBills() {
   return apiRequest<RecurringBillsResponse>('/api/plaid/recurring-bills', {
     method: 'GET'  });
 }
 
+// Overview API
 export async function getOverviewSummary() {
   return apiRequest<OverviewSummary>('/api/plaid/overview-summary', {
     method: 'GET'
   });
 }
 
+// Budget API
 export async function getBudgets() {
   return apiRequest<{ budgets: BudgetData[] }>('/api/budgets', {
     method: 'GET',
@@ -124,5 +126,32 @@ export async function createBudget(payload: BudgetPayload) {
   return apiRequest<{ message: string; budget: BudgetData }>('/api/budgets', {
     method: 'POST',
     body: JSON.stringify(payload),
+  });
+}
+
+// Pot API
+export async function getPots() {
+  return apiRequest<{ pots: PotData[] }>('/api/pots', {
+    method: 'GET',
+  });
+}
+
+export async function createPot(payload: PotPayload) {
+  return apiRequest<{ message: string; pot: PotData }>('/api/pots', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function updatePot(id: string, payload: PotPayload) {
+  return apiRequest<{ message: string; pot: PotData }>(`/api/pots/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function deletePot(id: string) {
+  return apiRequest<{ message: string }>(`/api/pots/${id}`, {
+    method: 'DELETE',
   });
 }
