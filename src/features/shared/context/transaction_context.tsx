@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { createContext } from "react";
 import { getTransactions } from "../services/backend_service";
 import { useAuth } from "../../auth/context/auth_context";
+import { cleanName } from "../utility/functions";
 
 const TransactionContext = createContext<{
   transactions: TransactionData[] | null;
@@ -33,7 +34,12 @@ const TransactionProvider = ({
 
     try {
       const response = await getTransactions();
-      setTransactions(response.transactions ?? []);
+      setTransactions(
+        response.transactions.map((transaction) => ({
+          ...transaction,
+          name: cleanName(transaction.name),
+        })) ?? [],
+      );
     } catch (error) {
       setError(error);
       setTransactions([]);
