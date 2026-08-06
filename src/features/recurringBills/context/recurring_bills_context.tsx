@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { getRecurringBills } from "../../shared/services/backend_service";
 import {
   billsByCategory,
+  cleanName,
   sortTransactions,
 } from "../../shared/utility/functions";
 
@@ -52,8 +53,12 @@ const RecurringBillsViewProvider = ({
         if (!isMounted) {
           return;
         }
-
-        setRecurringBillsData(response.recurringBills ?? []);
+        setRecurringBillsData(
+          response.recurringBills.map((recurringBill) => ({
+            ...recurringBill,
+            name: cleanName(recurringBill.name),
+          })) ?? [],
+        );
       } catch (error) {
         if (isMounted) {
           setRecurringBillsData([]);
