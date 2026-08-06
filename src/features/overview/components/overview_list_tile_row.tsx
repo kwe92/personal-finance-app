@@ -23,7 +23,11 @@ const OverviewListTileRow = (): JSX.Element => {
       <OverviewListTile
         title="Current Balance"
         content={
-          isDataLoading ? <Skeleton /> : formatCurrency(availableBalance)
+          isDataLoading ? (
+            <Skeleton width={"60%"} />
+          ) : (
+            formatCurrency(availableBalance)
+          )
         }
         isInvertedColors={true}
       />
@@ -31,14 +35,22 @@ const OverviewListTileRow = (): JSX.Element => {
       <OverviewListTile
         title="Income"
         content={
-          isSummaryLoading ? <Skeleton /> : formatCurrency(summary.income)
+          isSummaryLoading ? (
+            <Skeleton width={"60%"} />
+          ) : (
+            formatCurrency(summary.income)
+          )
         }
       />
 
       <OverviewListTile
         title="Expenses"
         content={
-          isSummaryLoading ? <Skeleton /> : formatCurrency(summary.expenses)
+          isSummaryLoading ? (
+            <Skeleton width={"60%"} />
+          ) : (
+            formatCurrency(summary.expenses)
+          )
         }
       />
     </div>
