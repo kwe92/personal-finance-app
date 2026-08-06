@@ -5,14 +5,15 @@ import { ModalDropDownMenu } from "../../shared/components/modal_drop_down_menu"
 import TextFormField from "../../shared/components/text_form_field";
 import { useFormErrorData } from "../../shared/context/form_error_context";
 import { usePotData } from "../../shared/context/pot_context";
-import { Pot } from "../../shared/models/pot";
 import { ToastService } from "../../shared/services/toast_service";
 import { usePotViewData } from "../context/pot_view_context";
+import { ColorTagDropdownItem } from "../../shared/components/color_tag_drop_down_item";
+import { Divider } from "../../shared/components/divider";
 
-export const PotModal = () => {
+export const PotModal = (): JSX.Element => {
   const toastService = ToastService.getInstance();
 
-  const { pots, setPots } = usePotData();
+  const { addPotHandler, updatePotHandler } = usePotData();
 
   const {
     potName,
@@ -21,7 +22,8 @@ export const PotModal = () => {
     target,
     setTarget,
     selectedColorTag,
-    colorTagContent,
+    setSelectedColorTag,
+    potColorTags,
     resetPotModalData,
     editPot,
   } = usePotViewData();
@@ -35,11 +37,31 @@ export const PotModal = () => {
     setPotModalColorTagError,
   } = useFormErrorData();
 
+  const colorTagContent = potColorTags.map((colorTag, i) => (
+    <div key={colorTag.theme || i}>
+      <li
+        style={{
+          padding: "12px 0 12px 0",
+          cursor: colorTag.isInUse ? "not-allowed" : "pointer",
+        }}
+        onClick={() => {
+          if (!colorTag.isInUse) setSelectedColorTag(colorTag);
+        }}
+      >
+        <ColorTagDropdownItem
+          name={colorTag.name}
+          theme={colorTag.theme}
+          isInUse={colorTag.isInUse}
+        />
+      </li>
+      {potColorTags.length - 1 !== i && <Divider />}
+    </div>
+  ));
+
   return (
     <div className="base-modal">
       <div className="base-modal-header">
         <p>{!editPot ? "Add New Pot" : "Edit Pot"}</p>
-
         <CloseModalButton onTap={closeModal} />
       </div>
 
@@ -48,15 +70,14 @@ export const PotModal = () => {
           ? "Create a pot to set savings targets. These can help keep you on track as you save for special purchases."
           : "If your saving targets change, feel free to update your pots."}
       </p>
+
       <form
         style={{
           display: "flex",
           flexDirection: "column",
           gap: "16px",
         }}
-        onSubmit={(e) => {
-          e.preventDefault(); // prevent form default behavior, add custom frontend form handling
-        }}
+        onSubmit={(e) => e.preventDefault()}
       >
         <div>
           <TextFormField
@@ -70,10 +91,8 @@ export const PotModal = () => {
               setPotName(event.target.value);
             }}
           />
-          {potModalNameError ? (
+          {potModalNameError && (
             <p className="error-text">Name field can not be empty</p>
-          ) : (
-            <></>
           )}
         </div>
 
@@ -89,10 +108,8 @@ export const PotModal = () => {
               setTarget(event.target.value);
             }}
           />
-          {potModalTargetError ? (
+          {potModalTargetError && (
             <p className="error-text">Set a valid target value</p>
-          ) : (
-            <></>
           )}
         </div>
 
@@ -108,15 +125,13 @@ export const PotModal = () => {
               toggleMenu(0);
             }}
           />
-          {potModalColorTagError ? (
+          {potModalColorTagError && (
             <p className="error-text">Select a color tag</p>
-          ) : (
-            <></>
           )}
         </div>
       </form>
 
-      <MainButton onTap={handlePotModalSubmit}>
+      <MainButton onTap={handlePotModalSubmit} disabled={false}>
         {!editPot ? "Add Pot" : "Save Changes"}
       </MainButton>
     </div>
@@ -126,74 +141,61 @@ export const PotModal = () => {
     toastService.toggleDropDownMenu(
       index,
       ".modal-drop-down-menu",
-      ".modal-drop-down-menu-content"
+      ".modal-drop-down-menu-content",
     );
   }
 
-  function handlePotModalSubmit() {
-    if (isValidFormData()) {
-      if (editPot) {
-        handleEditPot();
-      } else {
-        handleAddNewPot();
-      }
-      closeModal();
-    }
-  }
-
   function isValidFormData(): boolean {
-    const validName = potName.length > 0;
-
+    const validName = potName.trim().length > 0;
     const validPotTarget = Number(target) > 0;
+    const validColorTag =
+      selectedColorTag.theme !== "transparent" && selectedColorTag.theme !== "";
 
-    const validColorTag = selectedColorTag.theme !== "transparent";
+    if (!validName) setPotModalNameError(true);
+    if (!validPotTarget) setPotModalTargetError(true);
+    if (!validColorTag) setPotModalColorTagError(true);
 
-    if (!validName) {
-      setPotModalNameError(true);
-    }
-    if (!validPotTarget) {
-      setPotModalTargetError(true);
-    }
-    if (!validColorTag) {
-      setPotModalColorTagError(true);
-    }
     return validName && validPotTarget && validColorTag;
   }
 
-  function handleAddNewPot() {
-    setPots((previousPots) => {
-      return [
-        new Pot({
-          name: potName,
-          target: Number(Number(target).toFixed(2)),
-          total: 0,
-          theme: selectedColorTag.theme,
-        }),
-        ...(previousPots ?? []),
-      ];
-    });
+  async function handleAddNewPot() {
+    try {
+      await addPotHandler({
+        name: potName,
+        target: Number(target),
+        total: 0,
+        theme: selectedColorTag.theme,
+      });
+    } catch (error) {
+      console.error("Failed to add pot:", error);
+    }
   }
 
-  function handleEditPot() {
-    const indexOfItemToUpdate = pots!.indexOf(potToEdit);
+  async function handleEditPot() {
+    const targetId = potToEdit?.id ?? potToEdit?.id;
+    if (!targetId) return;
 
-    const updatedPot = new Pot({
-      name: potName,
-      target: Number(Number(target).toFixed(2)),
-      total:
-        Number(Number(target).toFixed(2)) > potToEdit.total
-          ? potToEdit.total
-          : 0,
-      theme: selectedColorTag.theme,
-      // may need to add created and updated dates in the future
-      // createdAt: potToEdit.createdAt,
-      // updatedAt: formatDate(new Date().toLocaleString()),
-    });
+    try {
+      await updatePotHandler(targetId, {
+        name: potName,
+        target: Number(target),
+        total: potToEdit.total,
+        theme: selectedColorTag.theme,
+      });
+    } catch (error) {
+      console.error("Failed to update pot:", error);
+    }
+  }
 
-    pots!.splice(indexOfItemToUpdate, 1, updatedPot);
-
-    // needs to be unpacked or the doughnut chart will not update
-    setPots([...pots!]);
+  async function handlePotModalSubmit() {
+    if (isValidFormData()) {
+      if (editPot) {
+        await handleEditPot();
+      } else {
+        await handleAddNewPot();
+      }
+      closeModal();
+    }
   }
 
   function closeModal() {
