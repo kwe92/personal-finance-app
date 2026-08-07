@@ -9,6 +9,7 @@ import { useTransactionData } from "../../shared/context/transaction_context";
 import { useNavigate } from "react-router";
 import { Divider } from "../../shared/components/divider";
 import { formatDate, isPositive } from "../../shared/utility/functions";
+import Spinner from "../../shared/components/spinner";
 
 const OverviewTransactionsSection = (): JSX.Element => {
   const navigate = useNavigate();
@@ -27,17 +28,7 @@ const OverviewTransactionsSection = (): JSX.Element => {
   return (
     <>
       {isLoading ? (
-        //!! TODO: temp loading component
-        <div
-          style={{
-            width: "100%",
-            height: "100%",
-            placeContent: "center",
-            textAlign: "center",
-          }}
-        >
-          <h1>testing loading state...</h1>
-        </div>
+        <Spinner />
       ) : (
         <div className="overview-transaction-section-main-container">
           <OverviewSectionHeader
