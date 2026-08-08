@@ -3,17 +3,16 @@ import { useNavigate } from "react-router";
 import "./css/overview_bills_section.css";
 
 import OverviewSectionHeader from "./overview_section_header";
-import { billsByCategory, sumOfBills } from "../../shared/utility/functions";
+import { sumOfBills } from "../../shared/utility/functions";
 import { getRecurringBills } from "../../shared/services/backend_service";
 import Skeleton from "../../shared/components/skeleton";
 
-// NOTE: note styles are for 1440px!!!!! medium laptop
-// ! TODO: use recurring bills context
 export const OverviewBillsSection = (): JSX.Element => {
   const navigate = useNavigate();
   const [recurringBills, setRecurringBills] = useState<TransactionData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  //! TODO: Refactor: this should not be happening within the widget
   useEffect(() => {
     let isMounted = true;
 
@@ -46,17 +45,22 @@ export const OverviewBillsSection = (): JSX.Element => {
     };
   }, []);
 
-  const paidBills = billsByCategory(recurringBills, "paid");
+  const paidBills = recurringBills.filter((bill) => bill.status === "paid");
+  const upcomingBills = recurringBills.filter(
+    (bill) => bill.status === "upcoming",
+  );
+  const dueSoonBills = recurringBills.filter(
+    (bill) => bill.status === "due_soon",
+  );
 
-  const upcomingBills = billsByCategory(recurringBills, "upcoming");
-
-  const dueSoonBills = billsByCategory(recurringBills, "due");
+  const pastDueBills = recurringBills.filter(
+    (bill) => bill.status === "past_due",
+  );
 
   const sumOfBillsPaid = sumOfBills(paidBills);
-
   const sumOfBillsUpcoming = sumOfBills(upcomingBills);
-
   const sumOfBillsDueSoon = sumOfBills(dueSoonBills);
+  const sumOfBillsPastDue = sumOfBills(pastDueBills);
 
   return (
     <div className="overview-bills-section-container">
@@ -85,6 +89,14 @@ export const OverviewBillsSection = (): JSX.Element => {
           amount={isLoading ? <Skeleton /> : sumOfBillsDueSoon}
           tabColor="#82C9D7"
         />
+
+        {sumOfBillsPastDue > 0 && (
+          <OverviewRecurringBillsListTile
+            name="Past Due"
+            amount={isLoading ? <Skeleton /> : sumOfBillsPastDue}
+            tabColor="#e03b1d"
+          />
+        )}
       </div>
     </div>
   );
