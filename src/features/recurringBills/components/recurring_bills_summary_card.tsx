@@ -1,20 +1,16 @@
 import { Divider } from "../../shared/components/divider";
-import { useTransactionData } from "../../shared/context/transaction_context";
 import { sumOfBills } from "../../shared/utility/functions";
 import { useRecurringBillsViewData } from "../context/recurring_bills_context";
 import "./css/recurring_bills_summary_card.css";
 
 export const RecurringBillsSummaryCard = (): JSX.Element => {
-  const { paidBills, upcomingBills, dueSoonBills } =
+  const { paidBills, upcomingBills, dueSoonBills, pastDueBills } =
     useRecurringBillsViewData();
 
-  // bill summary values
-
   const sumOfBillsPaid = sumOfBills(paidBills);
-
   const sumOfBillsUpcoming = sumOfBills(upcomingBills);
-
   const sumOfBillsDueSoon = sumOfBills(dueSoonBills);
+  const sumOfBillsPastDue = sumOfBills(pastDueBills ?? []);
 
   return (
     <div className="recurring-bills-summary-card">
@@ -45,6 +41,18 @@ export const RecurringBillsSummaryCard = (): JSX.Element => {
             {dueSoonBills.length} (${sumOfBillsDueSoon.toFixed(2)})
           </p>
         </div>
+
+        {pastDueBills && pastDueBills.length > 0 && (
+          <>
+            <Divider />
+            <div className="recurring-bills-summary-card-tist-tile">
+              <p style={{ color: "#C94736" }}>Past Due Bills</p>
+              <p style={{ color: "#C94736" }}>
+                {pastDueBills.length} (${sumOfBillsPastDue.toFixed(2)})
+              </p>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
