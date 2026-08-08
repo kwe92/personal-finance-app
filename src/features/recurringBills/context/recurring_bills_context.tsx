@@ -1,16 +1,13 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { getRecurringBills } from "../../shared/services/backend_service";
-import {
-  billsByCategory,
-  cleanName,
-  sortTransactions,
-} from "../../shared/utility/functions";
+import { cleanName, sortTransactions } from "../../shared/utility/functions";
 
 const RecurringBillsViewContext = createContext<{
   recurringBills: TransactionData[];
   paidBills: TransactionData[];
   upcomingBills: TransactionData[];
   dueSoonBills: TransactionData[];
+  pastDueBills: TransactionData[];
   sortBy: SortCategory;
   setSortBy: (sortCategory: SortCategory) => void;
   queryString: string;
@@ -21,6 +18,7 @@ const RecurringBillsViewContext = createContext<{
   paidBills: [],
   upcomingBills: [],
   dueSoonBills: [],
+  pastDueBills: [],
   sortBy: "Latest",
   setSortBy: () => {},
   queryString: "",
@@ -77,25 +75,29 @@ const RecurringBillsViewProvider = ({
     };
   }, []);
 
-  let recurringBills = queriedBills(recurringBillsData, queryString);
+  const recurringBills = queriedBills(recurringBillsData, queryString);
 
-  const paidBills = billsByCategory(recurringBills, "paid");
-
-  const upcomingBills = billsByCategory(recurringBills, "upcoming");
-
-  const dueSoonBills = billsByCategory(recurringBills, "due");
-
-  // sorted bills based on the sortBy value
+  const paidBills = recurringBills.filter((bill) => bill.status === "paid");
+  const upcomingBills = recurringBills.filter(
+    (bill) => bill.status === "upcoming",
+  );
+  const dueSoonBills = recurringBills.filter(
+    (bill) => bill.status === "due_soon",
+  );
+  const pastDueBills = recurringBills.filter(
+    (bill) => bill.status === "past_due",
+  );
 
   sortTransactions(recurringBills, sortBy);
 
   return (
     <RecurringBillsViewContext.Provider
       value={{
-        recurringBills: recurringBills,
-        paidBills: paidBills,
-        upcomingBills: upcomingBills,
-        dueSoonBills: dueSoonBills,
+        recurringBills,
+        paidBills,
+        upcomingBills,
+        dueSoonBills,
+        pastDueBills,
         sortBy,
         setSortBy,
         queryString,
@@ -108,7 +110,6 @@ const RecurringBillsViewProvider = ({
   );
 
   function handleQueryChange(e: any) {
-    console.log(e.currentTarget.value);
     setQueryString(e.target.value);
   }
 };
@@ -117,13 +118,9 @@ function queriedBills(
   bills: TransactionData[],
   billQuery: string,
 ): TransactionData[] {
-  return bills?.filter((bill) => {
-    const queriedBills = bill.name
-      .toLowerCase()
-      .includes(billQuery.toLowerCase());
-
-    return queriedBills;
-  });
+  return bills?.filter((bill) =>
+    bill.name.toLowerCase().includes(billQuery.toLowerCase()),
+  );
 }
 
 const useRecurringBillsViewData = () => useContext(RecurringBillsViewContext);
