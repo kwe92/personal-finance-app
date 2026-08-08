@@ -32,19 +32,19 @@ interface ColorTagDropDownItemData {
 // Transaction Interfaces
 
 interface TransactionData {
-  id?: string;
-  avatar: string;
+  id: string;
+  avatar?: string; // Optional client-side avatar/icon path
   name: string;
   category: string;
   date: string;
   amount: number;
   recurring: boolean;
   type: "expense" | "income" | "transfer";
-  frequency?: "monthly" | "weekly" | "yearly";
+  frequency?: "weekly" | "biweekly" | "semi_monthly" | "monthly" | "yearly";
   nextDate?: string;
-  status?: "paid" | "upcoming" | "due";
+  status?: RecurringBillCategory;
+  daysUntilDue?: number;
 }
-
 interface TransactionsResponse {
   transactions: TransactionData[];
   summary?: OverviewSummary;
@@ -91,7 +91,7 @@ interface DateObject {
 }
 
 // Types as ENUMS
-type RecurringBillCategory = "paid" | "upcoming" | "due";
+type RecurringBillCategory = "paid" | "upcoming" | "due_soon" | "past_due" | "unknown";
 
 type SortCategory =
   | "Latest"

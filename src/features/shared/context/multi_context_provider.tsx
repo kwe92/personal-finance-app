@@ -6,6 +6,7 @@ import { PotProvider } from "./pot_context";
 import { TransactionProvider } from "./transaction_context";
 import { TransactionFilterProvider } from "./transaction_filter_context";
 import { AuthProvider } from "../../auth/context/auth_context";
+import { RecurringBillsProvider } from "../../recurringBills/context/recurring_bills_context";
 
 export const MultiContextProvider = ({
   children,
@@ -13,22 +14,22 @@ export const MultiContextProvider = ({
   children: React.ReactNode;
 }) => {
   return (
-    <>
-      <AuthProvider>
-        <AuthValidationProvider>
-          <FormErrorProvider>
-            <TransactionProvider>
-              <TransactionFilterProvider>
-                <BudgetProvider>
-                  <PotProvider>
+    <AuthProvider>
+      <AuthValidationProvider>
+        <FormErrorProvider>
+          <TransactionProvider>
+            <TransactionFilterProvider>
+              <BudgetProvider>
+                <PotProvider>
+                  <RecurringBillsProvider>
                     <DoughnutChartProvider>{children}</DoughnutChartProvider>
-                  </PotProvider>
-                </BudgetProvider>
-              </TransactionFilterProvider>
-            </TransactionProvider>
-          </FormErrorProvider>
-        </AuthValidationProvider>
-      </AuthProvider>
-    </>
+                  </RecurringBillsProvider>
+                </PotProvider>
+              </BudgetProvider>
+            </TransactionFilterProvider>
+          </TransactionProvider>
+        </FormErrorProvider>
+      </AuthValidationProvider>
+    </AuthProvider>
   );
 };

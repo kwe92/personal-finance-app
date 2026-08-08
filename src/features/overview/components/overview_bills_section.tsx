@@ -1,62 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router";
 import "./css/overview_bills_section.css";
 
 import OverviewSectionHeader from "./overview_section_header";
-import { billsByCategory, sumOfBills } from "../../shared/utility/functions";
-import { getRecurringBills } from "../../shared/services/backend_service";
+import { sumOfBills } from "../../shared/utility/functions";
 import Skeleton from "../../shared/components/skeleton";
+import { useRecurringBills } from "../../recurringBills/context/recurring_bills_context";
 
-// NOTE: note styles are for 1440px!!!!! medium laptop
-// ! TODO: use recurring bills context
 export const OverviewBillsSection = (): JSX.Element => {
   const navigate = useNavigate();
-  const [recurringBills, setRecurringBills] = useState<TransactionData[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    const fetchRecurringBills = async () => {
-      setIsLoading(true);
-
-      try {
-        const response = await getRecurringBills();
-
-        if (!isMounted) {
-          return;
-        }
-
-        setRecurringBills(response.recurringBills ?? []);
-      } catch (error) {
-        if (isMounted) {
-          setRecurringBills([]);
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    fetchRecurringBills();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
-  const paidBills = billsByCategory(recurringBills, "paid");
-
-  const upcomingBills = billsByCategory(recurringBills, "upcoming");
-
-  const dueSoonBills = billsByCategory(recurringBills, "due");
+  const { paidBills, upcomingBills, dueSoonBills, pastDueBills, isLoading } =
+    useRecurringBills();
 
   const sumOfBillsPaid = sumOfBills(paidBills);
-
   const sumOfBillsUpcoming = sumOfBills(upcomingBills);
-
   const sumOfBillsDueSoon = sumOfBills(dueSoonBills);
+  const sumOfBillsPastDue = sumOfBills(pastDueBills);
 
   return (
     <div className="overview-bills-section-container">
@@ -85,6 +44,14 @@ export const OverviewBillsSection = (): JSX.Element => {
           amount={isLoading ? <Skeleton /> : sumOfBillsDueSoon}
           tabColor="#82C9D7"
         />
+
+        {sumOfBillsPastDue > 0 && (
+          <OverviewRecurringBillsListTile
+            name="Past Due"
+            amount={isLoading ? <Skeleton /> : sumOfBillsPastDue}
+            tabColor="#e03b1d"
+          />
+        )}
       </div>
     </div>
   );

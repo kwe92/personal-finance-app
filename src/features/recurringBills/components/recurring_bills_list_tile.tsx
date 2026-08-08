@@ -38,7 +38,7 @@ export const RecurringBillsListTile = ({
       <div className="recurring-bills-list-tile-date-amount-container">
         <div className="recurring-bills-list-tile-date">
           {dueDate}
-          {billStatus === "paid" || billStatus === "due" ? (
+          {billStatus === "paid" || billStatus === "due_soon" ? (
             <img
               src={billStatus === "paid" ? billPaidIcon : billDueIcon}
               alt="billStatusIcon"
