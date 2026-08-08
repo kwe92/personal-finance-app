@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { getRecurringBills } from "../../shared/services/backend_service";
 import { cleanName, sortTransactions } from "../../shared/utility/functions";
 
-const RecurringBillsViewContext = createContext<{
+const RecurringBillsContext = createContext<{
   recurringBills: TransactionData[];
   paidBills: TransactionData[];
   upcomingBills: TransactionData[];
@@ -26,7 +26,7 @@ const RecurringBillsViewContext = createContext<{
   isLoading: true,
 });
 
-const RecurringBillsViewProvider = ({
+export const RecurringBillsProvider = ({
   children,
 }: {
   children: React.ReactNode;
@@ -36,7 +36,6 @@ const RecurringBillsViewProvider = ({
   >([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [sortBy, setSortBy] = useState<SortCategory>("Latest");
-
   const [queryString, setQueryString] = useState<string>("");
 
   useEffect(() => {
@@ -48,9 +47,8 @@ const RecurringBillsViewProvider = ({
       try {
         const response = await getRecurringBills();
 
-        if (!isMounted) {
-          return;
-        }
+        if (!isMounted) return;
+
         setRecurringBillsData(
           response.recurringBills.map((recurringBill) => ({
             ...recurringBill,
@@ -91,7 +89,7 @@ const RecurringBillsViewProvider = ({
   sortTransactions(recurringBills, sortBy);
 
   return (
-    <RecurringBillsViewContext.Provider
+    <RecurringBillsContext.Provider
       value={{
         recurringBills,
         paidBills,
@@ -106,7 +104,7 @@ const RecurringBillsViewProvider = ({
       }}
     >
       {children}
-    </RecurringBillsViewContext.Provider>
+    </RecurringBillsContext.Provider>
   );
 
   function handleQueryChange(e: any) {
@@ -123,6 +121,5 @@ function queriedBills(
   );
 }
 
-const useRecurringBillsViewData = () => useContext(RecurringBillsViewContext);
-
-export { RecurringBillsViewProvider, useRecurringBillsViewData };
+export const useRecurringBills = () => useContext(RecurringBillsContext);
+export const useRecurringBillsViewData = useRecurringBills; // Backward-compatible alias
