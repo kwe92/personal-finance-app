@@ -12,7 +12,6 @@ import { ToastService } from "../shared/services/toast_service";
 import { useRecurringBillsViewData } from "./context/recurring_bills_context";
 import useWindowSize from "../shared/hooks/use_window_size";
 import { RecurringBillsListTile } from "./components/recurring_bills_list_tile";
-import { getBillCategory } from "../shared/utility/functions";
 import { Divider } from "../shared/components/divider";
 import Spinner from "../shared/components/spinner";
 
@@ -43,7 +42,6 @@ export const RecurringBillsView = (): JSX.Element => {
       <div className="recurring-bills-view-content">
         {/* left side */}
         <div className="recurring-bills-view-first-section">
-          {/* TODO: add left side content */}
           <TotalBills />
           <RecurringBillsSummaryCard />
         </div>
@@ -100,7 +98,7 @@ function createRecurringBillsListTiles(recurringBills: TransactionData[]) {
       <React.Fragment key={bill.id ?? i}>
         <RecurringBillsListTile
           bill={bill}
-          billStatus={getBillCategory(bill)}
+          billStatus={bill.status ?? "unknown"}
         />
         {recurringBills.length - 1 !== i ? (
           <Divider style={{ marginTop: "12px" }} />
