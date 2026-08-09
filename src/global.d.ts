@@ -51,20 +51,24 @@ interface TransactionsResponse {
 }
 
 // Budget Interfaces
+type BudgetPeriod = "weekly" | "biweekly" | "monthly";
 
 interface BudgetData {
   id?: string;
   category: string;
   maximum: number;
   theme: string;
-  createdAt: string;
-  updatedAt: string;
+  period: BudgetPeriod;
+  createdAt?: string;
+  updatedAt?: string;
 }
+
 
 interface BudgetPayload {
   category: string;
   maximum: number;
   theme: string;
+  period: BudgetPeriod;
 }
 
 // Pot Interfaces
