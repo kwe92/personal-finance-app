@@ -13,6 +13,12 @@ import { useFormErrorData } from "../../shared/context/form_error_context";
 import { ColorTagDropdownItem } from "../../shared/components/color_tag_drop_down_item";
 import { Divider } from "../../shared/components/divider";
 
+const periodOptions: { label: string; value: BudgetPeriod }[] = [
+  { label: "Weekly", value: "weekly" },
+  { label: "Biweekly", value: "biweekly" },
+  { label: "Monthly", value: "monthly" },
+];
+
 export const BudgetModal = (): JSX.Element => {
   const toastService = ToastService.getInstance();
   const { addBudgetHandler, updateBudgetHandler } = useBudgetData();
@@ -22,6 +28,10 @@ export const BudgetModal = (): JSX.Element => {
     budgetColorTags,
     selectedBudgetCategory,
     setSelectedBudgetCategory,
+    selectedBudgetPeriod,
+    setSelectedBudgetPeriod,
+    startDate,
+    setStartDate,
     selectedColorTag,
     setSelectedColorTag,
     maxSpending,
@@ -53,6 +63,22 @@ export const BudgetModal = (): JSX.Element => {
         {category}
       </li>
       {filteredCategoryList.length - 1 !== i && <Divider />}
+    </div>
+  ));
+
+  const periodContent = periodOptions.map((option, i) => (
+    <div key={option.value}>
+      <li
+        style={{
+          padding: "12px 0 12px 0",
+          fontWeight: selectedBudgetPeriod === option.value ? "bold" : "normal",
+          cursor: "pointer",
+        }}
+        onClick={() => setSelectedBudgetPeriod(option.value)}
+      >
+        {option.label}
+      </li>
+      {periodOptions.length - 1 !== i && <Divider />}
     </div>
   ));
 
@@ -109,6 +135,8 @@ export const BudgetModal = (): JSX.Element => {
         category: selectedBudgetCategory,
         maximum: Number(maxSpending),
         theme: selectedColorTag.theme,
+        period: selectedBudgetPeriod,
+        startDate: startDate,
       });
     } catch (error) {
       console.error("Failed to add budget item:", error);
@@ -123,6 +151,8 @@ export const BudgetModal = (): JSX.Element => {
         category: selectedBudgetCategory,
         maximum: Number(maxSpending),
         theme: selectedColorTag.theme,
+        period: selectedBudgetPeriod,
+        startDate: startDate,
       });
     } catch (err) {
       console.error("Failed to update budget item:", err);
@@ -140,6 +170,10 @@ export const BudgetModal = (): JSX.Element => {
     }
   }
 
+  const currentPeriodLabel =
+    periodOptions.find((p) => p.value === selectedBudgetPeriod)?.label ??
+    "Monthly";
+
   return (
     <div className="base-modal">
       <div className="base-modal-header">
@@ -149,7 +183,7 @@ export const BudgetModal = (): JSX.Element => {
 
       <p style={{ fontSize: "14px", color: "#696868" }}>
         {!editBudget
-          ? "Choose a category to set a spending budget. These categories can help you monitor spending."
+          ? "Choose a category, period, and start date to set a spending budget."
           : "As your budgets change, feel free to update your spending limits."}
       </p>
 
@@ -174,6 +208,26 @@ export const BudgetModal = (): JSX.Element => {
           {budgetModalBudgetCategoryError && (
             <p className="error-text">Select a budget category</p>
           )}
+        </div>
+
+        <div>
+          <ModalDropDownMenu
+            label="Budget Period"
+            content={periodContent}
+            initialValue={currentPeriodLabel}
+            toggleMenu={() => toggleMenu(1)}
+          />
+        </div>
+
+        <div>
+          <TextFormField
+            name="startDate"
+            label="Start Date"
+            type="date"
+            value={startDate}
+            placeholder="YYYY-MM-DD"
+            onChange={(event) => setStartDate(event.target.value)}
+          />
         </div>
 
         <div>
@@ -202,7 +256,7 @@ export const BudgetModal = (): JSX.Element => {
             content={colorTagContent}
             toggleMenu={() => {
               setBudgetModalColorTagError(false);
-              toggleMenu(1);
+              toggleMenu(2);
             }}
           />
           {budgetModalColorTagError && (
