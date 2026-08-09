@@ -1,26 +1,43 @@
-import { sortByDate } from "../shared/utility/functions";
+//! TODO: Why do we have this? Should this code be in a context?
 
 export class BudgetViewModel {
-  private constructor() {}
-
-  static budgetCategoryExpendedAmount(transactions: TransactionData[]): number {
-    if (!transactions || transactions.length === 0) return 0;
-    return transactions.reduce(
-      (accumulator, transaction) => accumulator + transaction.amount,
-      0,
-    );
-  }
-
   static filterTransactionByBudgetCategory(
     transactions: TransactionData[],
     budget: BudgetData,
   ): TransactionData[] {
     if (!transactions || !budget) return [];
 
-    const filteredTransactionsByCategory = transactions.filter(
-      (transaction) => transaction.category === budget.category,
-    );
+    // Helper to parse date string and add 1 day
+    const getAdjustedDate = (dateStr?: string): Date | null => {
+      if (!dateStr) return null;
+      const date = new Date(dateStr);
+      date.setDate(date.getDate() + 1); // Safely handles month/year roll-overs
+      return date;
+    };
 
-    return filteredTransactionsByCategory.sort((a, b) => sortByDate(a, b));
+    // Add +1 day to start and end dates
+    const budgetStartDate = getAdjustedDate(budget.startDate);
+    const budgetEndDate = getAdjustedDate(budget.endDate);
+
+    return transactions.filter((transaction) => {
+      const matchesCategory = transaction.category === budget.category;
+      if (!matchesCategory) return false;
+
+      const txnDate = new Date(transaction.date);
+
+      const isAfterOrOnStart = !budgetStartDate || txnDate >= budgetStartDate;
+      const isBeforeOrOnEnd = !budgetEndDate || txnDate <= budgetEndDate;
+
+      return isAfterOrOnStart && isBeforeOrOnEnd;
+    });
+  }
+
+  static budgetCategoryExpendedAmount(
+    filteredTransactions: TransactionData[],
+  ): number {
+    return (filteredTransactions ?? []).reduce(
+      (acc, txn) => acc + txn.amount,
+      0,
+    );
   }
 }

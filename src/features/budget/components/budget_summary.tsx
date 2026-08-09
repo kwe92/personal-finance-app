@@ -6,6 +6,7 @@ import { Divider } from "../../shared/components/divider";
 import { useBudgetData } from "../../shared/context/budget_context";
 import { useTransactionData } from "../../shared/context/transaction_context";
 import { useDoughnutChartData } from "../../shared/context/doughnut_chart_context";
+import { BudgetViewModel } from "../budget_view_model";
 
 export const BudgetSummary = (): JSX.Element => {
   const { budgets } = useBudgetData();
@@ -17,15 +18,12 @@ export const BudgetSummary = (): JSX.Element => {
     0,
   );
 
-  const budgetCategories = new Set(
-    budgets?.map((budget) => budget.category) ?? [],
-  );
-
-  const expendedAmount = (transactions ?? []).reduce((acc, transaction) => {
-    if (budgetCategories.has(transaction.category)) {
-      return acc + transaction.amount;
-    }
-    return acc;
+  const expendedAmount = (budgets ?? []).reduce((acc, budget) => {
+    const filteredTxns = BudgetViewModel.filterTransactionByBudgetCategory(
+      transactions ?? [],
+      budget,
+    );
+    return acc + BudgetViewModel.budgetCategoryExpendedAmount(filteredTxns);
   }, 0);
 
   const latestBudgets = budgets?.slice(0, 4) ?? [];

@@ -65,6 +65,7 @@ const BudgetProvider = ({
     setBudgets((prev) => [newBudget, ...prev]);
     return newBudget;
   };
+
   const updateBudgetHandler = async (
     id: string,
     payload: BudgetPayload,
@@ -73,9 +74,7 @@ const BudgetProvider = ({
     const updatedBudget = response.budget;
 
     setBudgets((prevBudgets) =>
-      prevBudgets.map((budget) =>
-        budget.id === id || budget.id === id ? updatedBudget : budget,
-      ),
+      prevBudgets.map((budget) => (budget.id === id ? updatedBudget : budget)),
     );
   };
 

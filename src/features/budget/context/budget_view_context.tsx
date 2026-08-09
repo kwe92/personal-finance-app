@@ -7,6 +7,8 @@ import { useFormErrorData } from "../../shared/context/form_error_context";
 
 interface BudgetViewContextInterface {
   selectedBudgetCategory: string;
+  selectedBudgetPeriod: BudgetPeriod;
+  startDate: string;
   maxSpending: string;
   selectedColorTag: ColorTagDropDownItem;
   editBudget: boolean;
@@ -15,6 +17,8 @@ interface BudgetViewContextInterface {
   filteredCategoryList: string[];
   budgetColorTags: ColorTagDropDownItem[];
   setSelectedBudgetCategory: (category: string) => void;
+  setSelectedBudgetPeriod: (period: BudgetPeriod) => void;
+  setStartDate: (date: string) => void;
   setMaxSpending: (spending: string) => void;
   setSelectedColorTag: (colorTag: ColorTagDropDownItem) => void;
   setEditBudget: (isEdit: boolean) => void;
@@ -23,6 +27,10 @@ interface BudgetViewContextInterface {
   resetBudgetModalData: () => void;
   populateEditForm: (budget: BudgetData) => void;
 }
+
+const getTodayString = (): string => {
+  return new Date().toISOString().split("T")[0];
+};
 
 const defaultColorTag = new ColorTagDropDownItem({
   name: "",
@@ -34,12 +42,17 @@ const defaultBudget: BudgetData = {
   category: "",
   maximum: 0,
   theme: "",
+  period: "monthly",
+  startDate: getTodayString(),
+  endDate: getTodayString(),
   createdAt: "",
   updatedAt: "",
 };
 
 const BudgetViewContext = createContext<BudgetViewContextInterface>({
   selectedBudgetCategory: "",
+  selectedBudgetPeriod: "monthly",
+  startDate: getTodayString(),
   maxSpending: "",
   selectedColorTag: defaultColorTag,
   editBudget: false,
@@ -48,6 +61,8 @@ const BudgetViewContext = createContext<BudgetViewContextInterface>({
   filteredCategoryList: [],
   budgetColorTags: [],
   setSelectedBudgetCategory: () => {},
+  setSelectedBudgetPeriod: () => {},
+  setStartDate: () => {},
   setMaxSpending: () => {},
   setSelectedColorTag: () => {},
   setEditBudget: () => {},
@@ -68,6 +83,9 @@ const BudgetViewProvider = ({
 
   const [selectedBudgetCategory, setSelectedBudgetCategory] =
     useState<string>("");
+  const [selectedBudgetPeriod, setSelectedBudgetPeriod] =
+    useState<BudgetPeriod>("monthly");
+  const [startDate, setStartDate] = useState<string>(getTodayString());
   const [maxSpending, setMaxSpending] = useState<string>("");
   const [selectedColorTag, setSelectedColorTag] =
     useState<ColorTagDropDownItem>(defaultColorTag);
@@ -76,7 +94,6 @@ const BudgetViewProvider = ({
   const [budgetToDelete, setBudgetToDelete] =
     useState<BudgetData>(defaultBudget);
 
-  // Derived filtered categories list
   const filteredCategoryList = useMemo(() => {
     const currentBudgetCategories = new Set(
       budgets?.map((budget) => budget.category),
@@ -90,7 +107,6 @@ const BudgetViewProvider = ({
       .sort((a, b) => a.localeCompare(b));
   }, [budgets, transactions]);
 
-  // Derived color tags list (without direct mutations)
   const budgetColorTags = useMemo(() => {
     const alreadyUsedColorTags = new Set(
       budgets?.map((budget) => budget.theme),
@@ -109,6 +125,8 @@ const BudgetViewProvider = ({
 
   const resetBudgetModalData = () => {
     setSelectedBudgetCategory("");
+    setSelectedBudgetPeriod("monthly");
+    setStartDate(getTodayString());
     setSelectedColorTag(defaultColorTag);
     setMaxSpending("");
     setBudgetToEdit(defaultBudget);
@@ -121,6 +139,8 @@ const BudgetViewProvider = ({
     setEditBudget(true);
     setBudgetToEdit(budget);
     setSelectedBudgetCategory(budget.category);
+    setSelectedBudgetPeriod(budget.period ?? "monthly");
+    setStartDate(budget.startDate ?? getTodayString());
     setMaxSpending(budget.maximum.toString());
     const matchingTag = budgetColorTags.find(
       (colorTag) => colorTag.theme === budget.theme,
@@ -136,6 +156,8 @@ const BudgetViewProvider = ({
     <BudgetViewContext.Provider
       value={{
         selectedBudgetCategory,
+        selectedBudgetPeriod,
+        startDate,
         maxSpending,
         selectedColorTag,
         editBudget,
@@ -144,6 +166,8 @@ const BudgetViewProvider = ({
         filteredCategoryList,
         budgetColorTags,
         setSelectedBudgetCategory,
+        setSelectedBudgetPeriod,
+        setStartDate,
         setMaxSpending,
         setSelectedColorTag,
         setEditBudget,
