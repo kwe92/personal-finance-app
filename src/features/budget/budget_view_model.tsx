@@ -1,26 +1,28 @@
-import { sortByDate } from "../shared/utility/functions";
-
 export class BudgetViewModel {
-  private constructor() {}
-
-  static budgetCategoryExpendedAmount(transactions: TransactionData[]): number {
-    if (!transactions || transactions.length === 0) return 0;
-    return transactions.reduce(
-      (accumulator, transaction) => accumulator + transaction.amount,
-      0,
-    );
-  }
-
   static filterTransactionByBudgetCategory(
     transactions: TransactionData[],
     budget: BudgetData,
   ): TransactionData[] {
     if (!transactions || !budget) return [];
 
-    const filteredTransactionsByCategory = transactions.filter(
-      (transaction) => transaction.category === budget.category,
-    );
+    return transactions.filter((transaction) => {
+      const matchesCategory = transaction.category === budget.category;
 
-    return filteredTransactionsByCategory.sort((a, b) => sortByDate(a, b));
+      // Direct string comparison works safely for YYYY-MM-DD dates
+      const isWithinDateRange =
+        (!budget.startDate || transaction.date >= budget.startDate) &&
+        (!budget.endDate || transaction.date <= budget.endDate);
+
+      return matchesCategory && isWithinDateRange;
+    });
+  }
+
+  static budgetCategoryExpendedAmount(
+    filteredTransactions: TransactionData[],
+  ): number {
+    return (filteredTransactions ?? []).reduce(
+      (acc, txn) => acc + txn.amount,
+      0,
+    );
   }
 }
