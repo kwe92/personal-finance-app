@@ -74,7 +74,22 @@ export const BudgetCard = ({
         handleDeleteItem={handleDeleteBudgetCard}
       />
 
-      <p id="max-amount">Maximum of ${budget.maximum.toFixed(2)}</p>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <p id="max-amount">
+          Maximum of ${budget.maximum.toFixed(2)} ({budget.period ?? "monthly"})
+        </p>
+        {budget.startDate && budget.endDate && (
+          <p style={{ fontSize: "12px", color: "#696868" }}>
+            {budget.startDate} to {budget.endDate}
+          </p>
+        )}
+      </div>
 
       <ProgressBar
         maxAmount={budget.maximum}
