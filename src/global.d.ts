@@ -59,18 +59,19 @@ interface BudgetData {
   maximum: number;
   theme: string;
   period: BudgetPeriod;
+  startDate: string; // "YYYY-MM-DD"
+  endDate: string;   // "YYYY-MM-DD"
   createdAt?: string;
   updatedAt?: string;
 }
-
 
 interface BudgetPayload {
   category: string;
   maximum: number;
   theme: string;
   period: BudgetPeriod;
+  startDate: string;
 }
-
 // Pot Interfaces
 interface PotData {
   id?: string;
