@@ -1,3 +1,5 @@
+//! TODO: Why do we have this? Should this code be in a context?
+
 export class BudgetViewModel {
   static filterTransactionByBudgetCategory(
     transactions: TransactionData[],
@@ -5,15 +7,28 @@ export class BudgetViewModel {
   ): TransactionData[] {
     if (!transactions || !budget) return [];
 
+    // Helper to parse date string and add 1 day
+    const getAdjustedDate = (dateStr?: string): Date | null => {
+      if (!dateStr) return null;
+      const date = new Date(dateStr);
+      date.setDate(date.getDate() + 1); // Safely handles month/year roll-overs
+      return date;
+    };
+
+    // Add +1 day to start and end dates
+    const budgetStartDate = getAdjustedDate(budget.startDate);
+    const budgetEndDate = getAdjustedDate(budget.endDate);
+
     return transactions.filter((transaction) => {
       const matchesCategory = transaction.category === budget.category;
+      if (!matchesCategory) return false;
 
-      // Direct string comparison works safely for YYYY-MM-DD dates
-      const isWithinDateRange =
-        (!budget.startDate || transaction.date >= budget.startDate) &&
-        (!budget.endDate || transaction.date <= budget.endDate);
+      const txnDate = new Date(transaction.date);
 
-      return matchesCategory && isWithinDateRange;
+      const isAfterOrOnStart = !budgetStartDate || txnDate >= budgetStartDate;
+      const isBeforeOrOnEnd = !budgetEndDate || txnDate <= budgetEndDate;
+
+      return isAfterOrOnStart && isBeforeOrOnEnd;
     });
   }
 
