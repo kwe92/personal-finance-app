@@ -14,6 +14,7 @@ const AuthValidationContext = createContext<{
   setIsShortPassword: (truthValue: boolean) => void;
   setIsLoginPasswordIncorrect: (truthValue: boolean) => void;
   setIsNameEmpty: (truthValue: boolean) => void;
+  setIsPasswordMismatch: (truthValue: boolean) => void;
   resetValidators: () => void;
 }>({
   isEmailEmpty: false,
