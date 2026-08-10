@@ -20,6 +20,7 @@ import { PotViewProvider } from "./features/pots/context/pot_view_context";
 import { RecurringBillsView } from "./features/recurringBills/recurring_bills_view";
 import BackendHealthTestView from "./features/shared/components/backend_health_test_view";
 import { OverviewProvider } from "./features/overview/context/overview_context";
+import Spinner from "./features/shared/components/spinner";
 
 function App() {
   const location = useLocation();
@@ -52,7 +53,11 @@ const AppLayout = ({ children }: { children: JSX.Element }) => (
 );
 
 const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
-  const { user, isPlaidLinked } = useAuth();
+  const { user, isPlaidLinked, isAuthLoading } = useAuth();
+
+  if (isAuthLoading) {
+    return <Spinner />;
+  }
 
   if (!user) {
     return <Navigate to="/auth/login" replace />;
