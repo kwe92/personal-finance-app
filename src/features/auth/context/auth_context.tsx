@@ -12,6 +12,7 @@ import { auth, db } from "../../../firebase";
 interface AuthContextType {
   user: User | null;
   isPlaidLinked: boolean;
+  isAuthLoading: boolean;
   signUp: (email: string, password: string) => Promise<UserCredential>;
   login: (email: string, password: string) => Promise<UserCredential>;
   logout: () => Promise<void>;
@@ -26,7 +27,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isPlaidLinked, setIsPlaidLinked] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [isAuthLoading, setIsAuthLoading] = useState<boolean>(true);
 
   const signUp = async (email: string, password: string) => {
     const userCredential = await createUserWithEmailAndPassword(
@@ -47,14 +48,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       { merge: true },
     );
 
+    setIsPlaidLinked(false);
     return userCredential;
   };
 
-  const login = (email: string, password: string) => {
-    return signInWithEmailAndPassword(auth, email, password);
+  const login = async (email: string, password: string) => {
+    setIsAuthLoading(true);
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password,
+    );
+
+    // Fetch Firestore profile BEFORE login() resolves so isPlaidLinked is set
+    try {
+      const userDoc = await getDoc(doc(db, "users", userCredential.user.uid));
+      const userData = userDoc.exists() ? userDoc.data() : null;
+      setIsPlaidLinked(Boolean(userData?.is_plaid_linked));
+    } catch (error) {
+      setIsPlaidLinked(false);
+    } finally {
+      setIsAuthLoading(false);
+    }
+
+    return userCredential;
   };
 
-  const logout = () => {
+  const logout = async () => {
+    setUser(null);
+    setIsPlaidLinked(false);
     return signOut(auth);
   };
 
@@ -91,7 +113,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       if (!currentUser) {
         setUser(null);
         setIsPlaidLinked(false);
-        setLoading(false);
+        setIsAuthLoading(false);
         return;
       }
 
@@ -103,7 +125,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       } catch (error) {
         setIsPlaidLinked(false);
       } finally {
-        setLoading(false);
+        setIsAuthLoading(false);
       }
     });
     return () => unsubscribe();
@@ -114,6 +136,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       value={{
         user,
         isPlaidLinked,
+        isAuthLoading,
         login,
         signUp,
         logout,
@@ -121,7 +144,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         markPlaidLinked,
       }}
     >
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
   );
 };
