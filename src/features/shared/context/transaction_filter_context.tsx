@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, useMemo } from "react";
 import { useTransactionData } from "./transaction_context";
 import Transaction from "../models/transaction";
 import { sortByDate, sortTransactions } from "../utility/functions";
@@ -30,8 +30,6 @@ const TransactionFilterProvider = ({
 }): JSX.Element => {
   const { transactions } = useTransactionData();
 
-  // console.log(`transactions: ${transactions}`);
-
   // mutable observable state
   const [transactionQuery, setTransactionQuery] = useState<string>("");
 
@@ -39,43 +37,44 @@ const TransactionFilterProvider = ({
 
   const [category, setCategory] = useState<string>("All Transactions");
 
-  // queried and categorized transactions based on the transactionQuery and category mutable variables
-  const filteredTransactions =
-    queriedCategorizedTransactions(
-      transactions ?? [],
-      transactionQuery,
-      category
-    ) ?? [];
-
-  // sorted transactions based on the sortBy value
-  sortTransactions(filteredTransactions, sortBy);
-
   const handleQueryChange = (e: any) => {
     console.log(e.currentTarget.value);
     setTransactionQuery(e.target.value);
   };
 
-  return (
-    <TransactionFilterContext.Provider
-      value={{
+  const value = useMemo(() => {
+    const filtered =
+      queriedCategorizedTransactions(
+        transactions ?? [],
         transactionQuery,
-        filteredTransactions: filteredTransactions ?? [],
-        sortBy,
         category,
-        setSortBy,
-        setCategory,
-        setTransactionQuery: handleQueryChange,
-      }}
-    >
+      ) ?? [];
+
+    const sorted = [...filtered];
+    sortTransactions(sorted, sortBy);
+
+    return {
+      transactionQuery,
+      filteredTransactions: sorted,
+      sortBy,
+      category,
+      setSortBy,
+      setCategory,
+      setTransactionQuery: handleQueryChange,
+    };
+  }, [transactions, transactionQuery, category, sortBy]);
+
+  return (
+    <TransactionFilterContext.Provider value={value}>
       {children}
     </TransactionFilterContext.Provider>
   );
 };
 
 function queriedCategorizedTransactions(
-  transactions: Transaction[],
+  transactions: TransactionData[],
   transactionQuery: string,
-  category: string
+  category: string,
 ): TransactionData[] {
   return transactions?.filter((transaction) => {
     const queriedTranactions = transaction.name
