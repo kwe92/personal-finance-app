@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, useMemo } from "react";
 import { getOverviewSummary } from "../../shared/services/backend_service";
 import { useAuth } from "../../auth/context/auth_context";
 
@@ -56,14 +56,17 @@ const OverviewProvider = ({
     fetchSummary();
   }, [user, isPlaidLinked]);
 
+  const value = useMemo(
+    () => ({
+      summary,
+      isLoading,
+      error,
+    }),
+    [summary, isLoading, error],
+  );
+
   return (
-    <OverviewContext.Provider
-      value={{
-        summary,
-        isLoading,
-        error,
-      }}
-    >
+    <OverviewContext.Provider value={value}>
       {children}
     </OverviewContext.Provider>
   );

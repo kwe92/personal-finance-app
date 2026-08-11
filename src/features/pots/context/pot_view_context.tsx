@@ -129,34 +129,46 @@ const PotViewProvider = ({
     resetPotModalData();
   }, []);
 
+  const value = useMemo(
+    () => ({
+      potName,
+      target,
+      total,
+      selectedColorTag,
+      editPot,
+      isWithdrawal,
+      potToEdit,
+      potToDelete,
+      potColorTags,
+      transactionAmount,
+      setPotName,
+      setTarget,
+      setTotal,
+      setSelectedColorTag,
+      setEditPot,
+      setIsWithdrawal,
+      setPotToEdit,
+      setPotToDelete,
+      setTransactionAmount,
+      resetPotModalData,
+      populateEditForm,
+    }),
+    [
+      potName,
+      target,
+      total,
+      selectedColorTag,
+      editPot,
+      isWithdrawal,
+      potToEdit,
+      potToDelete,
+      potColorTags,
+      transactionAmount,
+    ],
+  );
+
   return (
-    <PotViewContext.Provider
-      value={{
-        potName,
-        target,
-        total,
-        selectedColorTag,
-        editPot,
-        isWithdrawal,
-        potToEdit,
-        potToDelete,
-        potColorTags,
-        transactionAmount,
-        setPotName,
-        setTarget,
-        setTotal,
-        setSelectedColorTag,
-        setEditPot,
-        setIsWithdrawal,
-        setPotToEdit,
-        setPotToDelete,
-        setTransactionAmount,
-        resetPotModalData,
-        populateEditForm,
-      }}
-    >
-      {children}
-    </PotViewContext.Provider>
+    <PotViewContext.Provider value={value}>{children}</PotViewContext.Provider>
   );
 };
 

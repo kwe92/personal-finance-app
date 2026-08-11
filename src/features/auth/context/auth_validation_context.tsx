@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useMemo } from "react";
 
 const AuthValidationContext = createContext<{
   isEmailEmpty: boolean;
@@ -65,26 +65,37 @@ const AuthValidationProvider = ({
     setIsPasswordMismatch(false);
   }
 
+  const value = useMemo(
+    () => ({
+      isEmailEmpty,
+      isLoginEmailIncorrect,
+      isPasswordEmpty,
+      isShortPassword,
+      isLoginPasswordIncorrect,
+      isNameEmpty,
+      isPasswordMismatch,
+      setIsEmailEmpty,
+      setIsLoginEmailIncorrect,
+      setIsPasswordEmpty,
+      setIsShortPassword,
+      setIsLoginPasswordIncorrect,
+      setIsNameEmpty,
+      setIsPasswordMismatch,
+      resetValidators,
+    }),
+    [
+      isEmailEmpty,
+      isLoginEmailIncorrect,
+      isPasswordEmpty,
+      isShortPassword,
+      isLoginPasswordIncorrect,
+      isNameEmpty,
+      isPasswordMismatch,
+    ],
+  );
+
   return (
-    <AuthValidationContext.Provider
-      value={{
-        isEmailEmpty,
-        isLoginEmailIncorrect,
-        isPasswordEmpty,
-        isShortPassword,
-        isLoginPasswordIncorrect,
-        isNameEmpty,
-        isPasswordMismatch,
-        setIsEmailEmpty,
-        setIsLoginEmailIncorrect,
-        setIsPasswordEmpty,
-        setIsShortPassword,
-        setIsLoginPasswordIncorrect,
-        setIsNameEmpty,
-        setIsPasswordMismatch,
-        resetValidators,
-      }}
-    >
+    <AuthValidationContext.Provider value={value}>
       {children}
     </AuthValidationContext.Provider>
   );

@@ -1,4 +1,4 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useMemo } from "react";
 import { useBudgetData } from "./budget_context";
 
 interface DoughnutChartContextData {
@@ -20,39 +20,35 @@ const DoughnutChartProvider = ({
 }): JSX.Element => {
   const { budgets } = useBudgetData();
 
-  const doughnutChartOptions = {
-    layout: {
-      autoPadding: false,
-      padding: 0,
-      margin: 0,
-    },
-  };
-
-  const doughnutChartData = {
-    labels: budgets?.map((budget) => {
-      return budget.category;
-    }),
-    datasets: [
-      {
-        data:
-          budgets?.map((budget) => {
-            return Number(budget.maximum.toFixed(2));
-          }) ?? [],
-
-        backgroundColor: budgets?.map((budget) => {
-          return budget.theme;
-        }),
-        hoverOffset: 4,
+  const value = useMemo(() => {
+    const doughnutChartOptions = {
+      layout: {
+        autoPadding: false,
+        padding: 0,
+        margin: 0,
       },
-    ],
-  };
+    };
+
+    const doughnutChartData = {
+      labels: budgets?.map((budget) => budget.category) ?? [],
+      datasets: [
+        {
+          data:
+            budgets?.map((budget) => Number(budget.maximum.toFixed(2))) ?? [],
+          backgroundColor: budgets?.map((budget) => budget.theme) ?? [],
+          hoverOffset: 4,
+        },
+      ],
+    };
+
+    return {
+      doughnutChartOptions,
+      doughnutChartData,
+    };
+  }, [budgets]);
+
   return (
-    <DoughnutChartContext.Provider
-      value={{
-        doughnutChartOptions: doughnutChartOptions,
-        doughnutChartData: doughnutChartData,
-      }}
-    >
+    <DoughnutChartContext.Provider value={value}>
       {children}
     </DoughnutChartContext.Provider>
   );

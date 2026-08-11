@@ -49,6 +49,40 @@ const defaultBudget: BudgetData = {
   updatedAt: "",
 };
 
+// Pure helper: Extract available categories not currently budgeted
+const getFilteredCategories = (
+  budgets: BudgetData[] = [],
+  transactions: TransactionData[] = [],
+): string[] => {
+  const currentBudgetCategories = new Set(
+    budgets.map((budget) => budget.category),
+  );
+  const uniqueCategoryList = Array.from(
+    new Set(transactions.map((transaction) => transaction.category) ?? []),
+  );
+
+  return uniqueCategoryList
+    .filter((category) => !currentBudgetCategories.has(category))
+    .sort((a, b) => a.localeCompare(b));
+};
+
+// Pure helper: Extract and format available budget color tags
+const getBudgetColorTags = (
+  budgets: BudgetData[] = [],
+): ColorTagDropDownItem[] => {
+  const alreadyUsedColorTags = new Set(budgets.map((budget) => budget.theme));
+
+  return colorTagData
+    .map((json) => {
+      const item = ColorTagDropDownItem.fromJSON(json);
+      if (alreadyUsedColorTags.has(item.theme)) {
+        item.isInUse = true;
+      }
+      return item;
+    })
+    .sort((a, b) => a.name.localeCompare(b.name));
+};
+
 const BudgetViewContext = createContext<BudgetViewContextInterface>({
   selectedBudgetCategory: "",
   selectedBudgetPeriod: "monthly",
@@ -94,34 +128,13 @@ const BudgetViewProvider = ({
   const [budgetToDelete, setBudgetToDelete] =
     useState<BudgetData>(defaultBudget);
 
-  const filteredCategoryList = useMemo(() => {
-    const currentBudgetCategories = new Set(
-      budgets?.map((budget) => budget.category),
-    );
-    const uniqueCategoryList = Array.from(
-      new Set(transactions?.map((transaction) => transaction.category) ?? []),
-    );
+  // Clean derived state calculations
+  const filteredCategoryList = useMemo(
+    () => getFilteredCategories(budgets, transactions),
+    [budgets, transactions],
+  );
 
-    return uniqueCategoryList
-      .filter((category) => !currentBudgetCategories.has(category))
-      .sort((a, b) => a.localeCompare(b));
-  }, [budgets, transactions]);
-
-  const budgetColorTags = useMemo(() => {
-    const alreadyUsedColorTags = new Set(
-      budgets?.map((budget) => budget.theme),
-    );
-
-    return colorTagData
-      .map((json) => {
-        const item = ColorTagDropDownItem.fromJSON(json);
-        if (alreadyUsedColorTags.has(item.theme)) {
-          item.isInUse = true;
-        }
-        return item;
-      })
-      .sort((a, b) => a.name.localeCompare(b.name));
-  }, [budgets]);
+  const budgetColorTags = useMemo(() => getBudgetColorTags(budgets), [budgets]);
 
   const resetBudgetModalData = () => {
     setSelectedBudgetCategory("");
@@ -152,31 +165,45 @@ const BudgetViewProvider = ({
     resetBudgetModalData();
   }, []);
 
+  const value = useMemo(
+    () => ({
+      selectedBudgetCategory,
+      selectedBudgetPeriod,
+      startDate,
+      maxSpending,
+      selectedColorTag,
+      editBudget,
+      budgetToEdit,
+      budgetToDelete,
+      filteredCategoryList,
+      budgetColorTags,
+      setSelectedBudgetCategory,
+      setSelectedBudgetPeriod,
+      setStartDate,
+      setMaxSpending,
+      setSelectedColorTag,
+      setEditBudget,
+      setBudgetToEdit,
+      setBudgetToDelete,
+      resetBudgetModalData,
+      populateEditForm,
+    }),
+    [
+      selectedBudgetCategory,
+      selectedBudgetPeriod,
+      startDate,
+      maxSpending,
+      selectedColorTag,
+      editBudget,
+      budgetToEdit,
+      budgetToDelete,
+      filteredCategoryList,
+      budgetColorTags,
+    ],
+  );
+
   return (
-    <BudgetViewContext.Provider
-      value={{
-        selectedBudgetCategory,
-        selectedBudgetPeriod,
-        startDate,
-        maxSpending,
-        selectedColorTag,
-        editBudget,
-        budgetToEdit,
-        budgetToDelete,
-        filteredCategoryList,
-        budgetColorTags,
-        setSelectedBudgetCategory,
-        setSelectedBudgetPeriod,
-        setStartDate,
-        setMaxSpending,
-        setSelectedColorTag,
-        setEditBudget,
-        setBudgetToEdit,
-        setBudgetToDelete,
-        resetBudgetModalData,
-        populateEditForm,
-      }}
-    >
+    <BudgetViewContext.Provider value={value}>
       {children}
     </BudgetViewContext.Provider>
   );
