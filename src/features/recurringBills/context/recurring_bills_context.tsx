@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, useMemo } from "react";
 import { getRecurringBills } from "../../shared/services/backend_service";
 import { cleanName, sortTransactions } from "../../shared/utility/functions";
 import { useAuth } from "../../auth/context/auth_context";
@@ -75,52 +75,56 @@ export const RecurringBillsProvider = ({
     fetchRecurringBills();
   }, [user, isPlaidLinked]);
 
-  const recurringBills = queriedBills(recurringBillsData, queryString);
-
-  const paidBills = recurringBills.filter((bill) => bill.status === "paid");
-  const upcomingBills = recurringBills.filter(
-    (bill) => bill.status === "upcoming",
-  );
-  const dueSoonBills = recurringBills.filter(
-    (bill) => bill.status === "due_soon",
-  );
-  const pastDueBills = recurringBills.filter(
-    (bill) => bill.status === "past_due",
-  );
-
-  sortTransactions(recurringBills, sortBy);
-
-  return (
-    <RecurringBillsContext.Provider
-      value={{
-        recurringBills,
-        paidBills,
-        upcomingBills,
-        dueSoonBills,
-        pastDueBills,
-        sortBy,
-        setSortBy,
-        queryString,
-        setQueryString: handleQueryChange,
-        isLoading,
-        error,
-      }}
-    >
-      {children}
-    </RecurringBillsContext.Provider>
-  );
-
   function handleQueryChange(e: React.ChangeEvent<HTMLInputElement>) {
     setQueryString(e.target.value);
   }
+
+  const value = useMemo(() => {
+    const filtered = queriedBills(recurringBillsData, queryString);
+    const recurringBills = [...filtered];
+    sortTransactions(recurringBills, sortBy);
+
+    const paidBills = recurringBills.filter((bill) => bill.status === "paid");
+    const upcomingBills = recurringBills.filter(
+      (bill) => bill.status === "upcoming",
+    );
+    const dueSoonBills = recurringBills.filter(
+      (bill) => bill.status === "due_soon",
+    );
+    const pastDueBills = recurringBills.filter(
+      (bill) => bill.status === "past_due",
+    );
+
+    return {
+      recurringBills,
+      paidBills,
+      upcomingBills,
+      dueSoonBills,
+      pastDueBills,
+      sortBy,
+      setSortBy,
+      queryString,
+      setQueryString: handleQueryChange,
+      isLoading,
+      error,
+    };
+  }, [recurringBillsData, queryString, sortBy, isLoading, error]);
+
+  return (
+    <RecurringBillsContext.Provider value={value}>
+      {children}
+    </RecurringBillsContext.Provider>
+  );
 };
 
 function queriedBills(
   bills: TransactionData[],
   billQuery: string,
 ): TransactionData[] {
-  return bills?.filter((bill) =>
-    bill.name.toLowerCase().includes(billQuery.toLowerCase()),
+  return (
+    bills?.filter((bill) =>
+      bill.name.toLowerCase().includes(billQuery.toLowerCase()),
+    ) ?? []
   );
 }
 
