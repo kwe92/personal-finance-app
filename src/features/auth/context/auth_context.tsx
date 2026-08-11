@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useMemo,
+} from "react";
 import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
@@ -12,6 +18,7 @@ import { auth, db } from "../../../firebase";
 interface AuthContextType {
   user: User | null;
   isPlaidLinked: boolean;
+  isAuthLoading: boolean;
   signUp: (email: string, password: string) => Promise<UserCredential>;
   login: (email: string, password: string) => Promise<UserCredential>;
   logout: () => Promise<void>;
@@ -21,41 +28,76 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// Helper: Safely fetch Plaid status from Firestore
+const fetchPlaidStatus = async (uid: string): Promise<boolean> => {
+  try {
+    const userDoc = await getDoc(doc(db, "users", uid));
+    return Boolean(userDoc.exists() && userDoc.data()?.is_plaid_linked);
+  } catch (error) {
+    console.error("Failed to fetch Plaid status:", error);
+    return false;
+  }
+};
+
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isPlaidLinked, setIsPlaidLinked] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [isAuthLoading, setIsAuthLoading] = useState<boolean>(true);
+
+  // Auth State Listener: Single source of truth for session sync
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      setUser(currentUser);
+
+      if (currentUser) {
+        const linked = await fetchPlaidStatus(currentUser.uid);
+        setIsPlaidLinked(linked);
+      } else {
+        setIsPlaidLinked(false);
+      }
+
+      setIsAuthLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const signUp = async (email: string, password: string) => {
-    const userCredential = await createUserWithEmailAndPassword(
+    const credential = await createUserWithEmailAndPassword(
       auth,
       email,
       password,
     );
 
-    const { user } = userCredential;
-
     await setDoc(
-      doc(db, "users", user.uid),
+      doc(db, "users", credential.user.uid),
       {
-        email: user.email,
+        email: credential.user.email,
         is_plaid_linked: false,
         createdAt: new Date(),
       },
       { merge: true },
     );
 
-    return userCredential;
+    setIsPlaidLinked(false);
+    return credential;
   };
 
-  const login = (email: string, password: string) => {
-    return signInWithEmailAndPassword(auth, email, password);
+  const login = async (email: string, password: string) => {
+    const credential = await signInWithEmailAndPassword(auth, email, password);
+
+    // Fetch Firestore profile before login() resolves so state is immediately accurate for caller
+    const linked = await fetchPlaidStatus(credential.user.uid);
+    setIsPlaidLinked(linked);
+
+    return credential;
   };
 
-  const logout = () => {
-    return signOut(auth);
+  const logout = async () => {
+    await signOut(auth);
+    // State cleanup (setUser, setIsPlaidLinked) is handled automatically by onAuthStateChanged
   };
 
   const refreshPlaidStatus = async () => {
@@ -63,20 +105,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setIsPlaidLinked(false);
       return;
     }
-
-    try {
-      const userDoc = await getDoc(doc(db, "users", user.uid));
-      const userData = userDoc.exists() ? userDoc.data() : null;
-      setIsPlaidLinked(Boolean(userData?.is_plaid_linked));
-    } catch (error) {
-      setIsPlaidLinked(false);
-    }
+    const linked = await fetchPlaidStatus(user.uid);
+    setIsPlaidLinked(linked);
   };
 
   const markPlaidLinked = async () => {
-    if (!user) {
-      throw new Error("User is not available.");
-    }
+    if (!user) throw new Error("User is not authenticated.");
 
     await updateDoc(doc(db, "users", user.uid), {
       is_plaid_linked: true,
@@ -86,49 +120,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setIsPlaidLinked(true);
   };
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      if (!currentUser) {
-        setUser(null);
-        setIsPlaidLinked(false);
-        setLoading(false);
-        return;
-      }
+  const value = useMemo(() => {
+    return {
+      user,
+      isPlaidLinked,
+      isAuthLoading,
+      signUp,
+      login,
+      logout,
+      refreshPlaidStatus,
+      markPlaidLinked,
+    };
+  }, [user, isPlaidLinked, isAuthLoading]);
 
-      setUser(currentUser);
-      try {
-        const userDoc = await getDoc(doc(db, "users", currentUser.uid));
-        const userData = userDoc.exists() ? userDoc.data() : null;
-        setIsPlaidLinked(Boolean(userData?.is_plaid_linked));
-      } catch (error) {
-        setIsPlaidLinked(false);
-      } finally {
-        setLoading(false);
-      }
-    });
-    return () => unsubscribe();
-  }, []);
-
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        isPlaidLinked,
-        login,
-        signUp,
-        logout,
-        refreshPlaidStatus,
-        markPlaidLinked,
-      }}
-    >
-      {!loading && children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;

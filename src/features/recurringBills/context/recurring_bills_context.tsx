@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { getRecurringBills } from "../../shared/services/backend_service";
 import { cleanName, sortTransactions } from "../../shared/utility/functions";
+import { useAuth } from "../../auth/context/auth_context";
 
 const RecurringBillsContext = createContext<{
   recurringBills: TransactionData[];
@@ -13,6 +14,7 @@ const RecurringBillsContext = createContext<{
   queryString: string;
   setQueryString: React.ChangeEventHandler<HTMLInputElement>;
   isLoading: boolean;
+  error: string | null;
 }>({
   recurringBills: [],
   paidBills: [],
@@ -24,6 +26,7 @@ const RecurringBillsContext = createContext<{
   queryString: "",
   setQueryString: () => {},
   isLoading: true,
+  error: null,
 });
 
 export const RecurringBillsProvider = ({
@@ -31,47 +34,46 @@ export const RecurringBillsProvider = ({
 }: {
   children: React.ReactNode;
 }): JSX.Element => {
+  const { user, isPlaidLinked } = useAuth();
   const [recurringBillsData, setRecurringBillsData] = useState<
     TransactionData[]
   >([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<SortCategory>("Latest");
   const [queryString, setQueryString] = useState<string>("");
 
+  const fetchRecurringBills = async () => {
+    if (!user || !isPlaidLinked) {
+      setRecurringBillsData([]);
+      setIsLoading(false);
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await getRecurringBills();
+      setRecurringBillsData(
+        response.recurringBills.map((recurringBill) => ({
+          ...recurringBill,
+          name: cleanName(recurringBill.name),
+        })) ?? [],
+      );
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Failed to fetch recurring bills",
+      );
+      setRecurringBillsData([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    let isMounted = true;
-
-    const fetchRecurringBills = async () => {
-      setIsLoading(true);
-
-      try {
-        const response = await getRecurringBills();
-
-        if (!isMounted) return;
-
-        setRecurringBillsData(
-          response.recurringBills.map((recurringBill) => ({
-            ...recurringBill,
-            name: cleanName(recurringBill.name),
-          })) ?? [],
-        );
-      } catch (error) {
-        if (isMounted) {
-          setRecurringBillsData([]);
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
-      }
-    };
-
     fetchRecurringBills();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  }, [user, isPlaidLinked]);
 
   const recurringBills = queriedBills(recurringBillsData, queryString);
 
@@ -101,13 +103,14 @@ export const RecurringBillsProvider = ({
         queryString,
         setQueryString: handleQueryChange,
         isLoading,
+        error,
       }}
     >
       {children}
     </RecurringBillsContext.Provider>
   );
 
-  function handleQueryChange(e: any) {
+  function handleQueryChange(e: React.ChangeEvent<HTMLInputElement>) {
     setQueryString(e.target.value);
   }
 };
@@ -122,4 +125,4 @@ function queriedBills(
 }
 
 export const useRecurringBills = () => useContext(RecurringBillsContext);
-export const useRecurringBillsViewData = useRecurringBills; // Backward-compatible alias
+export const useRecurringBillsViewData = useRecurringBills;

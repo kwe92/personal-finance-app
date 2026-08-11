@@ -32,12 +32,18 @@ const PotProvider = ({
 }: {
   children?: React.ReactNode;
 }): JSX.Element => {
-  const [pots, setPots] = useState<PotData[]>([]);
   const { user } = useAuth();
-  const [isLoading, setIsLoading] = useState(false);
+  const [pots, setPots] = useState<PotData[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchPots = async () => {
+    if (!user) {
+      setPots([]);
+      setIsLoading(false);
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
 
@@ -55,7 +61,7 @@ const PotProvider = ({
   const deletePotHandler = async (id: string) => {
     try {
       await deletePot(id);
-      setPots((prev) => prev.filter((pot) => pot.id !== id && pot.id !== id));
+      setPots((prev) => prev.filter((pot) => pot.id !== id));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to delete pot");
       throw err;
@@ -82,11 +88,7 @@ const PotProvider = ({
       const response = await updatePot(id, payload);
       const updatedPot = response.pot;
 
-      setPots((prevPots) =>
-        prevPots.map((pot) =>
-          pot.id === id || pot.id === id ? updatedPot : pot,
-        ),
-      );
+      setPots((prev) => prev.map((pot) => (pot.id === id ? updatedPot : pot)));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to update pot");
       throw err;

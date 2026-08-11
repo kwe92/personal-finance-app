@@ -32,12 +32,18 @@ const BudgetProvider = ({
 }: {
   children?: React.ReactNode;
 }): JSX.Element => {
-  const [budgets, setBudgets] = useState<BudgetData[]>([]);
   const { user } = useAuth();
-  const [isLoading, setIsLoading] = useState(false);
+  const [budgets, setBudgets] = useState<BudgetData[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchBudgets = async () => {
+    if (!user) {
+      setBudgets([]);
+      setIsLoading(false);
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
 
@@ -73,8 +79,8 @@ const BudgetProvider = ({
     const response = await updateBudget(id, payload);
     const updatedBudget = response.budget;
 
-    setBudgets((prevBudgets) =>
-      prevBudgets.map((budget) => (budget.id === id ? updatedBudget : budget)),
+    setBudgets((prev) =>
+      prev.map((budget) => (budget.id === id ? updatedBudget : budget)),
     );
   };
 
