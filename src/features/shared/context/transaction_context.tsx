@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState, createContext } from "react";
+import { useContext, useEffect, useState, createContext, useMemo } from "react";
 import { getTransactions } from "../services/backend_service";
 import { useAuth } from "../../auth/context/auth_context";
 import { cleanName } from "../utility/functions";
@@ -59,10 +59,18 @@ const TransactionProvider = ({
     fetchTransactions();
   }, [user, isPlaidLinked]);
 
+  const value = useMemo(
+    () => ({
+      transactions,
+      isLoading,
+      error,
+      fetchTransactions,
+    }),
+    [transactions, isLoading, error],
+  );
+
   return (
-    <TransactionContext.Provider
-      value={{ transactions, isLoading, error, fetchTransactions }}
-    >
+    <TransactionContext.Provider value={value}>
       {children}
     </TransactionContext.Provider>
   );

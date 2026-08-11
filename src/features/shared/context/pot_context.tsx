@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState, createContext } from "react";
+import { useContext, useEffect, useState, createContext, useMemo } from "react";
 import {
   createPot,
   deletePot,
@@ -99,21 +99,20 @@ const PotProvider = ({
     fetchPots();
   }, [user]);
 
-  return (
-    <PotContext.Provider
-      value={{
-        pots,
-        setPots,
-        deletePotHandler,
-        addPotHandler,
-        updatePotHandler,
-        isLoading,
-        error,
-      }}
-    >
-      {children}
-    </PotContext.Provider>
+  const value = useMemo(
+    () => ({
+      pots,
+      setPots,
+      deletePotHandler,
+      addPotHandler,
+      updatePotHandler,
+      isLoading,
+      error,
+    }),
+    [pots, isLoading, error],
   );
+
+  return <PotContext.Provider value={value}>{children}</PotContext.Provider>;
 };
 
 const usePotData = () => useContext(PotContext);

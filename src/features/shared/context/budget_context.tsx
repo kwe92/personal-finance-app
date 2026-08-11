@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState, createContext } from "react";
+import { useContext, useEffect, useState, createContext, useMemo } from "react";
 import {
   createBudget,
   deleteBudget,
@@ -88,20 +88,21 @@ const BudgetProvider = ({
     fetchBudgets();
   }, [user]);
 
+  const value = useMemo(
+    () => ({
+      budgets,
+      setBudgets,
+      deleteBudgetHandler,
+      addBudgetHandler,
+      updateBudgetHandler,
+      isLoading,
+      error,
+    }),
+    [budgets, isLoading, error],
+  );
+
   return (
-    <BudgetContext.Provider
-      value={{
-        budgets,
-        setBudgets,
-        deleteBudgetHandler,
-        addBudgetHandler,
-        updateBudgetHandler,
-        isLoading,
-        error,
-      }}
-    >
-      {children}
-    </BudgetContext.Provider>
+    <BudgetContext.Provider value={value}>{children}</BudgetContext.Provider>
   );
 };
 
