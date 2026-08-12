@@ -43,7 +43,7 @@ export const BudgetView = (): JSX.Element => {
             }}
           />
         </div>
-        <BudgetSummary />
+        {budgets.length == 0 ? <></> : <BudgetSummary />}
 
         {budgets?.map((budget, i) => (
           <BudgetCard key={budget.id ?? i} index={i} budget={budget} />
