@@ -1,24 +1,23 @@
 .budget-summary-main {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     width: 100%;
     height: 312px;
     align-items: center;
-    justify-content: space-between;
     border-radius: 12px;
     padding: 24px;
-    background-color: white
+    background-color: white;
 }
 
 .budget-summary-chart-container {
+    position: relative; /* REQUIRED by Chart.js for responsive scaling */
+    width: 240px;       /* Fixed square width for a clean doughnut ratio */
+    height: 240px;      /* Fits cleanly inside parent's 264px inner height */
     display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 300px;
-    height: 280px;
-    padding-left: 12px;
-    padding-right: 12px;
-
-
+    justify-content: flex-start;
+    align-items: start;
+    padding: 0;
+    justify-self: start;
 }
 
 .budget-summary-total-spending {
@@ -28,25 +27,26 @@
     justify-content: center;
     align-items: center;
     gap: 16px;
-    
+    justify-self: center;
 }
 
 .budget-summary-bold-text {
     font-size: 20px; 
-font-weight: bold;
+    font-weight: bold;
 }
 
 .budget-spending-summary {
     display: flex;
     flex-direction: column;
     width: 500px;
-    height: 236px;
     gap: 16px;
+    justify-self: end;
+    align-self: start;
 }
 
 .budget-summary-total-spending div p:nth-child(1){
     font-size: 16px;
-    font-weight:bold;
+    font-weight: bold;
     letter-spacing: 1px;
     text-align: center;
 }
@@ -59,8 +59,6 @@ font-weight: bold;
     letter-spacing: 1px;
 }
 
-
-
 .budget-summary-total-spending div{
     display: flex;
     flex-direction: column;
@@ -68,34 +66,36 @@ font-weight: bold;
     gap: 8px;
 }
 
-@media (max-width:1440px){
+@media (max-width: 1440px) {
     .budget-spending-summary {
         width: 400px;
     }
 }
 
-@media(max-width:1050px){
+@media (max-width: 1050px) {
     .budget-summary-main {
-     flex-direction: column;
-     height: auto;
-     gap: 24px;
+        display: flex;
+        flex-direction: column;
+        height: auto;
+        gap: 24px;
     }
 
     .budget-summary-total-spending {
         height: auto;
     }
 
-    .budget-summary-total-spending div{
+    .budget-summary-total-spending div {
         flex-direction: row;
     }
 
     .budget-spending-summary {
         width: 100%;
+        align-self: auto;
     }
 }
 
-@media(max-width:600px){
+@media (max-width: 600px) {
     .budget-summary-main {
-        padding:16px;
+        padding: 16px;
     }
 }
