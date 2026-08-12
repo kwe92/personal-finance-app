@@ -10,13 +10,13 @@
 }
 
 .budget-summary-chart-container {
+    position: relative; /* REQUIRED by Chart.js for responsive scaling */
+    width: 240px;       /* Fixed square width for a clean doughnut ratio */
+    height: 240px;      /* Fits cleanly inside parent's 264px inner height */
     display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 300px;
-    height: 280px;
-    padding-left: 12px;
-    padding-right: 12px;
+    justify-content: flex-start;
+    align-items: start;
+    padding: 0;
     justify-self: start;
 }
 
