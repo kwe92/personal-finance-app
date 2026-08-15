@@ -1,0 +1,85 @@
+.expense-analysis-container {
+    background-color: #F2F3F7;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    border: 1px solid #E6E6E6;
+}
+
+.analysis-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 24px;
+}
+
+.analysis-card {
+    background: white;
+    padding: 16px;
+    border-radius: 8px;
+}
+
+.doughnut-wrapper {
+    height: 140px;
+    position: relative;
+    margin-bottom: 16px;
+}
+
+.chart-center-text {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.tiny-label { font-size: 10px; color: #696868; margin: 0; }
+.bold-amount { font-size: 16px; font-weight: bold; margin: 0; }
+
+.split-metrics {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.metric span { font-size: 12px; color: #696868; }
+.metric p { font-size: 14px; font-weight: bold; margin: 4px 0 0 0; }
+
+.vertical-divider { width: 1px; height: 30px; background-color: #F2F2F2; }
+
+.summary-title { font-weight: bold; font-size: 14px; margin-bottom: 12px; }
+
+.merchant-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+}
+
+.merchant-name { font-size: 13px; color: #201F24; }
+.merchant-value { font-size: 13px; font-weight: bold; }
+
+/* Analyze Button Toggle Style */
+.analyze-toggle-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid #B3B3B3;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.analyze-toggle-btn.active {
+    background: #000000;
+    color: white;
+}
+
+.analyze-toggle-btn.active img {
+    filter: invert(1);
+}
+
+@media (max-width: 800px) {
+    .analysis-grid {
+        grid-template-columns: 1fr;
+    }
+}
