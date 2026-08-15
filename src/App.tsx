@@ -21,6 +21,7 @@ import { RecurringBillsView } from "./features/recurringBills/recurring_bills_vi
 import BackendHealthTestView from "./features/shared/components/backend_health_test_view";
 import { OverviewProvider } from "./features/overview/context/overview_context";
 import Spinner from "./features/shared/components/spinner";
+import { ExpenseTrackerProvider } from "./features/expenseAnalysis/context/expense_analysis_context";
 
 function App() {
   const location = useLocation();
@@ -120,7 +121,11 @@ const RoutesContainer = ({
       />
       <Route
         path="/home/Transactions"
-        element={renderProtectedAppLayout(<TransactionsView />)}
+        element={renderProtectedAppLayout(
+          <ExpenseTrackerProvider>
+            <TransactionsView />
+          </ExpenseTrackerProvider>,
+        )}
       />
       <Route
         path="/home/Budgets"
