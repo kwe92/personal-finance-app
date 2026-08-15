@@ -2,6 +2,7 @@ import "./transactions_view.css";
 import "../shared/css/view_container.css";
 import documentIcon from "../../assets/images/icon-sort-mobile.svg";
 import filterIcon from "../../assets/images/icon-filter-mobile.svg";
+import chartIcon from "../../assets/images/icon-nav-budgets.svg";
 import { SearchBar } from "../shared/components/search_bar";
 import { DropDownMenu } from "../shared/components/drop_down_menu";
 import useWindowSize from "../shared/hooks/use_window_size";
@@ -13,12 +14,11 @@ import { useTransactionData } from "../shared/context/transaction_context";
 import { ToastService } from "../shared/services/toast_service";
 import { sortByCategories } from "../../app/constants/constants";
 import { GapH8 } from "../../app/constants/reusable";
-
-// ! TODO: add Plaid Transactions
+import { ExpenseAnalysisView } from "../expenseAnalysis/expense_analysis_view";
+import { useExpenseTrackerData } from "../expenseAnalysis/context/expense_analysis_context";
 
 const TransactionsView = (): JSX.Element => {
   const toastService = ToastService.getInstance();
-
   const { windowWidth } = useWindowSize();
 
   const {
@@ -32,6 +32,9 @@ const TransactionsView = (): JSX.Element => {
   } = useTransactionFilterData();
 
   const { transactions, isLoading } = useTransactionData();
+
+  // New Expense Tracker Context
+  const { isTrackerOpen, setIsTrackerOpen } = useExpenseTrackerData();
 
   if (isLoading) {
     return (
@@ -65,14 +68,11 @@ const TransactionsView = (): JSX.Element => {
     new Set(transactionData.map((transaction) => transaction.category)),
   );
 
-  // ensure "All Transactions" is the first selectable category
   categoryList.unshift("All Transactions");
-
   categoryList.sort((a, b) => a.localeCompare(b));
 
   var transactionListTiles: JSX.Element[] = [];
 
-  // only create transactionListTiles if you will need them
   if (windowWidth < 650) {
     transactionListTiles = createListTiles();
   }
@@ -90,6 +90,40 @@ const TransactionsView = (): JSX.Element => {
           />
 
           <div className="transaction-drop-down-container">
+            {/* Analysis Toggle Button */}
+            <button
+              className={`analyze-toggle-button ${isTrackerOpen ? "active" : ""}`}
+              onClick={() => setIsTrackerOpen(!isTrackerOpen)}
+              // ! TODO: remove inline styling
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                padding: "12px",
+                borderRadius: "8px",
+                border: "1px solid #B3B3B3",
+                backgroundColor: isTrackerOpen ? "#000000" : "#ffffff",
+                color: isTrackerOpen ? "#ffffff" : "#000000",
+                cursor: "pointer",
+                transition: "all 0.2s ease",
+              }}
+            >
+              <img
+                src={chartIcon}
+                alt="analyze"
+                style={{
+                  width: "16px",
+                  height: "16px",
+                  filter: isTrackerOpen ? "invert(1)" : "none",
+                }}
+              />
+              {windowWidth > 850 && (
+                <span style={{ fontWeight: "bold", fontSize: "14px" }}>
+                  {isTrackerOpen ? "Hide Analysis" : "Analyze"}
+                </span>
+              )}
+            </button>
+
             <DropDownMenu
               id="sort-drop-down-menu"
               title="Sort by"
@@ -112,6 +146,14 @@ const TransactionsView = (): JSX.Element => {
           </div>
         </div>
 
+        {/* Expense Tracker Section */}
+        {isTrackerOpen && (
+          <>
+            <ExpenseAnalysisView />
+            <Divider style={{ margin: "8px 0" }} />
+          </>
+        )}
+
         {windowWidth > 600 ? (
           <TransactionTable />
         ) : (
@@ -127,14 +169,14 @@ const TransactionsView = (): JSX.Element => {
   function createListTiles(): JSX.Element[] {
     const listTiles = filteredTransactions.map((transaction, i) => {
       return (
-        <>
+        <div key={transaction.id || i}>
           <TransactionListTile transaction={transaction} />
           {filteredTransactions.length - 1 !== i ? (
             <Divider style={{ margin: "16px 0 16px 0" }} />
           ) : (
             <></>
           )}
-        </>
+        </div>
       );
     });
 
