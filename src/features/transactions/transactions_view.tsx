@@ -16,6 +16,7 @@ import { sortByCategories } from "../../app/constants/constants";
 import { GapH8 } from "../../app/constants/reusable";
 import { ExpenseAnalysisView } from "../expenseAnalysis/expense_analysis_view";
 import { useExpenseTrackerData } from "../expenseAnalysis/context/expense_analysis_context";
+import { AnalysisToggleButton } from "../shared/components/analysis_toggle_button";
 
 const TransactionsView = (): JSX.Element => {
   const toastService = ToastService.getInstance();
@@ -32,8 +33,6 @@ const TransactionsView = (): JSX.Element => {
   } = useTransactionFilterData();
 
   const { transactions, isLoading } = useTransactionData();
-
-  // New Expense Tracker Context
   const { isTrackerOpen, setIsTrackerOpen } = useExpenseTrackerData();
 
   if (isLoading) {
@@ -90,39 +89,13 @@ const TransactionsView = (): JSX.Element => {
           />
 
           <div className="transaction-drop-down-container">
-            {/* Analysis Toggle Button */}
-            <button
-              className={`analyze-toggle-button ${isTrackerOpen ? "active" : ""}`}
-              onClick={() => setIsTrackerOpen(!isTrackerOpen)}
-              // ! TODO: remove inline styling
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                padding: "12px",
-                borderRadius: "8px",
-                border: "1px solid #B3B3B3",
-                backgroundColor: isTrackerOpen ? "#000000" : "#ffffff",
-                color: isTrackerOpen ? "#ffffff" : "#000000",
-                cursor: "pointer",
-                transition: "all 0.2s ease",
+            <AnalysisToggleButton
+              chartIcon={chartIcon}
+              isTrackerOpen={isTrackerOpen}
+              onTap={(_) => {
+                setIsTrackerOpen(!isTrackerOpen);
               }}
-            >
-              <img
-                src={chartIcon}
-                alt="analyze"
-                style={{
-                  width: "16px",
-                  height: "16px",
-                  filter: isTrackerOpen ? "invert(1)" : "none",
-                }}
-              />
-              {windowWidth > 850 && (
-                <span style={{ fontWeight: "bold", fontSize: "14px" }}>
-                  {isTrackerOpen ? "Hide Analysis" : "Analyze"}
-                </span>
-              )}
-            </button>
+            />
 
             <DropDownMenu
               id="sort-drop-down-menu"
