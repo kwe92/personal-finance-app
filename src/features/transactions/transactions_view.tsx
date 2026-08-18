@@ -123,7 +123,7 @@ const TransactionsView = (): JSX.Element => {
         {isTrackerOpen && (
           <>
             <ExpenseAnalysisView />
-            <Divider style={{ margin: "8px 0" }} />
+            {/* <Divider style={{ margin: "8px 0" }} /> */}
           </>
         )}
 
