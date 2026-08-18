@@ -50,12 +50,12 @@ export const ExpenseAnalysisView = (): JSX.Element => {
 
         <div className="split-metrics">
           <div className="metric">
-            <span>Needs</span>
+            <p className="summary-title">Needs</p>
             <p>${spendingSplit.needs.toFixed(2)}</p>
           </div>
           <div className="vertical-divider" />
           <div className="metric">
-            <span>Wants</span>
+            <p className="summary-title">Wants</p>
             <p>${spendingSplit.wants.toFixed(2)}</p>
           </div>
         </div>
@@ -68,8 +68,8 @@ export const ExpenseAnalysisView = (): JSX.Element => {
           {topMerchants.map((merchant, i) => (
             <div key={i}>
               <div className="merchant-item">
-                <span className="merchant-name">{merchant.name}</span>
-                <span className="merchant-value">
+                <span className="expense-name">{merchant.name}</span>
+                <span className="expense-value">
                   ${merchant.value.toFixed(2)}
                 </span>
               </div>
