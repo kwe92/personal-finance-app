@@ -1,25 +1,58 @@
+/* ! TODO: clean up file and refactor into reuseable Widgets */
+
 .expense-analysis-container {
-    background-color: #F2F3F7;
     display: flex;
     flex-direction: row;
-    gap: 1px;
-    /* border-radius: 16px; */
-    /* border: 2px solid #E6E6E6; */
+    gap: 24px;
+    width: 100%;
+    /* Ensures the row heights match automatically */
+    align-items: stretch; 
 }
 
 .analysis-card {
     flex: 1;
     background: white;
-    padding: 16px 16px 16px 16px;
-    /* border-radius: 16px; */
+    padding: 24px;
+    border-radius: 16px;
+    border: 1px solid #F2F2F2;
+    display: flex;
+    flex-direction: column;
+}
+
+.merchant-item {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    flex: 1;
+    /* background-color: antiquewhite; */
+}
+
+
+/* Macro Layout Styling (Left Side) */
+.macro-content {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 8px;
 }
 
 .doughnut-wrapper {
     height: 140px;
+    width: 140px;
     position: relative;
-    margin-bottom: 16px;
+    flex-shrink: 0;
 }
 
+.category-legend {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Helper styles */
 .chart-center-text {
     position: absolute;
     top: 50%; left: 50%;
@@ -27,49 +60,37 @@
     text-align: center;
 }
 
-.tiny-label { font-size: 10px; color: #696868; margin: 0; }r
-.bold-amount { font-size: 16px; font-weight: bold; margin: 0; }
+.tiny-label { font-size: 10px; color: #696868; margin: 0; }
+.bold-amount { font-size: 18px; font-weight: bold; margin: 0; }
 
-.split-metrics {
-    display: flex;
-    flex-direction: row;
-    align-items: start; /* Vertically aligns metrics with the divider */
-    justify-content: space-evenly;
-    width: 100%;
-}
+.legend-item { display: flex; justify-content: space-between; font-size: 13px; }
+.legend-left { display: flex; align-items: center; gap: 8px; }
+.color-dot { width: 8px; height: 8px; border-radius: 50%; }
+.category-name { color: #696868; }
+.category-percent { font-weight: bold; }
 
-.metric {
-    display: flex;
-    flex-direction: column;
-}
-.metric p {
-    margin: 0;
-}
-
-
-
-.metric p { font-size: 14px; ; margin: 4px 0 0 0; } */
-
-/* .vertical-divider { width: 1px; height: 30px; background-color: #F2F2F2; } */
-.vertical-divider {
-    width: 1px;
-    height: 100%; /* Or fixed height like 32px */
-    background-color: #E0E0E0;
-}
-
-.summary-title { font-weight: bold; font-size: 14px; margin-bottom: 12px; }
-
-.merchant-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 0;
-}
-
+.split-metrics { display: flex; justify-content: space-around; }
+.metric-label { font-size: 12px; color: #696868; margin: 0; font-weight: bold; }
+.metric-value { font-size: 14px; font-weight: bold; margin-top: 4px; }
+.vertical-divider { width: 1px; background-color: #E0E0E0; }
+.summary-title { font-weight: bold; font-size: 14px; margin-bottom: 16px; }
 .expense-name { font-size: 13px; color: #201F24; }
 .expense-value { font-size: 13px; font-weight: bold; }
 
-@media (max-width: 765px) {
-    .expense-analysis-container  {
+/* Responsive logic */
+@media (max-width: 1200px) {
+    .expense-analysis-container {
         flex-direction: column;
+        gap: 16px;
+    }
+
+    .macro-content {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .merchant-list {
+        gap: 12px; /* In column mode, we use gap instead of vertical stretching */
     }
 }
