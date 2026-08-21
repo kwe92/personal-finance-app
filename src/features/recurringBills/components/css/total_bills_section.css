@@ -38,9 +38,9 @@
 
 @media (max-width: 600px) {
     .total-bills-card {
-    padding: 16px;
-    /* TODO: height may need to be lower */
-    height:180px; 
+        padding: 16px;
+        height: auto;
+        gap: 12px;
     }
 
     .total-bills-card-content p:nth-child(2) {
@@ -50,12 +50,5 @@
     .total-bills-card img {
         width: 24px;
         height: 24px;
-    }
-}
-
-@media(max-width: 424px) {
-    .total-bills-card {
-        height: auto;
-        gap: 12px;
     }
 }

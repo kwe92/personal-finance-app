@@ -77,7 +77,7 @@ const TransactionsView = (): JSX.Element => {
   }
 
   return (
-    <div className="view-container">
+    <div className="view-container transaction-view">
       <h1>Transactions</h1>
 
       <div className="transaction-view-content">
