@@ -71,7 +71,7 @@ export const ExpenseAnalysisView = (): JSX.Element => {
           </div>
         </div>
 
-        <Divider style={{ margin: "16px 0" }} />
+        <Divider style={{ margin: "8px 0px 8px" }} />
 
         <div className="split-metrics">
           <div className="metric">
@@ -86,26 +86,30 @@ export const ExpenseAnalysisView = (): JSX.Element => {
         </div>
       </div>
 
-      <div className="analysis-card">
+      <div className="analysis-card top-spending">
         <p className="summary-title">Top Spending</p>
         {topMerchants.map((merchant, i) => (
-          <div
-            key={i}
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              height: "20%",
-              // backgroundColor: "orange",
-            }}
-          >
-            <div className="merchant-item">
-              <span className="expense-name">{merchant.name}</span>
-              <span className="expense-value">
-                ${merchant.value.toFixed(2)}
-              </span>
+          <>
+            {i === 0 && <Divider />}
+            <div
+              key={i}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                height: "20%",
+                // backgroundColor: "orange",
+                margin: "12px 0px 12px",
+              }}
+            >
+              <div className="merchant-item">
+                <span className="expense-name">{merchant.name}</span>
+                <span className="expense-value">
+                  ${merchant.value.toFixed(2)}
+                </span>
+              </div>
             </div>
             <Divider />
-          </div>
+          </>
         ))}
       </div>
     </div>
