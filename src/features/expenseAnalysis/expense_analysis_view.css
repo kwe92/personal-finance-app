@@ -1,0 +1,94 @@
+/* ! TODO: clean up file and refactor into reuseable Widgets */
+
+.expense-analysis-container {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    width: 100%;
+    /* Ensures the row heights match automatically */
+    /* ! TODO: do we really need this line bellow? */
+    align-items: stretch; 
+}
+
+.analysis-card {
+    flex: 1;
+    background: white;
+    padding: 24px;
+    border-radius: 16px;
+    border: 1px solid #F2F2F2;
+    display: flex;
+    flex-direction: column;
+}
+
+.merchant-item {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    flex: 1;
+    /* background-color: antiquewhite; */
+}
+
+
+/* Macro Layout Styling (Left Side) */
+.macro-content {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    /* background-color: antiquewhite; */
+}
+
+.doughnut-wrapper {
+    height: 140px;
+    width: 140px;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.category-legend {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 12px;
+}
+
+/* Helper styles */
+.chart-center-text {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.tiny-label { font-size: 10px; color: #696868; margin: 0; }
+.bold-amount { font-size: 18px; font-weight: bold; margin: 0; }
+
+.legend-item { display: flex; justify-content: space-between; font-size: 13px; }
+.legend-left { display: flex; align-items: center; gap: 8px; }
+.color-dot { width: 8px; height: 8px; border-radius: 50%; }
+.category-name { color: #696868; }
+.category-percent { font-weight: bold; }
+
+.split-metrics { display: flex; justify-content: space-around; }
+.metric-label { font-size: 12px; color: #696868; margin: 0; font-weight: bold; }
+.metric-value { font-size: 14px; font-weight: bold; margin-top: 4px; }
+.vertical-divider { width: 1px; background-color: #E0E0E0; }
+.summary-title { font-weight: bold; font-size: 14px; margin-bottom: 16px; }
+.expense-name { font-size: 13px; color: #201F24; }
+.expense-value { font-size: 13px; font-weight: bold; }
+
+/* Responsive logic */
+@media (max-width: 900px) {
+    .macro-content{
+    flex-direction: column;
+    gap: 12px;
+    }
+}
+
+@media (max-width: 700px) {
+    .expense-analysis-container {
+        flex-direction: column;
+    }
+}
