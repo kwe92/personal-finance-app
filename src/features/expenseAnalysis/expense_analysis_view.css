@@ -3,9 +3,10 @@
 .expense-analysis-container {
     display: flex;
     flex-direction: row;
-    gap: 24px;
+    gap: 16px;
     width: 100%;
     /* Ensures the row heights match automatically */
+    /* ! TODO: do we really need this line bellow? */
     align-items: stretch; 
 }
 
@@ -35,7 +36,7 @@
     display: flex;
     align-items: center;
     gap: 24px;
-    margin-bottom: 8px;
+    /* background-color: antiquewhite; */
 }
 
 .doughnut-wrapper {
@@ -49,7 +50,8 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    width: 100%;
+    gap: 12px;
 }
 
 /* Helper styles */
@@ -78,19 +80,15 @@
 .expense-value { font-size: 13px; font-weight: bold; }
 
 /* Responsive logic */
-@media (max-width: 1200px) {
+@media (max-width: 900px) {
+    .macro-content{
+    flex-direction: column;
+    gap: 12px;
+    }
+}
+
+@media (max-width: 700px) {
     .expense-analysis-container {
         flex-direction: column;
-        gap: 16px;
-    }
-
-    .macro-content {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-    
-    .merchant-list {
-        gap: 12px; /* In column mode, we use gap instead of vertical stretching */
     }
 }
