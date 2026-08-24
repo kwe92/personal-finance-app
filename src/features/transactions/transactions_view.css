@@ -44,14 +44,14 @@ td:nth-child(4) {
 
 .transaction-filters-container {
     display: flex;
-    gap: 240px;
+    gap: 12px;
 }
 
 .transaction-drop-down-container {
     display: flex;
     align-items: center;
     justify-content: end;
-    gap: 24px;
+    gap: 12px;
 }
 
 .transaction-avatar-name {
@@ -86,9 +86,6 @@ td:nth-child(4) {
 }
 
 @media (max-width: 1250px) {
-  .transaction-filters-container {
-    gap:32px;
-  }
 
   .transaction-drop-down-container .drop-down-menu-content {
     padding: 8px 12px 8px 12px;
