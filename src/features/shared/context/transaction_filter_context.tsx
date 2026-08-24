@@ -1,56 +1,96 @@
-import { createContext, useContext, useEffect, useState, useMemo } from "react";
+import { createContext, useContext, useState, useMemo } from "react";
 import { useTransactionData } from "./transaction_context";
-import Transaction from "../models/transaction";
-import { sortByDate, sortTransactions } from "../utility/functions";
+import { sortTransactions } from "../utility/functions";
 
-// inital TransactionFilterContext shape and values
-const TransactionFilterContext = createContext<{
+interface TransactionFilterContextType {
   transactionQuery: string;
   filteredTransactions: TransactionData[];
   sortBy: SortCategory;
   category: string;
-  setSortBy: Function;
-  setCategory: Function;
+  dateRange: DateRangeOption;
+  customRange: { start: Date | null; end: Date | null };
+  isCalendarOpen: boolean;
+  setSortBy: (val: SortCategory) => void;
+  setCategory: (val: string) => void;
+  setDateRange: (val: DateRangeOption) => void;
+  setCustomRange: (range: { start: Date | null; end: Date | null }) => void;
+  setIsCalendarOpen: (val: boolean) => void;
   setTransactionQuery: React.ChangeEventHandler<HTMLInputElement>;
-}>({
+}
+
+const TransactionFilterContext = createContext<TransactionFilterContextType>({
   transactionQuery: "",
   filteredTransactions: [],
   sortBy: "Latest",
-  category: "",
+  category: "All Transactions",
+  dateRange: "30 Days",
+  customRange: { start: null, end: null },
+  isCalendarOpen: false,
   setSortBy: () => {},
   setCategory: () => {},
+  setDateRange: () => {},
+  setCustomRange: () => {},
+  setIsCalendarOpen: () => {},
   setTransactionQuery: () => {},
 });
 
-// used to wrap any part of your app to provide the TransactionFilterContext
-const TransactionFilterProvider = ({
+export const TransactionFilterProvider = ({
   children,
 }: {
   children?: React.ReactNode;
 }): JSX.Element => {
   const { transactions } = useTransactionData();
-
-  // mutable observable state
-  const [transactionQuery, setTransactionQuery] = useState<string>("");
-
+  const [transactionQuery, setTransactionQuery] = useState("");
   const [sortBy, setSortBy] = useState<SortCategory>("Latest");
+  const [category, setCategory] = useState("All Transactions");
 
-  const [category, setCategory] = useState<string>("All Transactions");
+  // Date States
+  const [dateRange, setDateRange] = useState<DateRangeOption>("30 Days");
+  const [customRange, setCustomRange] = useState<{
+    start: Date | null;
+    end: Date | null;
+  }>({ start: null, end: null });
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
-  const handleQueryChange = (e: any) => {
-    console.log(e.currentTarget.value);
-    setTransactionQuery(e.target.value);
-  };
+  const handleQueryChange = (e: any) => setTransactionQuery(e.target.value);
 
   const value = useMemo(() => {
-    const filtered =
-      queriedCategorizedTransactions(
-        transactions ?? [],
-        transactionQuery,
-        category,
-      ) ?? [];
+    // 1. Filter by Date first
+    const dateFiltered =
+      transactions?.filter((t) => {
+        const tDate = new Date(t.date);
+        const now = new Date();
+        now.setHours(23, 59, 59, 999);
 
-    const sorted = [...filtered];
+        if (dateRange === "Custom") {
+          if (!customRange.start || !customRange.end) return true;
+          return tDate >= customRange.start && tDate <= customRange.end;
+        }
+
+        let startDate = new Date();
+        if (dateRange === "7 days") startDate.setDate(now.getDate() - 7);
+        else if (dateRange === "14 days") startDate.setDate(now.getDate() - 14);
+        else if (dateRange === "30 Days") startDate.setDate(now.getDate() - 30);
+        else if (dateRange === "Current Month")
+          startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+
+        startDate.setHours(0, 0, 0, 0);
+        return tDate >= startDate && tDate <= now;
+      }) ?? [];
+
+    // 2. Filter by Category and Search
+    const finalFiltered = dateFiltered.filter((t) => {
+      const matchesSearch = t.name
+        .toLowerCase()
+        .includes(transactionQuery.toLowerCase());
+      const matchesCat =
+        category === "All Transactions" ||
+        t.category.toLowerCase() === category.toLowerCase();
+      return matchesSearch && matchesCat;
+    });
+
+    // 3. Sort
+    const sorted = [...finalFiltered];
     sortTransactions(sorted, sortBy);
 
     return {
@@ -58,11 +98,28 @@ const TransactionFilterProvider = ({
       filteredTransactions: sorted,
       sortBy,
       category,
+      dateRange,
+      customRange,
+      isCalendarOpen,
       setSortBy,
       setCategory,
+      setDateRange: (val: DateRangeOption) => {
+        setDateRange(val);
+        if (val === "Custom") setIsCalendarOpen(true);
+      },
+      setCustomRange,
+      setIsCalendarOpen,
       setTransactionQuery: handleQueryChange,
     };
-  }, [transactions, transactionQuery, category, sortBy]);
+  }, [
+    transactions,
+    transactionQuery,
+    category,
+    sortBy,
+    dateRange,
+    customRange,
+    isCalendarOpen,
+  ]);
 
   return (
     <TransactionFilterContext.Provider value={value}>
@@ -71,27 +128,5 @@ const TransactionFilterProvider = ({
   );
 };
 
-function queriedCategorizedTransactions(
-  transactions: TransactionData[],
-  transactionQuery: string,
-  category: string,
-): TransactionData[] {
-  return transactions?.filter((transaction) => {
-    const queriedTranactions = transaction.name
-      .toLowerCase()
-      .includes(transactionQuery.toLowerCase());
-
-    if (category.toLowerCase() === "all transactions") {
-      return queriedTranactions;
-    }
-
-    return (
-      transaction.name.toLowerCase().includes(transactionQuery.toLowerCase()) &&
-      transaction.category.toLowerCase().includes(category.toLowerCase())
-    );
-  });
-}
-
-const useTransactionFilterData = () => useContext(TransactionFilterContext);
-
-export { TransactionFilterProvider, useTransactionFilterData };
+export const useTransactionFilterData = () =>
+  useContext(TransactionFilterContext);
