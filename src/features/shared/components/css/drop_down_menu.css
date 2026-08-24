@@ -58,12 +58,15 @@
     border: 1px solid #201F24;
 }
 
-@media(max-width: 700px){
+@media(max-width: 1200px){
     .drop-down-menu-content {
         margin: 0px;
         right: -24px;
-        top: 180%;
+        top: 120%;
+    }
 
+    .date-drop-down-menu-content {
+        top: 82.5%;
     }
 }
 
