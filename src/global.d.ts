@@ -141,4 +141,11 @@ type NumberDaysOfMonth =
 
 type ArithmeticOperator = "add" | "addition" | "sub" | "subtraction";
 
+type DateRangeOption =
+  | "30 Days"
+  | "Current Month"
+  | "14 days"
+  | "7 days"
+  | "Custom";
+
 
