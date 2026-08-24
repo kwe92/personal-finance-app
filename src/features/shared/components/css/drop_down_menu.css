@@ -24,16 +24,17 @@
     gap: 12px;
     position: absolute;
     overflow-y: scroll;
-    min-height: 250px;
+    /* min-height: 250px; */
     max-height: 250px;
     margin-left: 66px;
     top: 116%;
-    width: 100px;
+    /* width: 100px; */
     list-style-type: none;
     border-radius: 8px;
     background-color: white;
     padding: 12px 16px 12px 16px;
     box-shadow: 0px 2px 2px 4px #F2F2F2;
+    z-index: 9;
     /* box-shadow: 0px 2px 8px 4px rgba(0,0,0,0.15); */
     /* box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); */
 }
@@ -58,12 +59,15 @@
     border: 1px solid #201F24;
 }
 
-@media(max-width: 700px){
+@media(max-width: 1200px){
     .drop-down-menu-content {
         margin: 0px;
         right: -24px;
-        top: 180%;
+        top: 120%;
+    }
 
+    .date-drop-down-menu-content {
+        top: 82.5%;
     }
 }
 

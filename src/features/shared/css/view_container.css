@@ -22,13 +22,6 @@
     }
 }
 
-@media (max-width: 700px) {
-    .transaction-view {
-        height: auto;
-
-    }
-}
-
 @media (max-width: 600px) {
     .view-container {
         padding: 16px;

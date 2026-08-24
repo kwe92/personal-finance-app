@@ -6,6 +6,7 @@ import { useTransactionFilterData } from "../context/transaction_filter_context"
 
 export const DropDownMenu = ({
   id,
+  contentId,
   sortBy,
   title,
   label,
@@ -15,6 +16,7 @@ export const DropDownMenu = ({
   onItemTap,
 }: {
   id?: string;
+  contentId?: string;
   sortBy?: string;
   title: string;
   label: string;
@@ -49,12 +51,12 @@ export const DropDownMenu = ({
 
   return (
     <div
-      id={id}
+      // id={id}
       className="dropdown"
       style={{ position: "relative" }}
       onClick={onMenuTap}
     >
-      {windowWidth > 700 ? (
+      {windowWidth > 1200 ? (
         <div className="drop-down-menu-container">
           <p style={{ color: "#696868" }}>{title}</p>
           <div className="drop-down-menu-selector">
@@ -66,7 +68,9 @@ export const DropDownMenu = ({
         <img src={icon} alt="document-icon" />
       )}
 
-      <ul className="drop-down-menu-content">{dropDownMenuItems}</ul>
+      <ul className={`drop-down-menu-content ${contentId}`}>
+        {dropDownMenuItems}
+      </ul>
     </div>
   );
 };
