@@ -9,29 +9,32 @@ export interface NarrativeData {
 export const getTemporalNarrative = (
   expenses: TransactionData[],
   dateRange: string,
+  typicalAvg: number,
+  daysInPeriod: number,
 ): NarrativeData => {
   const total = expenses.reduce((sum, t) => sum + Math.abs(t.amount), 0);
   const now = new Date();
 
-  // Logic for Short Ranges (7 or 14 Days)
-  if (dateRange.includes("7") || dateRange.includes("14")) {
-    const days = dateRange.includes("7") ? 7 : 14;
-    const dailyAvg = total / days;
-
-    const typicalAvg = 50; // mock average
-    const diff = ((dailyAvg - typicalAvg) / typicalAvg) * 100;
+  // Logic for Short Ranges (7, 14, or Custom)
+  if (dateRange !== "30 Days" && dateRange !== "Current Month") {
+    const dailyAvg = total / (daysInPeriod || 1);
+    const diff =
+      typicalAvg > 0 ? ((dailyAvg - typicalAvg) / typicalAvg) * 100 : 0;
 
     return {
       primaryMetric: `$${dailyAvg.toFixed(0)}`,
-      secondaryMetric: `${Math.abs(diff).toFixed(0)}% ${diff > 0 ? "higher" : "lower"}`,
+      secondaryMetric:
+        typicalAvg > 0
+          ? `${Math.abs(diff).toFixed(0)}% ${diff > 0 ? "higher" : "lower"}`
+          : "First time",
       status: diff > 0 ? "bad" : "good",
       description: "Average daily spend",
-      trendLabel: "vs. Typical Average",
+      trendLabel: `vs. Typical ($${typicalAvg.toFixed(0)})`,
     };
   }
 
-  // Logic for Monthly Ranges (30 Days / Current Month)
-  if (dateRange.includes("30") || dateRange.includes("Month")) {
+  // Logic for Monthly Ranges
+  if (dateRange === "30 Days" || dateRange === "Current Month") {
     const dayOfMonth = now.getDate();
     const daysInMonth = new Date(
       now.getFullYear(),
@@ -40,7 +43,7 @@ export const getTemporalNarrative = (
     ).getDate();
     const projected = (total / dayOfMonth) * daysInMonth;
 
-    const budget = 2000; // Mock budget
+    const budget = 2000;
     const isOver = projected > budget;
 
     return {
@@ -52,7 +55,6 @@ export const getTemporalNarrative = (
     };
   }
 
-  // 3. Fallback for Custom/Default
   return {
     primaryMetric: `$${total.toFixed(0)}`,
     secondaryMetric: `${expenses.length} Trans.`,
