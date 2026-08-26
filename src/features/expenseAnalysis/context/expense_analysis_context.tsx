@@ -1,5 +1,10 @@
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useState, useMemo } from "react";
 import { useTransactionFilterData } from "../../shared/context/transaction_filter_context";
+import {
+  getTemporalNarrative,
+  getPeakInsight,
+  type NarrativeData,
+} from "../../shared/utility/analysis_logic";
 
 interface ExpenseTrackerContextInterface {
   isTrackerOpen: boolean;
@@ -7,6 +12,8 @@ interface ExpenseTrackerContextInterface {
   categoryTotals: Record<string, number>;
   topMerchants: { name: string; value: number }[];
   spendingSplit: { needs: number; wants: number };
+  narrative: NarrativeData;
+  peakDay: { day: string; amount: number } | null;
 }
 
 const ExpenseTrackerContext = createContext<ExpenseTrackerContextInterface>({
@@ -15,50 +22,63 @@ const ExpenseTrackerContext = createContext<ExpenseTrackerContextInterface>({
   categoryTotals: {},
   topMerchants: [],
   spendingSplit: { needs: 0, wants: 0 },
+  narrative: {
+    primaryMetric: "",
+    secondaryMetric: "",
+    status: "neutral",
+    description: "",
+    trendLabel: "",
+  },
+  peakDay: null,
 });
 
-const ExpenseTrackerProvider = ({
+export const ExpenseTrackerProvider = ({
   children,
 }: {
   children: React.ReactNode;
 }): JSX.Element => {
-  const { filteredTransactions } = useTransactionFilterData();
+  const { filteredTransactions, dateRange } = useTransactionFilterData();
   const [isTrackerOpen, setIsTrackerOpen] = useState<boolean>(false);
 
   const value = useMemo(() => {
-    // 1. Filter for actual expenses
     const expenses = filteredTransactions.filter(
       (t) => t.type === "expense" && t.category.toLowerCase() !== "transfer",
     );
 
-    // 2. Calculate Category Totals
     const categoryTotals = expenses.reduce((acc: Record<string, number>, t) => {
       acc[t.category] = (acc[t.category] || 0) + t.amount;
       return acc;
     }, {});
 
-    // 3. Calculate Top Merchants
     const merchants = expenses.reduce((acc: Record<string, number>, t) => {
       acc[t.name] = (acc[t.name] || 0) + t.amount;
       return acc;
     }, {});
-
     const topMerchants = Object.entries(merchants)
       .map(([name, value]) => ({ name, value: value as number }))
       .sort((a, b) => b.value - a.value)
       .slice(0, 5);
 
-    // 4. Needs vs Wants Split logic
-    const needsCategories = ["payment", "bills", "rent", "transport"];
+    // Needs vs Wants
+    const needsCategories = [
+      "payment",
+      "bills",
+      "rent",
+      "transport",
+      "food & drink",
+    ];
     const spendingSplit = expenses.reduce(
       (acc, t) => {
-        const isNeed = needsCategories.includes(t.category.toLowerCase());
-        if (isNeed) acc.needs += t.amount;
+        if (needsCategories.includes(t.category.toLowerCase()))
+          acc.needs += t.amount;
         else acc.wants += t.amount;
         return acc;
       },
       { needs: 0, wants: 0 },
     );
+
+    const narrative = getTemporalNarrative(expenses, dateRange);
+    const peakDay = getPeakInsight(expenses);
 
     return {
       isTrackerOpen,
@@ -66,8 +86,10 @@ const ExpenseTrackerProvider = ({
       categoryTotals,
       topMerchants,
       spendingSplit,
+      narrative,
+      peakDay,
     };
-  }, [isTrackerOpen, filteredTransactions]);
+  }, [isTrackerOpen, filteredTransactions, dateRange]);
 
   return (
     <ExpenseTrackerContext.Provider value={value}>
@@ -76,6 +98,4 @@ const ExpenseTrackerProvider = ({
   );
 };
 
-const useExpenseTrackerData = () => useContext(ExpenseTrackerContext);
-
-export { ExpenseTrackerProvider, useExpenseTrackerData };
+export const useExpenseTrackerData = () => useContext(ExpenseTrackerContext);
