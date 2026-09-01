@@ -6,6 +6,7 @@ import { BudgetSummary } from "./components/budget_summary";
 import { BudgetCard } from "./components/budget_card";
 import { ModalWrapper } from "../shared/components/modal_wrapper";
 import { BudgetModal } from "./components/budget_modal";
+import { GlobalTargetModal } from "./components/global_target_modal";
 import { useBudgetViewData } from "./context/budget_view_context";
 import { useBudgetData } from "../shared/context/budget_context";
 import { ToastService } from "../shared/services/toast_service";
@@ -52,6 +53,10 @@ export const BudgetView = (): JSX.Element => {
 
       <ModalWrapper id={modalId}>
         <BudgetModal />
+      </ModalWrapper>
+
+      <ModalWrapper id={ModalId.globalTargetModal}>
+        <GlobalTargetModal />
       </ModalWrapper>
 
       <ModalWrapper id={ModalId.deleteBudgetModal}>
