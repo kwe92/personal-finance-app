@@ -67,7 +67,7 @@ export const BudgetSummary = (): JSX.Element => {
         </div>
 
         <Divider />
-
+        {/* TODO: Move Icon text button into component */}
         <div
           style={{
             display: "flex",
