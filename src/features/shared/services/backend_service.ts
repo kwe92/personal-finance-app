@@ -155,3 +155,17 @@ export async function deletePot(id: string) {
     method: 'DELETE',
   });
 }
+
+// Preference API
+export async function getPreferences() {
+  return apiRequest<UserPreferencesData>('/api/preferences', {
+    method: 'GET',
+  });
+}
+
+export async function updatePreferences(payload: UserPreferencesPayload) {
+  return apiRequest<UserPreferencesData>('/api/preferences', {
+    method: 'PUT',
+    body: JSON.stringify(payload),
+  });
+}
