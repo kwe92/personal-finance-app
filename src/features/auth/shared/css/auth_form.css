@@ -7,7 +7,7 @@
     /* background-color: orange; */
 }
 
-.form-theme {
+.auth-form-theme {
     display: flex;
     flex-direction: column;
     width: 560px;
@@ -43,7 +43,7 @@
         font-size: 4vw;
     }
 
-    .form-theme {
+    .auth-form-theme {
 
         width: 80vw;
 

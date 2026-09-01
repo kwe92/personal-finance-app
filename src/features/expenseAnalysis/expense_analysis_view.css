@@ -1,13 +1,17 @@
-/* ! TODO: clean up file and refactor into reuseable Widgets */
-
 .expense-analysis-container {
     display: flex;
     flex-direction: row;
     gap: 16px;
     width: 100%;
-    /* Ensures the row heights match automatically */
-    /* ! TODO: do we really need this line bellow? */
-    align-items: stretch; 
+    /* margin-bottom: 24px; */
+    animation: fadeIn 0.3s ease-out;
+}
+
+.expense-name { font-size: 12px; color: #201F24; }
+.expense-value { font-size: 12px; font-weight: bold; }
+
+@keyframes fadeIn {
+    from { opacity: 0; } to { opacity: 1; }
 }
 
 .analysis-card {
@@ -18,43 +22,60 @@
     border: 1px solid #F2F2F2;
     display: flex;
     flex-direction: column;
+    /* justify-content: space-between; */
 }
 
-.merchant-item {
+.temporal-insights-stack {
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    flex: 1;
-    /* background-color: antiquewhite; */
+    flex-direction: column;
+    gap: 16px;
+    flex: 0.8;
 }
 
+.insight-tile {
+    justify-content: flex-start;
+}
 
-/* Macro Layout Styling (Left Side) */
+.insight-body {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+    /* margin: 8px 0; */
+}
+
+.primary-metric {
+    font-size: 14px;
+    font-weight: bold;
+    color: #201F24;
+    margin: 0;
+}
+
+/* Status Badges */
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.status-badge.good { background: #E7F3F2; color: #277C78; }
+.status-badge.bad { background: #FDECEC; color: #C94736; }
+.status-badge.neutral { background: #F8F9F9; color: #696868; }
+
+/* Categorization Layout */
 .macro-content {
     display: flex;
     align-items: center;
-    gap: 24px;
-    /* background-color: antiquewhite; */
+    gap: 16px;
 }
 
 .doughnut-wrapper {
-    height: 140px;
-    width: 140px;
+    height: 110px; width: 110px;
     position: relative;
     flex-shrink: 0;
 }
 
-.category-legend {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    gap: 12px;
-}
-
-/* Helper styles */
 .chart-center-text {
     position: absolute;
     top: 50%; left: 50%;
@@ -62,33 +83,52 @@
     text-align: center;
 }
 
-.tiny-label { font-size: 10px; color: #696868; margin: 0; }
-.bold-amount { font-size: 18px; font-weight: bold; margin: 0; }
-
-.legend-item { display: flex; justify-content: space-between; font-size: 13px; }
-.legend-left { display: flex; align-items: center; gap: 8px; }
-.color-dot { width: 8px; height: 8px; border-radius: 50%; }
-.category-name { color: #696868; }
-.category-percent { font-weight: bold; }
-
-.split-metrics { display: flex; justify-content: space-around; }
-.metric-label { font-size: 12px; color: #696868; margin: 0; font-weight: bold; }
-.metric-value { font-size: 14px; font-weight: bold; margin-top: 4px; }
-.vertical-divider { width: 1px; background-color: #E0E0E0; }
-.summary-title { font-weight: bold; font-size: 14px; margin-bottom: 16px; }
-.expense-name { font-size: 13px; color: #201F24; }
-.expense-value { font-size: 13px; font-weight: bold; }
-
-/* Responsive logic */
-@media (max-width: 900px) {
-    .macro-content{
+.category-legend {
+    flex: 1;
+    width: 75%;
+    display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 8px;
+}
+
+.legend-item { display: flex; justify-content: space-between; font-size: 12px; }
+.legend-left { display: flex; align-items: center; gap: 6px; }
+.color-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+.merchant-list{
+    display: flex;
+    /* background-color: orange; */
+    flex-direction: column;
+    flex: 1;
+}
+
+.merchant-row {
+    padding: 12px 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.summary-title { font-size: 14px; font-weight: bold; color: #696868; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+.tiny-label { font-size: 10px; color: #999; margin: 0; }
+.bold-amount { font-size: 18px; font-weight: bold; color: #201F24; margin: 0; }
+.split-metrics { display: flex; justify-content: space-around;}
+.metric {display: flex; flex-direction: column;gap: 4px}
+.metric-label { font-size: 12px; color: #999; font-weight: bold; }
+.metric-value { font-size: 14px; font-weight: bold; }
+.vertical-divider { width: 1px; background: #F2F2F2; }
+
+@media (max-width: 1200px) {
+    .analysis-card {
+        padding: 16px;
     }
 }
 
-@media (max-width: 700px) {
-    .expense-analysis-container {
-        flex-direction: column;
-    }
+@media (max-width: 1100px) {
+    .expense-analysis-container { flex-direction: column; }
+    .temporal-insights-stack { flex-direction: row; }
+}
+
+@media (max-width: 650px) {
+    .temporal-insights-stack { flex-direction: column; }
+    .macro-content { flex-direction: column; align-items: center; }
 }

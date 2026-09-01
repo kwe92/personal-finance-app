@@ -1,3 +1,4 @@
+import "../../shared/css/form-theme.css";
 import { ModalId } from "../../../app/constants/constants";
 import { CloseModalButton } from "../../shared/components/close_modal_button";
 import MainButton from "../../shared/components/main_button";
@@ -71,14 +72,7 @@ export const PotModal = (): JSX.Element => {
           : "If your saving targets change, feel free to update your pots."}
       </p>
 
-      <form
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "16px",
-        }}
-        onSubmit={(e) => e.preventDefault()}
-      >
+      <form className="form-theme" onSubmit={(e) => e.preventDefault()}>
         <div>
           <TextFormField
             name="potName"

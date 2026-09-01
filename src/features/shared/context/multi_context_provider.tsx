@@ -7,6 +7,7 @@ import { TransactionProvider } from "./transaction_context";
 import { TransactionFilterProvider } from "./transaction_filter_context";
 import { AuthProvider } from "../../auth/context/auth_context";
 import { RecurringBillsProvider } from "../../recurringBills/context/recurring_bills_context";
+import { UserPreferencesProvider } from "./user_preferences_context";
 
 export const MultiContextProvider = ({
   children,
@@ -15,21 +16,23 @@ export const MultiContextProvider = ({
 }) => {
   return (
     <AuthProvider>
-      <AuthValidationProvider>
-        <FormErrorProvider>
-          <TransactionProvider>
-            <TransactionFilterProvider>
-              <BudgetProvider>
-                <PotProvider>
-                  <RecurringBillsProvider>
-                    <DoughnutChartProvider>{children}</DoughnutChartProvider>
-                  </RecurringBillsProvider>
-                </PotProvider>
-              </BudgetProvider>
-            </TransactionFilterProvider>
-          </TransactionProvider>
-        </FormErrorProvider>
-      </AuthValidationProvider>
+      <UserPreferencesProvider>
+        <AuthValidationProvider>
+          <FormErrorProvider>
+            <TransactionProvider>
+              <TransactionFilterProvider>
+                <BudgetProvider>
+                  <PotProvider>
+                    <RecurringBillsProvider>
+                      <DoughnutChartProvider>{children}</DoughnutChartProvider>
+                    </RecurringBillsProvider>
+                  </PotProvider>
+                </BudgetProvider>
+              </TransactionFilterProvider>
+            </TransactionProvider>
+          </FormErrorProvider>
+        </AuthValidationProvider>
+      </UserPreferencesProvider>
     </AuthProvider>
   );
 };

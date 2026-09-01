@@ -10,6 +10,8 @@ class ModalId {
   static deletePotModal = "delete-pot-modal";
 
   static deleteBudgetModal = "delete-budget-modal";
+
+  static globalTargetModal = "global-target-modal";
 }
 
 class ModalClassName {

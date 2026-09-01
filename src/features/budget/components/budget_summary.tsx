@@ -7,11 +7,16 @@ import { useBudgetData } from "../../shared/context/budget_context";
 import { useTransactionData } from "../../shared/context/transaction_context";
 import { useDoughnutChartData } from "../../shared/context/doughnut_chart_context";
 import { BudgetViewModel } from "../budget_view_model";
+import { useUserPreferencesData } from "../../shared/context/user_preferences_context";
+import { ToastService } from "../../shared/services/toast_service";
+import { ModalId } from "../../../app/constants/constants";
 
 export const BudgetSummary = (): JSX.Element => {
   const { budgets } = useBudgetData();
   const { transactions } = useTransactionData();
+  const { preferences } = useUserPreferencesData();
   const { doughnutChartOptions, doughnutChartData } = useDoughnutChartData();
+  const toastService = ToastService.getInstance();
 
   const maximumBudgetAmount = budgets?.reduce(
     (accumulator, budget) => accumulator + budget.maximum,
@@ -46,13 +51,44 @@ export const BudgetSummary = (): JSX.Element => {
       </div>
 
       <div className="budget-summary-total-spending">
-        <p className="budget-summary-bold-text">Total Spending</p>
-        <div>
-          <p>${Math.abs(expendedAmount).toFixed(2)}</p>
-          <p>of ${maximumBudgetAmount?.toFixed(2)} limit</p>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "16px",
+            alignItems: "center",
+          }}
+        >
+          <p className="budget-summary-bold-text">Total Spending</p>
+          <div>
+            <p>${Math.abs(expendedAmount).toFixed(2)}</p>
+            <p>of ${maximumBudgetAmount?.toFixed(2)} planned</p>
+          </div>
+        </div>
+
+        <Divider />
+        {/* TODO: Move Icon text button into component */}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "4px",
+            cursor: "pointer",
+          }}
+          onClick={() => toastService.toogleModal(ModalId.globalTargetModal)}
+        >
+          <p style={{ fontSize: "12px", fontWeight: "bold", color: "#201F24" }}>
+            Limit: $
+            {preferences?.monthlySpendingTarget.toFixed(2) ??
+              maximumBudgetAmount.toFixed(2)}
+          </p>
+          {/* #277C78 */}
+          <p style={{ fontSize: "10px", color: "#5f98da", fontWeight: "bold" }}>
+            ✎ Edit Target
+          </p>
         </div>
       </div>
-
       <div className="budget-spending-summary">
         <p className="budget-summary-bold-text">Spending Summary</p>
         {spendingSummaryListTiles}

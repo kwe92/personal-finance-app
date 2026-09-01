@@ -101,7 +101,7 @@ const TransactionsView = (): JSX.Element => {
   return (
     <div
       className="view-container transaction-view"
-      style={isTrackerOpen && windowWidth <= 900 ? { height: "auto" } : {}}
+      style={isTrackerOpen && windowWidth <= 1100 ? { height: "auto" } : {}}
     >
       <h1>Transactions</h1>
 
