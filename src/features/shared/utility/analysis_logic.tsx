@@ -11,13 +11,23 @@ export const getTemporalNarrative = (
   dateRange: string,
   typicalAvg: number,
   daysInPeriod: number,
+  monthlyTarget: number,
 ): NarrativeData => {
   const total = expenses.reduce((sum, t) => sum + Math.abs(t.amount), 0);
   const now = new Date();
 
-  // Logic for Short Ranges (7, 14, or Custom)
+  const daysInMonth = new Date(
+    now.getFullYear(),
+    now.getMonth() + 1,
+    0,
+  ).getDate();
+
   if (dateRange !== "30 Days" && dateRange !== "Current Month") {
     const dailyAvg = total / (daysInPeriod || 1);
+
+    const targetDailyAvg = monthlyTarget / daysInMonth;
+    const isOverTargetPace = dailyAvg > targetDailyAvg;
+
     const diff =
       typicalAvg > 0 ? ((dailyAvg - typicalAvg) / typicalAvg) * 100 : 0;
 
@@ -27,31 +37,26 @@ export const getTemporalNarrative = (
         typicalAvg > 0
           ? `${Math.abs(diff).toFixed(0)}% ${diff > 0 ? "higher" : "lower"}`
           : "First time",
-      status: diff > 0 ? "bad" : "good",
+      // Status is determined by the spending target pace
+      status: isOverTargetPace ? "bad" : "good",
       description: "Average daily spend",
       trendLabel: `vs. Typical ($${typicalAvg.toFixed(0)})`,
     };
   }
 
-  // Logic for Monthly Ranges
   if (dateRange === "30 Days" || dateRange === "Current Month") {
     const dayOfMonth = now.getDate();
-    const daysInMonth = new Date(
-      now.getFullYear(),
-      now.getMonth() + 1,
-      0,
-    ).getDate();
+
     const projected = (total / dayOfMonth) * daysInMonth;
 
-    const budget = 2000;
-    const isOver = projected > budget;
+    const isOver = projected > monthlyTarget;
 
     return {
       primaryMetric: `$${projected.toFixed(0)}`,
       secondaryMetric: isOver ? "Over Budget" : "On Track",
       status: isOver ? "bad" : "good",
       description: "Projected month-end total",
-      trendLabel: `Target: $${budget}`,
+      trendLabel: `Target: $${monthlyTarget.toFixed(0)}`,
     };
   }
 
