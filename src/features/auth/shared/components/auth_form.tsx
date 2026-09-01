@@ -40,7 +40,7 @@ const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
   return (
     <div className="auth-form-container">
       <form
-        className="form-theme"
+        className="auth-form-theme"
         onSubmit={(e) => {
           e.preventDefault(); // prevent form default behavior, add custom client-side form handling
         }}
