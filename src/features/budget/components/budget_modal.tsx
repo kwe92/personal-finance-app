@@ -1,5 +1,5 @@
 import "../../shared/css/base_modal.css";
-
+import "../../shared/css/form-theme.css";
 import MainButton from "../../shared/components/main_button";
 import TextFormField from "../../shared/components/text_form_field";
 import { useBudgetViewData } from "../context/budget_view_context";
@@ -187,14 +187,7 @@ export const BudgetModal = (): JSX.Element => {
           : "As your budgets change, feel free to update your spending limits."}
       </p>
 
-      <form
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "16px",
-        }}
-        onSubmit={(e) => e.preventDefault()}
-      >
+      <form className="form-theme" onSubmit={(e) => e.preventDefault()}>
         <div>
           <ModalDropDownMenu
             label="Budget Category"
