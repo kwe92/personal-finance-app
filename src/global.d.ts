@@ -95,6 +95,16 @@ interface DateObject {
   date: string;
 }
 
+// Preference interfaces
+interface UserPreferencesData {
+  monthlySpendingTarget: number;
+  updatedAt?: string;
+}
+
+interface UserPreferencesPayload {
+  monthlySpendingTarget: number;
+}
+
 // Types as ENUMS
 type RecurringBillCategory = "paid" | "upcoming" | "due_soon" | "past_due" | "unknown";
 
