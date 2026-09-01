@@ -1,6 +1,8 @@
 import { createContext, useContext, useState, useMemo } from "react";
 import { useTransactionFilterData } from "../../shared/context/transaction_filter_context";
 import { useTransactionData } from "../../shared/context/transaction_context";
+import { useBudgetData } from "../../shared/context/budget_context";
+import { useUserPreferencesData } from "../../shared/context/user_preferences_context";
 import {
   getTemporalNarrative,
   getPeakInsight,
@@ -39,6 +41,8 @@ export const ExpenseTrackerProvider = ({
   children: React.ReactNode;
 }): JSX.Element => {
   const { transactions } = useTransactionData();
+  const { budgets } = useBudgetData();
+  const { preferences } = useUserPreferencesData();
   const {
     filteredTransactions,
     dateRange,
@@ -49,7 +53,7 @@ export const ExpenseTrackerProvider = ({
   const [isTrackerOpen, setIsTrackerOpen] = useState<boolean>(false);
 
   const value = useMemo(() => {
-    // Calculate CONTEXT-AWARE Historical Baseline
+    // 1. Calculate Context-Aware Historical Baseline
     // We filter the entire history by the CURRENT Category and Search Query
     const baselineExpenses = (transactions ?? []).filter((t) => {
       const isExpense =
@@ -77,16 +81,35 @@ export const ExpenseTrackerProvider = ({
       typicalDailyAvg = totalHistoricalSpend / totalDaysSpan;
     }
 
-    // Current Selection Analysis (already filtered by Category, Search, AND Date)
+    // 2. Select the Dynamic Monthly Target
+    let activeMonthlyTarget = 0;
+    if (category !== "All Transactions") {
+      // Use the specific category budget maximum
+      const catBudget = budgets.find(
+        (b) => b.category.toLowerCase() === category.toLowerCase(),
+      );
+      activeMonthlyTarget = catBudget ? catBudget.maximum : 0;
+    } else {
+      // Use Global Cap from preferences. Fallback to sum of all categories if Cap is 0.
+      const globalCap = preferences?.monthlySpendingTarget || 0;
+      const sumOfCategories = budgets.reduce((acc, b) => acc + b.maximum, 0);
+      activeMonthlyTarget = globalCap > 0 ? globalCap : sumOfCategories;
+    }
+
+    // 3. Current Selection Analysis (filtered by Category, Search, AND Date)
     const expenses = filteredTransactions.filter(
       (t) => t.type === "expense" && t.category.toLowerCase() !== "transfer",
     );
 
-    // Determine Days in Period for current avg calculation
+    // 4. Determine Days in Period for pro-rating calculations
     let daysInPeriod = 30;
     if (dateRange === "7 days") daysInPeriod = 7;
     else if (dateRange === "14 days") daysInPeriod = 14;
-    else if (dateRange === "Custom" && customRange.start && customRange.end) {
+    else if (dateRange === "30 Days") daysInPeriod = 30;
+    else if (dateRange === "Current Month") {
+      const now = new Date();
+      daysInPeriod = now.getDate(); // Use days passed so far in current month
+    } else if (dateRange === "Custom" && customRange.start && customRange.end) {
       daysInPeriod =
         Math.ceil(
           (customRange.end.getTime() - customRange.start.getTime()) /
@@ -110,13 +133,13 @@ export const ExpenseTrackerProvider = ({
       .sort((a, b) => b.value - a.value)
       .slice(0, 5);
 
-    // Needs vs Wants
+    // Needs vs Wants Logic
     const needsCategories = [
       "payment",
       "bills",
       "rent",
       "transport",
-      "food & drink",
+      "food and drink",
     ];
     const spendingSplit = expenses.reduce(
       (acc, t) => {
@@ -128,11 +151,13 @@ export const ExpenseTrackerProvider = ({
       { needs: 0, wants: 0 },
     );
 
+    // 5. Generate Narrative using the Context-Aware Target
     const narrative = getTemporalNarrative(
       expenses,
       dateRange,
       typicalDailyAvg,
       daysInPeriod,
+      activeMonthlyTarget,
     );
     const peakDay = getPeakInsight(expenses);
 
@@ -153,6 +178,8 @@ export const ExpenseTrackerProvider = ({
     customRange,
     category,
     transactionQuery,
+    budgets,
+    preferences,
   ]);
 
   return (
