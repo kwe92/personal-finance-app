@@ -22,7 +22,7 @@ export const getTemporalNarrative = (
     0,
   ).getDate();
 
-  if (dateRange !== "30 Days" && dateRange !== "Current Month") {
+  if (dateRange !== "Current Month") {
     const dailyAvg = total / (daysInPeriod || 1);
 
     const targetDailyAvg = monthlyTarget / daysInMonth;
@@ -44,10 +44,11 @@ export const getTemporalNarrative = (
     };
   }
 
-  if (dateRange === "30 Days" || dateRange === "Current Month") {
+  if (dateRange === "Current Month") {
     const dayOfMonth = now.getDate();
 
-    const projected = (total / dayOfMonth) * daysInMonth;
+    const projected =
+      dayOfMonth === 1 ? total : (total / dayOfMonth) * daysInMonth;
 
     const isOver = projected > monthlyTarget;
 
