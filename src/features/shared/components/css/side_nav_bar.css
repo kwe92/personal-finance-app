@@ -9,8 +9,28 @@
     border-bottom-right-radius: 24px;
     padding-top: 40px;
     box-sizing: border-box;
+    transition: width 0.5s ease;
+    overflow: hidden;
+}
+
+.side-nav-bar.collapsed {
+    width: 5%;
+}
+
+.side-nav-bar-collapsed {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: black;
+    border-top-right-radius: 24px;
+    border-bottom-right-radius: 24px;
+    padding-top: 40px;
+    box-sizing: border-box;
 }
 
 @media(max-width:1200px){
-    .side-nav-bar{display: none;}
+    .side-nav-bar,
+    .side-nav-bar-collapsed {
+        display: none;
+    }
 }
