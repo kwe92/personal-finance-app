@@ -10,10 +10,13 @@ import * as navIcons from "./nav_bar_icons";
 import SelectableListTile from "./selectable_list_tile";
 import { useNavigate } from "react-router";
 import { SignOutButton } from "./sign_out_button";
+import useWindowSize from "../hooks/use_window_size";
 
 const SideNavBar = (): JSX.Element => {
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
   const [isShrinking, setIsShrinking] = useState<boolean>(false);
+  const [isExpanding, setIsExpanding] = useState<boolean>(true);
+  const { windowWidth, windowHeight } = useWindowSize();
 
   useAddSelectableListTileListeners({
     selector: ".selectable-list-tile",
@@ -24,15 +27,18 @@ const SideNavBar = (): JSX.Element => {
 
   const handleCollapse = () => {
     setIsShrinking(true);
-    // Wait 500ms for width transition (20% -> 5%) to finish before showing collapsed view
+    setIsExpanding(false);
     setTimeout(() => {
       setIsShrinking(false);
       setIsCollapsed(true);
-    }, 500);
+    }, 300);
   };
 
   const handleExpand = () => {
     setIsCollapsed(false);
+    setTimeout(() => {
+      setIsExpanding(true);
+    }, 150);
   };
 
   const navListTileData = new Map([
@@ -65,17 +71,11 @@ const SideNavBar = (): JSX.Element => {
     },
   );
 
+  const showContent = !isShrinking && isExpanding;
+
   return isCollapsed ? (
-    <div className="side-nav-bar-collapsed">
-      <img
-        src={caretRight}
-        style={{
-          width: "4vw",
-          height: "1.5vh",
-          cursor: "pointer",
-        }}
-        onClick={handleExpand}
-      />
+    <div className="side-nav-bar collapsed">
+      <img src={caretRight} style={caretStyle} onClick={handleExpand} />
     </div>
   ) : (
     <div className={`side-nav-bar ${isShrinking ? "collapsed" : ""}`}>
@@ -90,28 +90,37 @@ const SideNavBar = (): JSX.Element => {
         >
           <img
             src={logo}
-            style={{
-              width: "8vw",
-              height: "3vh",
-              paddingLeft: "32px",
-            }}
+            className={`fade-content ${showContent ? "" : "hidden"}`}
+            style={logoStyle}
           />
-          <img
-            src={caretLeft}
-            style={{
-              width: "4vw",
-              height: "1.5vh",
-              cursor: "pointer",
-            }}
-            onClick={handleCollapse}
-          />
+          {showContent && (
+            <img src={caretLeft} style={caretStyle} onClick={handleCollapse} />
+          )}
         </div>
-        <div style={{ height: "32px" }} />
-        {navListTileItems}
+
+        <div className={`fade-content ${showContent ? "" : "hidden"}`}>
+          <div style={{ height: windowWidth > 1440 ? "32px" : "24px" }} />
+          {navListTileItems}
+        </div>
       </div>
-      <SignOutButton />
+
+      <div className={`fade-content ${showContent ? "" : "hidden"}`}>
+        <SignOutButton />
+      </div>
     </div>
   );
+};
+
+const caretStyle = {
+  width: "4vw",
+  height: "1.5vh",
+  cursor: "pointer",
+};
+
+const logoStyle = {
+  width: "8vw",
+  height: "3vh",
+  paddingLeft: "32px",
 };
 
 export default SideNavBar;
