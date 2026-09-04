@@ -1,4 +1,4 @@
-import { AnimationProps, motion } from "framer-motion";
+import { type AnimationProps, motion } from "framer-motion";
 
 type TransitionOptions = {
   exitOpacity?: number;
@@ -10,7 +10,7 @@ type TransitionOptions = {
 class Transitions {
   static fade(
     children: React.ReactNode,
-    transitionOptions?: TransitionOptions
+    transitionOptions?: TransitionOptions,
   ): JSX.Element {
     return (
       <motion.div
@@ -20,7 +20,7 @@ class Transitions {
         initial={{ opacity: transitionOptions?.initialOpacity ?? 0 }}
         animate={{ opacity: transitionOptions?.animateOpacity ?? 1 }}
         transition={
-          transitionOptions?.transition ?? { duration: 0.5, ease: "easeIn" }
+          transitionOptions?.transition ?? { duration: 0.3, ease: "easeIn" }
         }
         style={{
           display: "flex",
