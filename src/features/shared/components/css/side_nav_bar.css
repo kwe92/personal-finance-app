@@ -14,18 +14,18 @@
 }
 
 .side-nav-bar.collapsed {
-    width: 5%;
+    width: 4.5%;
 }
 
-.side-nav-bar-collapsed {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    background-color: black;
-    border-top-right-radius: 24px;
-    border-bottom-right-radius: 24px;
-    padding-top: 40px;
-    box-sizing: border-box;
+.fade-content {
+    opacity: 1;
+    transition: opacity 0.25s ease;
+    white-space: nowrap;
+}
+
+.fade-content.hidden {
+    opacity: 0;
+    pointer-events: none; /* Prevents clicking invisible elements while hidden */
 }
 
 @media(max-width:1200px){
