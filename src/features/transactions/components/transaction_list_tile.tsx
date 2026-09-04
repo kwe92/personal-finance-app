@@ -48,7 +48,7 @@ export const TransactionListTile = ({
           </p>
           <p
             style={{
-              fontSize: "12px",
+              fontSize: "10px",
               color: "#696868",
             }}
           >
