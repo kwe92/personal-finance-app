@@ -3,7 +3,7 @@ import "./css/budget_card.css";
 import { LatestSpendingCard } from "./latest_spending_card";
 import { ProgressBar } from "./progress_bar";
 import { useTransactionData } from "../../shared/context/transaction_context";
-import { currencyArithmetic } from "../../shared/utility/functions";
+import { currencyArithmetic, formatDate } from "../../shared/utility/functions";
 import { useBudgetViewData } from "../context/budget_view_context";
 import { CardHeader } from "../../shared/components/card_header";
 import { ToastService } from "../../shared/services/toast_service";
@@ -86,7 +86,8 @@ export const BudgetCard = ({
         </p>
         {budget.startDate && budget.endDate && (
           <p style={{ fontSize: "12px", color: "#696868" }}>
-            {budget.startDate} to {budget.endDate}
+            {formatDate(budget.startDate ?? "", "MM-dd-yy")} to
+            {formatDate(budget.endDate ?? "", "MM-dd-yy")}
           </p>
         )}
       </div>

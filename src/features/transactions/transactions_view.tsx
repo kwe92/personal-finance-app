@@ -109,7 +109,7 @@ const TransactionsView = (): JSX.Element => {
         <div className="transaction-filters-container">
           <SearchBar
             value={transactionQuery}
-            placeholder="Search transactions"
+            placeholder={windowWidth > 600 ? "Search transactions" : "Search"}
             onChange={setTransactionQuery}
           />
 
