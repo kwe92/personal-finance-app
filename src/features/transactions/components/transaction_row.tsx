@@ -24,7 +24,7 @@ export const TansactionRow = ({
       </td>
 
       <td style={{ fontSize: "12px", color: "#696868" }}>
-        {formatDate(transaction?.date ?? "", "dd MMM yyyy, HH:ss")}
+        {formatDate(transaction?.date ?? "", "dd MMM yyyy")}
       </td>
 
       <td
