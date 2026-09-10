@@ -12,6 +12,8 @@ class ModalId {
   static deleteBudgetModal = "delete-budget-modal";
 
   static globalTargetModal = "global-target-modal";
+
+  static plaidReauthModal = "plaid-reauth-modal";
 }
 
 class ModalClassName {
