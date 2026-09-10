@@ -8,6 +8,7 @@ import { TransactionFilterProvider } from "./transaction_filter_context";
 import { AuthProvider } from "../../auth/context/auth_context";
 import { RecurringBillsProvider } from "../../recurringBills/context/recurring_bills_context";
 import { UserPreferencesProvider } from "./user_preferences_context";
+import { PlaidUpdateListener } from "../components/plaid_update_listener";
 
 export const MultiContextProvider = ({
   children,
@@ -24,7 +25,10 @@ export const MultiContextProvider = ({
                 <BudgetProvider>
                   <PotProvider>
                     <RecurringBillsProvider>
-                      <DoughnutChartProvider>{children}</DoughnutChartProvider>
+                      <DoughnutChartProvider>
+                        <PlaidUpdateListener />
+                        {children}
+                      </DoughnutChartProvider>
                     </RecurringBillsProvider>
                   </PotProvider>
                 </BudgetProvider>
