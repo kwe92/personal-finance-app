@@ -4,6 +4,16 @@ const DEFAULT_BACKEND_BASE_URL = "";
 
 export interface BackendError extends Error {
   status?: number;
+  code?: string;
+}
+
+// Handler registration for the React Plaid Link modal
+// TODO: refactor this as it causes functional impurity
+let reauthPromise: Promise<void> | null = null;
+let triggerReauthModal: (() => Promise<void>) | null = null;
+
+export function registerReauthHandler(handler: () => Promise<void>) {
+  triggerReauthModal = handler;
 }
 
 function getCurrentFirebaseToken(): Promise<string | null> {
@@ -43,8 +53,24 @@ export async function apiRequest<T>(
   });
 
   if (!response.ok) {
-    const error = new Error("Request failed") as BackendError;
+    const errorBody = await response.json().catch(() => ({}));
+
+    if (errorBody?.error_code === "ITEM_LOGIN_REQUIRED" && triggerReauthModal) {
+      if (!reauthPromise) {
+        reauthPromise = triggerReauthModal().finally(() => {
+          reauthPromise = null;
+        });
+      }
+
+      await reauthPromise;
+      return apiRequest<T>(path, options);
+    }
+
+    const error = new Error(
+      errorBody?.error_message || errorBody?.error || "Request failed"
+    ) as BackendError;
     error.status = response.status;
+    error.code = errorBody?.error_code;
     throw error;
   }
 
@@ -55,21 +81,21 @@ export async function apiRequest<T>(
   return response.json() as Promise<T>;
 }
 
-export async function healthCheck() {
-  return apiRequest<{ status: string }>('/api/health');
-}
-
-export async function verifyFirebaseUser(payload: { firebaseUid: string }) {
-  return apiRequest<{ message: string; user?: Record<string, unknown> }>('/api/verify-firebase-user', {
-    method: 'POST',
-    body: JSON.stringify(payload),
-  });
-}
+// --- Plaid APIs ---
 
 export async function createLinkToken(payload: { userId?: string }) {
-  return apiRequest<{ linkToken: string; expiration?: string; requestId?: string }>('/api/plaid/create-link-token', {
+  return apiRequest<{ linkToken: string; expiration?: string; requestId?: string }>(
+    '/api/plaid/create-link-token',
+    {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }
+  );
+}
+
+export async function createUpdateLinkToken() {
+  return apiRequest<{ linkToken: string }>('/api/plaid/create-update-link-token', {
     method: 'POST',
-    body: JSON.stringify(payload),
   });
 }
 
@@ -82,6 +108,7 @@ export async function setAccessToken(payload: { publicToken: string; userId?: st
     }),
   });
 }
+
 // Transaction API
 export async function getTransactions(payload: { userId?: string } = {}) {
   return apiRequest<TransactionsResponse>('/api/plaid/transactions', {
@@ -166,6 +193,19 @@ export async function getPreferences() {
 export async function updatePreferences(payload: UserPreferencesPayload) {
   return apiRequest<UserPreferencesData>('/api/preferences', {
     method: 'PUT',
+    body: JSON.stringify(payload),
+  });
+}
+
+// Health Check API
+
+export async function healthCheck() {
+  return apiRequest<{ status: string }>('/api/health');
+}
+
+export async function verifyFirebaseUser(payload: { firebaseUid: string }) {
+  return apiRequest<{ message: string; user?: Record<string, unknown> }>('/api/verify-firebase-user', {
+    method: 'POST',
     body: JSON.stringify(payload),
   });
 }
