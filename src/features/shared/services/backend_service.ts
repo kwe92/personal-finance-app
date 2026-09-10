@@ -8,6 +8,7 @@ export interface BackendError extends Error {
 }
 
 // Handler registration for the React Plaid Link modal
+// TODO: refactor this as it causes functional impurity
 let reauthPromise: Promise<void> | null = null;
 let triggerReauthModal: (() => Promise<void>) | null = null;
 
