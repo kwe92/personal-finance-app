@@ -53,7 +53,7 @@ const AuthImage = (): JSX.Element => {
             fontSize: "0.75vw",
           }}
         >
-          Personal finance app puts you in control of your spending. Track
+          Clarifi puts you in control of your spending. Track
           <br />
           transactions, set budgets, and add to savings pots easily.
         </p>
