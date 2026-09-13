@@ -3,20 +3,24 @@ import React, { useState } from "react";
 import logo from "../../../assets/images/logo-large.svg";
 import caretLeft from "../../../assets/images/icon-caret-left.svg";
 import caretRight from "../../../assets/images/icon-caret-right.svg";
+import signOutIcon from "../../../assets/images/sign_out_icon.svg";
+import settingsIcon from "../../../assets/images/gear-icon.svg";
 
 import { GapH6 } from "../../../app/constants/reusable";
 import useAddSelectableListTileListeners from "../hooks/use_selectable_list_tile_listeners";
 import * as navIcons from "./nav_bar_icons";
 import SelectableListTile from "./selectable_list_tile";
 import { useNavigate } from "react-router";
-import { SignOutButton } from "./sign_out_button";
 import useWindowSize from "../hooks/use_window_size";
+import { IconButton } from "./icon_button";
+import { useAuth } from "../../auth/context/auth_context";
 
 const SideNavBar = (): JSX.Element => {
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
   const [isShrinking, setIsShrinking] = useState<boolean>(false);
   const [isExpanding, setIsExpanding] = useState<boolean>(true);
-  const { windowWidth, windowHeight } = useWindowSize();
+  const { windowWidth } = useWindowSize();
+  const { logout } = useAuth();
 
   useAddSelectableListTileListeners({
     selector: ".selectable-list-tile",
@@ -104,8 +108,29 @@ const SideNavBar = (): JSX.Element => {
         </div>
       </div>
 
-      <div className={`fade-content ${showContent ? "" : "hidden"}`}>
-        <SignOutButton />
+      <div
+        className={`fade-content ${showContent ? "" : "hidden"}`}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "start",
+        }}
+      >
+        <IconButton
+          icon={settingsIcon}
+          button_text="Settings"
+          onClick={(_) => {
+            navigate("/home/Settings");
+          }}
+        />
+        <IconButton
+          icon={signOutIcon}
+          button_text="Sign Out"
+          onClick={(_) => {
+            logout();
+            navigate("/auth/login");
+          }}
+        />
       </div>
     </div>
   );
