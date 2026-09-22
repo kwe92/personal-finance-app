@@ -9,6 +9,7 @@ import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
+  updateProfile,
   signOut,
 } from "firebase/auth";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
@@ -19,7 +20,11 @@ interface AuthContextType {
   user: User | null;
   isPlaidLinked: boolean;
   isAuthLoading: boolean;
-  signUp: (email: string, password: string) => Promise<UserCredential>;
+  signUp: (
+    email: string,
+    password: string,
+    name: string,
+  ) => Promise<UserCredential>;
   login: (email: string, password: string) => Promise<UserCredential>;
   logout: () => Promise<void>;
   refreshPlaidStatus: () => Promise<void>;
@@ -28,7 +33,6 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Helper: Safely fetch Plaid status from Firestore
 const fetchPlaidStatus = async (uid: string): Promise<boolean> => {
   try {
     const userDoc = await getDoc(doc(db, "users", uid));
@@ -46,7 +50,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [isPlaidLinked, setIsPlaidLinked] = useState<boolean>(false);
   const [isAuthLoading, setIsAuthLoading] = useState<boolean>(true);
 
-  // Auth State Listener: Single source of truth for session sync
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
@@ -64,16 +67,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     return () => unsubscribe();
   }, []);
 
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (email: string, password: string, name: string) => {
     const credential = await createUserWithEmailAndPassword(
       auth,
       email,
       password,
     );
 
+    await updateProfile(credential.user, {
+      displayName: name,
+    });
+
     await setDoc(
       doc(db, "users", credential.user.uid),
       {
+        name,
         email: credential.user.email,
         is_plaid_linked: false,
         createdAt: new Date(),
@@ -81,14 +89,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       { merge: true },
     );
 
+    setUser({ ...credential.user, displayName: name });
     setIsPlaidLinked(false);
+
     return credential;
   };
 
   const login = async (email: string, password: string) => {
     const credential = await signInWithEmailAndPassword(auth, email, password);
 
-    // Fetch Firestore profile before login() resolves so state is immediately accurate for caller
     const linked = await fetchPlaidStatus(credential.user.uid);
     setIsPlaidLinked(linked);
 
@@ -97,7 +106,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const logout = async () => {
     await signOut(auth);
-    // State cleanup (setUser, setIsPlaidLinked) is handled automatically by onAuthStateChanged
   };
 
   const refreshPlaidStatus = async () => {
