@@ -1,4 +1,4 @@
-.sign-out-button {
+.icon-button {
     display: flex;
     justify-content: start;
     align-items: center;
@@ -9,16 +9,11 @@
     font-weight: bold;
     padding-bottom: 16px;
     cursor: pointer;
+    padding-left: 32px;
      /* background-color: grey; */
 }
 
-.sign-out-button svg {
-    width: 62px;
-    height: 62px;
-    padding-left: 32px;
-}
-
-.sign-out-button:hover {
+.icon-button:hover {
         color: #277C78;
         fill: #277C78;
 }

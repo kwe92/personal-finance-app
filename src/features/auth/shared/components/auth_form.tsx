@@ -266,7 +266,7 @@ const AuthForm = ({ isLogin = true }: { isLogin?: boolean }): JSX.Element => {
       if (isLogin) {
         await login(emailValue, passwordValue);
       } else {
-        await signUp(emailValue, passwordValue);
+        await signUp(emailValue, passwordValue, name);
       }
 
       setName("");
