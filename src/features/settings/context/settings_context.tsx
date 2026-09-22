@@ -1,6 +1,11 @@
 import React, { createContext, useContext, useState, useMemo } from "react";
 import { useAuth } from "../../auth/context/auth_context";
+import {
+  updateUserName,
+  updatePassword,
+} from "../../shared/services/backend_service";
 
+// TODO: may need to reauthenticate the user upon updating account information
 interface SettingsContextInterface {
   isLoading: boolean;
   error: string | null;
@@ -50,10 +55,7 @@ const SettingsProvider = ({
     clearMessages();
 
     try {
-      // TODO: Replace with your backend/service call when ready:
-      // await updateAccountInfo({ uid: user.uid, name, email });
-      await new Promise((resolve) => setTimeout(resolve, 600));
-
+      await updateUserName({ displayName: name });
       setSuccessMessage("Account information updated successfully.");
     } catch (err) {
       setError(
@@ -79,10 +81,7 @@ const SettingsProvider = ({
     clearMessages();
 
     try {
-      // TODO: Replace with your backend/service call when ready:
-      // await updatePassword({ currentPassword, newPassword });
-      await new Promise((resolve) => setTimeout(resolve, 600));
-
+      await updatePassword({ password: newPassword });
       setSuccessMessage("Password updated successfully.");
     } catch (err) {
       setError(
