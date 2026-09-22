@@ -209,3 +209,24 @@ export async function verifyFirebaseUser(payload: { firebaseUid: string }) {
     body: JSON.stringify(payload),
   });
 }
+
+// --- User API ---
+
+export interface UpdateUserResponse {
+  message: string;
+  updated: boolean;
+}
+
+export async function updateUserName(payload: { displayName: string }) {
+  return apiRequest<UpdateUserResponse>('/api/user/name', {
+    method: 'PUT',
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function updatePassword(payload: { password: string }) {
+  return apiRequest<UpdateUserResponse>('/api/user/password', {
+    method: 'PUT',
+    body: JSON.stringify(payload),
+  });
+}
