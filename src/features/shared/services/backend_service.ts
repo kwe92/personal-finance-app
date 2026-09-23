@@ -103,12 +103,13 @@ export async function createUpdateLinkToken() {
   });
 }
 
-export async function setAccessToken(payload: { publicToken: string; userId?: string }) {
+export async function setAccessToken(payload: { publicToken: string; userId?: string; institutionName: string | null }) {
   return apiRequest<{ message?: string; accessToken?: string }>('/api/plaid/set-access-token', {
     method: 'POST',
     body: JSON.stringify({
       publicToken: payload.publicToken,
       userId: payload.userId,
+      institution_name: payload.institutionName ?? "",
     }),
   });
 }
