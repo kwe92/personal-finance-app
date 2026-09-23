@@ -177,7 +177,7 @@ const TabFormProvider = ({
   ) => {
     event.preventDefault();
 
-    const hasCurrentPassword = currentPassword.length > 0;
+    const hasCurrentPassword = currentPassword.length >= 8;
     const hasValidLength = newPassword.length >= 8;
     const doPasswordsMatch = newPassword === confirmPassword;
 

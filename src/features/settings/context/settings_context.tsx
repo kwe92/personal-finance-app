@@ -1,30 +1,36 @@
 import React, { createContext, useContext, useState, useMemo } from "react";
+import { EmailAuthProvider, reauthenticateWithCredential } from "firebase/auth";
 import { useAuth } from "../../auth/context/auth_context";
 import {
   updateUserName,
   updatePassword,
+  disconnectBankAccount,
+  selectDifferentInstitutionPlaceHolder,
 } from "../../shared/services/backend_service";
 
-// TODO: may need to reauthenticate the user upon updating account information
 interface SettingsContextInterface {
   isLoading: boolean;
   error: string | null;
   successMessage: string | null;
+  connectedInstitution: string | null;
   clearMessages: () => void;
   updateAccountInfoHandler: (name: string, email: string) => Promise<void>;
   updatePasswordHandler: (
     currentPassword: string,
     newPassword: string,
   ) => Promise<void>;
+  disconnectBankHandler: () => Promise<void>;
 }
 
 const SettingsContext = createContext<SettingsContextInterface>({
   isLoading: false,
   error: null,
   successMessage: null,
+  connectedInstitution: null,
   clearMessages: () => {},
   updateAccountInfoHandler: async () => {},
   updatePasswordHandler: async () => {},
+  disconnectBankHandler: async () => {},
 });
 
 const SettingsProvider = ({
@@ -32,7 +38,13 @@ const SettingsProvider = ({
 }: {
   children?: React.ReactNode;
 }): JSX.Element => {
-  const { user } = useAuth();
+  const {
+    user,
+    updateLocalUser,
+    institutionName: connectedInstitution,
+    markPlaidDisconnected,
+  } = useAuth();
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -56,6 +68,9 @@ const SettingsProvider = ({
 
     try {
       await updateUserName({ displayName: name });
+
+      updateLocalUser({ displayName: name, email });
+
       setSuccessMessage("Account information updated successfully.");
     } catch (err) {
       setError(
@@ -72,8 +87,8 @@ const SettingsProvider = ({
     currentPassword: string,
     newPassword: string,
   ): Promise<void> => {
-    if (!user) {
-      setError("User is not authenticated.");
+    if (!user || !user.email) {
+      setError("User is not authenticated or missing email.");
       return;
     }
 
@@ -81,11 +96,42 @@ const SettingsProvider = ({
     clearMessages();
 
     try {
+      const credential = EmailAuthProvider.credential(
+        user.email,
+        currentPassword,
+      );
+
+      await reauthenticateWithCredential(user, credential);
+
       await updatePassword({ password: newPassword });
       setSuccessMessage("Password updated successfully.");
+    } catch (err: any) {
+      if (
+        err.code === "auth/wrong-password" ||
+        err.code === "auth/invalid-credential"
+      ) {
+        setError("The current password you entered is incorrect.");
+      } else {
+        setError(
+          err instanceof Error ? err.message : "Failed to change password.",
+        );
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const disconnectBankHandler = async (): Promise<void> => {
+    setIsLoading(true);
+    clearMessages();
+
+    try {
+      const res = await disconnectBankAccount();
+      markPlaidDisconnected();
+      setSuccessMessage(res.message);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Failed to change password.",
+        err instanceof Error ? err.message : "Failed to disconnect bank.",
       );
     } finally {
       setIsLoading(false);
@@ -97,11 +143,13 @@ const SettingsProvider = ({
       isLoading,
       error,
       successMessage,
+      connectedInstitution,
       clearMessages,
       updateAccountInfoHandler,
       updatePasswordHandler,
+      disconnectBankHandler,
     }),
-    [isLoading, error, successMessage],
+    [isLoading, error, successMessage, connectedInstitution],
   );
 
   return (

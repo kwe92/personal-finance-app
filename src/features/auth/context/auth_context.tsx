@@ -19,6 +19,7 @@ import { auth, db } from "../../../firebase";
 interface AuthContextType {
   user: User | null;
   isPlaidLinked: boolean;
+  institutionName: string | null;
   isAuthLoading: boolean;
   signUp: (
     email: string,
@@ -27,19 +28,29 @@ interface AuthContextType {
   ) => Promise<UserCredential>;
   login: (email: string, password: string) => Promise<UserCredential>;
   logout: () => Promise<void>;
-  refreshPlaidStatus: () => Promise<void>;
   markPlaidLinked: () => Promise<void>;
+  markPlaidDisconnected: () => void; // <-- NEW
+  updateLocalUser: (updates: Partial<User>) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const fetchPlaidStatus = async (uid: string): Promise<boolean> => {
+const fetchPlaidData = async (
+  uid: string,
+): Promise<{ isLinked: boolean; institutionName: string | null }> => {
   try {
     const userDoc = await getDoc(doc(db, "users", uid));
-    return Boolean(userDoc.exists() && userDoc.data()?.is_plaid_linked);
+    if (userDoc.exists()) {
+      const data = userDoc.data();
+      return {
+        isLinked: Boolean(data?.is_plaid_linked),
+        institutionName: data?.institution_name || null,
+      };
+    }
+    return { isLinked: false, institutionName: null };
   } catch (error) {
     console.error("Failed to fetch Plaid status:", error);
-    return false;
+    return { isLinked: false, institutionName: null };
   }
 };
 
@@ -48,6 +59,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isPlaidLinked, setIsPlaidLinked] = useState<boolean>(false);
+  const [institutionName, setInstitutionName] = useState<string | null>(null);
   const [isAuthLoading, setIsAuthLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -55,10 +67,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setUser(currentUser);
 
       if (currentUser) {
-        const linked = await fetchPlaidStatus(currentUser.uid);
-        setIsPlaidLinked(linked);
+        const data = await fetchPlaidData(currentUser.uid);
+        setIsPlaidLinked(data.isLinked);
+        setInstitutionName(data.institutionName);
       } else {
         setIsPlaidLinked(false);
+        setInstitutionName(null);
       }
 
       setIsAuthLoading(false);
@@ -91,6 +105,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
     setUser({ ...credential.user, displayName: name });
     setIsPlaidLinked(false);
+    setInstitutionName(null);
 
     return credential;
   };
@@ -98,23 +113,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const login = async (email: string, password: string) => {
     const credential = await signInWithEmailAndPassword(auth, email, password);
 
-    const linked = await fetchPlaidStatus(credential.user.uid);
-    setIsPlaidLinked(linked);
+    const data = await fetchPlaidData(credential.user.uid);
+    setIsPlaidLinked(data.isLinked);
+    setInstitutionName(data.institutionName);
 
     return credential;
   };
 
   const logout = async () => {
     await signOut(auth);
-  };
-
-  const refreshPlaidStatus = async () => {
-    if (!user) {
-      setIsPlaidLinked(false);
-      return;
-    }
-    const linked = await fetchPlaidStatus(user.uid);
-    setIsPlaidLinked(linked);
   };
 
   const markPlaidLinked = async () => {
@@ -126,20 +133,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     });
 
     setIsPlaidLinked(true);
+
+    const data = await fetchPlaidData(user.uid);
+    setInstitutionName(data.institutionName);
+  };
+
+  const markPlaidDisconnected = () => {
+    setIsPlaidLinked(false);
+    setInstitutionName(null);
+  };
+
+  const updateLocalUser = (updates: Partial<User>) => {
+    setUser((prev) => (prev ? ({ ...prev, ...updates } as User) : null));
   };
 
   const value = useMemo(() => {
     return {
       user,
       isPlaidLinked,
+      institutionName,
       isAuthLoading,
       signUp,
       login,
       logout,
-      refreshPlaidStatus,
       markPlaidLinked,
+      markPlaidDisconnected,
+      updateLocalUser,
     };
-  }, [user, isPlaidLinked, isAuthLoading]);
+  }, [user, isPlaidLinked, institutionName, isAuthLoading]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
