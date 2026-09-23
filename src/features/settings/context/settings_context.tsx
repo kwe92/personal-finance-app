@@ -4,7 +4,7 @@ import { useAuth } from "../../auth/context/auth_context";
 import {
   updateUserName,
   updatePassword,
-  disconnectBankAccountPlaceHolder,
+  disconnectBankAccount,
   selectDifferentInstitutionPlaceHolder,
 } from "../../shared/services/backend_service";
 
@@ -20,7 +20,6 @@ interface SettingsContextInterface {
     newPassword: string,
   ) => Promise<void>;
   disconnectBankHandler: () => Promise<void>;
-  selectNewInstitutionHandler: () => Promise<void>;
 }
 
 const SettingsContext = createContext<SettingsContextInterface>({
@@ -32,7 +31,6 @@ const SettingsContext = createContext<SettingsContextInterface>({
   updateAccountInfoHandler: async () => {},
   updatePasswordHandler: async () => {},
   disconnectBankHandler: async () => {},
-  selectNewInstitutionHandler: async () => {},
 });
 
 const SettingsProvider = ({
@@ -44,6 +42,7 @@ const SettingsProvider = ({
     user,
     updateLocalUser,
     institutionName: connectedInstitution,
+    markPlaidDisconnected,
   } = useAuth();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -127,29 +126,12 @@ const SettingsProvider = ({
     clearMessages();
 
     try {
-      const res = await disconnectBankAccountPlaceHolder();
+      const res = await disconnectBankAccount();
+      markPlaidDisconnected();
       setSuccessMessage(res.message);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Failed to disconnect bank.",
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const selectNewInstitutionHandler = async (): Promise<void> => {
-    setIsLoading(true);
-    clearMessages();
-
-    try {
-      const res = await selectDifferentInstitutionPlaceHolder();
-      setSuccessMessage(res.message);
-    } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Failed to initiate new institution selection.",
       );
     } finally {
       setIsLoading(false);
@@ -166,7 +148,6 @@ const SettingsProvider = ({
       updateAccountInfoHandler,
       updatePasswordHandler,
       disconnectBankHandler,
-      selectNewInstitutionHandler,
     }),
     [isLoading, error, successMessage, connectedInstitution],
   );
