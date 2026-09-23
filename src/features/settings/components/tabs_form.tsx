@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react"; // <-- Imported useState
 import "./css/tabs_form.css";
 import TextFormField from "../../shared/components/text_form_field";
 import MainButton from "../../shared/components/main_button";
@@ -6,7 +6,6 @@ import * as gaps from "../../../app/constants/reusable";
 import { useSettingsData } from "../context/settings_context";
 import { useTabFormData } from "../context/tab_form_context";
 
-// ! TODO: add a modal for the disconnection of a bank to ensure that is what the user wants to do with a warning message
 // ! TODO: we need to make this component smaller and modular
 export default function TabsForm(): JSX.Element {
   const {
@@ -15,7 +14,6 @@ export default function TabsForm(): JSX.Element {
     successMessage,
     connectedInstitution,
     disconnectBankHandler,
-    selectNewInstitutionHandler,
   } = useSettingsData();
 
   const {
@@ -53,6 +51,10 @@ export default function TabsForm(): JSX.Element {
     handlePasswordSubmit,
   } = useTabFormData();
 
+  // <-- NEW: Local state to toggle the disconnect warning confirmation
+  const [showDisconnectConfirm, setShowDisconnectConfirm] =
+    useState<boolean>(false);
+
   return (
     <div className="tab-container">
       {/* Tab Header Navigation */}
@@ -80,7 +82,10 @@ export default function TabsForm(): JSX.Element {
           role="tab"
           aria-selected={activeTab === 2}
           className={`tab-btn ${activeTab === 2 ? "active" : ""}`}
-          onClick={() => handleTabSwitch(2)}
+          onClick={() => {
+            handleTabSwitch(2);
+            setShowDisconnectConfirm(false); // Reset warning when switching tabs
+          }}
         >
           Bank Connection
         </button>
@@ -272,40 +277,95 @@ export default function TabsForm(): JSX.Element {
           <div
             style={{ display: "flex", flexDirection: "column", gap: "16px" }}
           >
-            <MainButton
-              type="button"
-              onTap={selectNewInstitutionHandler}
-              disabled={isLoading}
-            >
-              {isLoading ? "Please wait..." : "Select Different Institution"}
-            </MainButton>
-
-            {/* Render a secondary/danger button for disconnecting */}
-            <button
-              type="button"
-              onClick={disconnectBankHandler}
-              disabled={isLoading || !connectedInstitution}
-              style={{
-                padding: "16px",
-                backgroundColor: "transparent",
-                color:
-                  isLoading || !connectedInstitution ? "#a0aec0" : "#e53e3e",
-                border:
-                  isLoading || !connectedInstitution
-                    ? "1px solid #cbd5e0"
-                    : "1px solid #e53e3e",
-                borderRadius: "8px",
-                fontSize: "14px",
-                fontWeight: "600",
-                cursor:
-                  isLoading || !connectedInstitution
-                    ? "not-allowed"
-                    : "pointer",
-                transition: "all 0.2s",
-              }}
-            >
-              Disconnect Bank
-            </button>
+            {/* <-- NEW: Inline Warning UI for Disconnecting --> */}
+            {!showDisconnectConfirm ? (
+              <button
+                type="button"
+                onClick={() => setShowDisconnectConfirm(true)}
+                disabled={isLoading || !connectedInstitution}
+                style={{
+                  padding: "16px",
+                  backgroundColor: "transparent",
+                  color:
+                    isLoading || !connectedInstitution ? "#a0aec0" : "#e53e3e",
+                  border:
+                    isLoading || !connectedInstitution
+                      ? "1px solid #cbd5e0"
+                      : "1px solid #e53e3e",
+                  borderRadius: "8px",
+                  fontSize: "14px",
+                  fontWeight: "600",
+                  cursor:
+                    isLoading || !connectedInstitution
+                      ? "not-allowed"
+                      : "pointer",
+                  transition: "all 0.2s",
+                }}
+              >
+                Disconnect Bank
+              </button>
+            ) : (
+              <div
+                style={{
+                  padding: "16px",
+                  backgroundColor: "#fff5f5",
+                  border: "1px solid #fc8181",
+                  borderRadius: "8px",
+                }}
+              >
+                <p
+                  style={{
+                    color: "#c53030",
+                    margin: "0 0 12px 0",
+                    fontSize: "14px",
+                    fontWeight: "600",
+                  }}
+                >
+                  Are you sure you want to disconnect? This will stop syncing
+                  your transactions.
+                </p>
+                <div style={{ display: "flex", gap: "12px" }}>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      await disconnectBankHandler();
+                      setShowDisconnectConfirm(false);
+                    }}
+                    disabled={isLoading}
+                    style={{
+                      flex: 1,
+                      padding: "12px",
+                      backgroundColor: "#e53e3e",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "8px",
+                      fontWeight: "600",
+                      cursor: isLoading ? "not-allowed" : "pointer",
+                      opacity: isLoading ? 0.7 : 1,
+                    }}
+                  >
+                    {isLoading ? "Disconnecting..." : "Yes, Disconnect"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowDisconnectConfirm(false)}
+                    disabled={isLoading}
+                    style={{
+                      flex: 1,
+                      padding: "12px",
+                      backgroundColor: "transparent",
+                      color: "#4a5568",
+                      border: "1px solid #cbd5e0",
+                      borderRadius: "8px",
+                      fontWeight: "600",
+                      cursor: isLoading ? "not-allowed" : "pointer",
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
