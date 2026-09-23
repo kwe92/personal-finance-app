@@ -16,8 +16,6 @@ import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import type { User, UserCredential } from "firebase/auth";
 import { auth, db } from "../../../firebase";
 
-// ! TODO: fix issue where the Institution name is display only after the user refreshes the dettings page after connecting their back acconut for the first time
-
 interface AuthContextType {
   user: User | null;
   isPlaidLinked: boolean;
@@ -30,7 +28,6 @@ interface AuthContextType {
   ) => Promise<UserCredential>;
   login: (email: string, password: string) => Promise<UserCredential>;
   logout: () => Promise<void>;
-  refreshPlaidStatus: () => Promise<void>;
   markPlaidLinked: () => Promise<void>;
   updateLocalUser: (updates: Partial<User>) => void;
 }
@@ -126,17 +123,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     await signOut(auth);
   };
 
-  const refreshPlaidStatus = async () => {
-    if (!user) {
-      setIsPlaidLinked(false);
-      setInstitutionName(null);
-      return;
-    }
-    const data = await fetchPlaidData(user.uid);
-    setIsPlaidLinked(data.isLinked);
-    setInstitutionName(data.institutionName);
-  };
-
   const markPlaidLinked = async () => {
     if (!user) throw new Error("User is not authenticated.");
 
@@ -146,6 +132,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     });
 
     setIsPlaidLinked(true);
+
+    const data = await fetchPlaidData(user.uid);
+    setInstitutionName(data.institutionName);
   };
 
   const updateLocalUser = (updates: Partial<User>) => {
@@ -161,7 +150,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       signUp,
       login,
       logout,
-      refreshPlaidStatus,
       markPlaidLinked,
       updateLocalUser,
     };
