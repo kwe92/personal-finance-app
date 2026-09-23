@@ -1,5 +1,9 @@
 import { auth } from "../../../firebase";
 
+// ! TODO: create real Bank Connection handlers on the backend and replace the placceholder functions onthe frontend 
+
+
+
 const DEFAULT_BACKEND_BASE_URL = "";
 
 export interface BackendError extends Error {
@@ -228,5 +232,31 @@ export async function updatePassword(payload: { password: string }) {
   return apiRequest<UpdateUserResponse>('/api/user/password', {
     method: 'PUT',
     body: JSON.stringify(payload),
+  });
+}
+
+// --- Bank Connection Placeholders ---
+
+export async function fetchConnectedInstitutionPlaceHolder() {
+  return new Promise<{ institutionName: string | null }>((resolve) => {
+    setTimeout(() => {
+      resolve({ institutionName: "Chase Bank (Placeholder)" });
+    }, 1000);
+  });
+}
+
+export async function disconnectBankAccountPlaceHolder() {
+  return new Promise<{ message: string }>((resolve) => {
+    setTimeout(() => {
+      resolve({ message: "Bank disconnected successfully." });
+    }, 1000);
+  });
+}
+
+export async function selectDifferentInstitutionPlaceHolder() {
+  return new Promise<{ message: string }>((resolve) => {
+    setTimeout(() => {
+      resolve({ message: "Ready to select a different institution." });
+    }, 1000);
   });
 }
