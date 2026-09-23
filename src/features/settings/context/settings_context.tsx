@@ -46,7 +46,7 @@ const SettingsProvider = ({
 }: {
   children?: React.ReactNode;
 }): JSX.Element => {
-  const { user } = useAuth();
+  const { user, updateLocalUser } = useAuth();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -92,6 +92,9 @@ const SettingsProvider = ({
 
     try {
       await updateUserName({ displayName: name });
+
+      updateLocalUser({ displayName: name, email });
+
       setSuccessMessage("Account information updated successfully.");
     } catch (err) {
       setError(

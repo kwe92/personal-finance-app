@@ -29,6 +29,7 @@ interface AuthContextType {
   logout: () => Promise<void>;
   refreshPlaidStatus: () => Promise<void>;
   markPlaidLinked: () => Promise<void>;
+  updateLocalUser: (updates: Partial<User>) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -128,6 +129,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setIsPlaidLinked(true);
   };
 
+  const updateLocalUser = (updates: Partial<User>) => {
+    setUser((prev) => (prev ? ({ ...prev, ...updates } as User) : null));
+  };
+
   const value = useMemo(() => {
     return {
       user,
@@ -138,6 +143,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       logout,
       refreshPlaidStatus,
       markPlaidLinked,
+      updateLocalUser,
     };
   }, [user, isPlaidLinked, isAuthLoading]);
 
