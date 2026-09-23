@@ -1,30 +1,44 @@
-import React, { createContext, useContext, useState, useMemo } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useMemo,
+  useEffect,
+} from "react";
 import { useAuth } from "../../auth/context/auth_context";
 import {
   updateUserName,
   updatePassword,
+  fetchConnectedInstitutionPlaceHolder,
+  disconnectBankAccountPlaceHolder,
+  selectDifferentInstitutionPlaceHolder,
 } from "../../shared/services/backend_service";
 
-// TODO: may need to reauthenticate the user upon updating account information
 interface SettingsContextInterface {
   isLoading: boolean;
   error: string | null;
   successMessage: string | null;
+  connectedInstitution: string | null;
   clearMessages: () => void;
   updateAccountInfoHandler: (name: string, email: string) => Promise<void>;
   updatePasswordHandler: (
     currentPassword: string,
     newPassword: string,
   ) => Promise<void>;
+  disconnectBankHandler: () => Promise<void>;
+  selectNewInstitutionHandler: () => Promise<void>;
 }
 
 const SettingsContext = createContext<SettingsContextInterface>({
   isLoading: false,
   error: null,
   successMessage: null,
+  connectedInstitution: null,
   clearMessages: () => {},
   updateAccountInfoHandler: async () => {},
   updatePasswordHandler: async () => {},
+  disconnectBankHandler: async () => {},
+  selectNewInstitutionHandler: async () => {},
 });
 
 const SettingsProvider = ({
@@ -36,11 +50,33 @@ const SettingsProvider = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [connectedInstitution, setConnectedInstitution] = useState<
+    string | null
+  >(null);
 
   const clearMessages = () => {
     setError(null);
     setSuccessMessage(null);
   };
+
+  // Fetch the connected institution when the settings page mounts
+  useEffect(() => {
+    if (!user) return;
+
+    const fetchInstitution = async () => {
+      try {
+        setIsLoading(true);
+        const res = await fetchConnectedInstitutionPlaceHolder();
+        setConnectedInstitution(res.institutionName);
+      } catch (err) {
+        console.error("Failed to fetch institution", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchInstitution();
+  }, [user]);
 
   const updateAccountInfoHandler = async (
     name: string,
@@ -92,16 +128,55 @@ const SettingsProvider = ({
     }
   };
 
+  const disconnectBankHandler = async (): Promise<void> => {
+    setIsLoading(true);
+    clearMessages();
+
+    try {
+      const res = await disconnectBankAccountPlaceHolder();
+      setConnectedInstitution(null);
+      setSuccessMessage(res.message);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Failed to disconnect bank.",
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const selectNewInstitutionHandler = async (): Promise<void> => {
+    setIsLoading(true);
+    clearMessages();
+
+    try {
+      const res = await selectDifferentInstitutionPlaceHolder();
+      // Logic to actually open Plaid would go here in the future
+      setSuccessMessage(res.message);
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to initiate new institution selection.",
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const value = useMemo(
     () => ({
       isLoading,
       error,
       successMessage,
+      connectedInstitution,
       clearMessages,
       updateAccountInfoHandler,
       updatePasswordHandler,
+      disconnectBankHandler,
+      selectNewInstitutionHandler,
     }),
-    [isLoading, error, successMessage],
+    [isLoading, error, successMessage, connectedInstitution],
   );
 
   return (
