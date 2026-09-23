@@ -29,6 +29,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<UserCredential>;
   logout: () => Promise<void>;
   markPlaidLinked: () => Promise<void>;
+  markPlaidDisconnected: () => void; // <-- NEW
   updateLocalUser: (updates: Partial<User>) => void;
 }
 
@@ -137,6 +138,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setInstitutionName(data.institutionName);
   };
 
+  const markPlaidDisconnected = () => {
+    setIsPlaidLinked(false);
+    setInstitutionName(null);
+  };
+
   const updateLocalUser = (updates: Partial<User>) => {
     setUser((prev) => (prev ? ({ ...prev, ...updates } as User) : null));
   };
@@ -151,6 +157,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       login,
       logout,
       markPlaidLinked,
+      markPlaidDisconnected,
       updateLocalUser,
     };
   }, [user, isPlaidLinked, institutionName, isAuthLoading]);
