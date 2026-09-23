@@ -50,7 +50,7 @@ const WelcomeView = (): JSX.Element => {
 
   const { open, ready } = usePlaidLink({
     token: linkToken ?? "",
-    onSuccess: async (publicToken) => {
+    onSuccess: async (publicToken, metadata) => {
       try {
         if (!publicToken) {
           throw new Error("Plaid did not return a public token.");
@@ -60,7 +60,11 @@ const WelcomeView = (): JSX.Element => {
           throw new Error("User is not available.");
         }
 
-        const result = await setAccessToken({ publicToken, userId: user.uid });
+        const result = await setAccessToken({
+          publicToken,
+          userId: user.uid,
+          institutionName: metadata?.institution?.name ?? null,
+        });
 
         if (
           !result?.message?.toLowerCase().includes("stored") &&
