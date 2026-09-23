@@ -1,5 +1,6 @@
 import { type AnimationProps, motion } from "framer-motion";
 
+// ! TODO: Fix animation causing double flash
 type TransitionOptions = {
   exitOpacity?: number;
   initialOpacity?: number;

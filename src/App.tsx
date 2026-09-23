@@ -50,7 +50,7 @@ const AppLayout = ({ children }: { children: JSX.Element }) => (
   <>
     <SideNavBar />
     <BottomNavBar />
-    {Transitions.fade(children)}
+    {children}
   </>
 );
 
