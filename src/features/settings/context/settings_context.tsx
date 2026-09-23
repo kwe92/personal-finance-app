@@ -1,16 +1,9 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useMemo,
-  useEffect,
-} from "react";
+import React, { createContext, useContext, useState, useMemo } from "react";
 import { EmailAuthProvider, reauthenticateWithCredential } from "firebase/auth";
 import { useAuth } from "../../auth/context/auth_context";
 import {
   updateUserName,
   updatePassword,
-  fetchConnectedInstitutionPlaceHolder,
   disconnectBankAccountPlaceHolder,
   selectDifferentInstitutionPlaceHolder,
 } from "../../shared/services/backend_service";
@@ -47,37 +40,20 @@ const SettingsProvider = ({
 }: {
   children?: React.ReactNode;
 }): JSX.Element => {
-  const { user, updateLocalUser } = useAuth();
+  const {
+    user,
+    updateLocalUser,
+    institutionName: connectedInstitution,
+  } = useAuth();
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [connectedInstitution, setConnectedInstitution] = useState<
-    string | null
-  >(null);
 
   const clearMessages = () => {
     setError(null);
     setSuccessMessage(null);
   };
-
-  // Fetch the connected institution when the settings page mounts
-  useEffect(() => {
-    if (!user) return;
-
-    const fetchInstitution = async () => {
-      try {
-        setIsLoading(true);
-        const res = await fetchConnectedInstitutionPlaceHolder();
-        setConnectedInstitution(res.institutionName);
-      } catch (err) {
-        console.error("Failed to fetch institution", err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchInstitution();
-  }, [user]);
 
   const updateAccountInfoHandler = async (
     name: string,
@@ -152,7 +128,6 @@ const SettingsProvider = ({
 
     try {
       const res = await disconnectBankAccountPlaceHolder();
-      setConnectedInstitution(null);
       setSuccessMessage(res.message);
     } catch (err) {
       setError(
