@@ -5,6 +5,7 @@ import React, {
   useMemo,
   useEffect,
 } from "react";
+import { EmailAuthProvider, reauthenticateWithCredential } from "firebase/auth";
 import { useAuth } from "../../auth/context/auth_context";
 import {
   updateUserName,
@@ -111,8 +112,8 @@ const SettingsProvider = ({
     currentPassword: string,
     newPassword: string,
   ): Promise<void> => {
-    if (!user) {
-      setError("User is not authenticated.");
+    if (!user || !user.email) {
+      setError("User is not authenticated or missing email.");
       return;
     }
 
@@ -120,12 +121,26 @@ const SettingsProvider = ({
     clearMessages();
 
     try {
+      const credential = EmailAuthProvider.credential(
+        user.email,
+        currentPassword,
+      );
+
+      await reauthenticateWithCredential(user, credential);
+
       await updatePassword({ password: newPassword });
       setSuccessMessage("Password updated successfully.");
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Failed to change password.",
-      );
+    } catch (err: any) {
+      if (
+        err.code === "auth/wrong-password" ||
+        err.code === "auth/invalid-credential"
+      ) {
+        setError("The current password you entered is incorrect.");
+      } else {
+        setError(
+          err instanceof Error ? err.message : "Failed to change password.",
+        );
+      }
     } finally {
       setIsLoading(false);
     }
@@ -154,7 +169,6 @@ const SettingsProvider = ({
 
     try {
       const res = await selectDifferentInstitutionPlaceHolder();
-      // Logic to actually open Plaid would go here in the future
       setSuccessMessage(res.message);
     } catch (err) {
       setError(
