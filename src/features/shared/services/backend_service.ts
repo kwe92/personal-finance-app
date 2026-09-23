@@ -1,9 +1,5 @@
 import { auth } from "../../../firebase";
 
-// ! TODO: create real Bank Connection handlers on the backend and replace the placceholder functions onthe frontend 
-
-
-
 const DEFAULT_BACKEND_BASE_URL = "";
 
 export interface BackendError extends Error {
@@ -12,7 +8,6 @@ export interface BackendError extends Error {
 }
 
 // Handler registration for the React Plaid Link modal
-// TODO: refactor this as it causes functional impurity
 let reauthPromise: Promise<void> | null = null;
 let triggerReauthModal: (() => Promise<void>) | null = null;
 
@@ -111,6 +106,12 @@ export async function setAccessToken(payload: { publicToken: string; userId?: st
       userId: payload.userId,
       institution_name: payload.institutionName ?? "",
     }),
+  });
+}
+
+export async function disconnectBankAccount() {
+  return apiRequest<{ message: string }>('/api/plaid/disconnect', {
+    method: 'DELETE',
   });
 }
 
@@ -237,23 +238,6 @@ export async function updatePassword(payload: { password: string }) {
 }
 
 // --- Bank Connection Placeholders ---
-
-export async function fetchConnectedInstitutionPlaceHolder() {
-  return new Promise<{ institutionName: string | null }>((resolve) => {
-    setTimeout(() => {
-      resolve({ institutionName: "Chase Bank (Placeholder)" });
-    }, 1000);
-  });
-}
-
-export async function disconnectBankAccountPlaceHolder() {
-  return new Promise<{ message: string }>((resolve) => {
-    setTimeout(() => {
-      resolve({ message: "Bank disconnected successfully." });
-    }, 1000);
-  });
-}
-
 export async function selectDifferentInstitutionPlaceHolder() {
   return new Promise<{ message: string }>((resolve) => {
     setTimeout(() => {
