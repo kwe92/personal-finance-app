@@ -6,9 +6,18 @@ import * as gaps from "../../../app/constants/reusable";
 import { useSettingsData } from "../context/settings_context";
 import { useTabFormData } from "../context/tab_form_context";
 
+// ! TODO: add a modal for the disconnection of a bank to ensure that is what the user wants to do with a warning message
+// ! TODO: we need to make this component smaller and modular
 export default function TabsForm(): JSX.Element {
-  const { isLoading, error, successMessage, updateAccountInfoHandler } =
-    useSettingsData();
+  const {
+    isLoading,
+    error,
+    successMessage,
+    connectedInstitution,
+    disconnectBankHandler,
+    selectNewInstitutionHandler,
+  } = useSettingsData();
+
   const {
     activeTab,
     handleTabSwitch,
@@ -55,7 +64,7 @@ export default function TabsForm(): JSX.Element {
           className={`tab-btn ${activeTab === 0 ? "active" : ""}`}
           onClick={() => handleTabSwitch(0)}
         >
-          Account Information
+          Account Info
         </button>
         <button
           type="button"
@@ -65,6 +74,15 @@ export default function TabsForm(): JSX.Element {
           onClick={() => handleTabSwitch(1)}
         >
           Change Password
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeTab === 2}
+          className={`tab-btn ${activeTab === 2 ? "active" : ""}`}
+          onClick={() => handleTabSwitch(2)}
+        >
+          Bank Connection
         </button>
       </div>
 
@@ -207,6 +225,89 @@ export default function TabsForm(): JSX.Element {
             {isLoading ? "Updating..." : "Update Password"}
           </MainButton>
         </form>
+
+        {/* ================= Panel 2: Bank Connection ================= */}
+        <div className={`form-panel ${activeTab === 2 ? "active" : ""}`}>
+          <div
+            style={{
+              padding: "16px",
+              backgroundColor: "#f8fafc",
+              borderRadius: "8px",
+              border: "1px solid #e2e8f0",
+            }}
+          >
+            <h3
+              style={{
+                margin: "0 0 8px 0",
+                fontSize: "16px",
+                color: "#201f24",
+              }}
+            >
+              Connected Institution
+            </h3>
+            {isLoading && connectedInstitution === null ? (
+              <p style={{ margin: 0, color: "#696868", fontSize: "14px" }}>
+                Loading...
+              </p>
+            ) : connectedInstitution ? (
+              <p
+                style={{
+                  margin: 0,
+                  color: "#277c78",
+                  fontSize: "16px",
+                  fontWeight: "600",
+                }}
+              >
+                {connectedInstitution}
+              </p>
+            ) : (
+              <p style={{ margin: 0, color: "#696868", fontSize: "14px" }}>
+                No bank account currently connected.
+              </p>
+            )}
+          </div>
+
+          <gaps.GapH32 />
+
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "16px" }}
+          >
+            <MainButton
+              type="button"
+              onTap={selectNewInstitutionHandler}
+              disabled={isLoading}
+            >
+              {isLoading ? "Please wait..." : "Select Different Institution"}
+            </MainButton>
+
+            {/* Render a secondary/danger button for disconnecting */}
+            <button
+              type="button"
+              onClick={disconnectBankHandler}
+              disabled={isLoading || !connectedInstitution}
+              style={{
+                padding: "16px",
+                backgroundColor: "transparent",
+                color:
+                  isLoading || !connectedInstitution ? "#a0aec0" : "#e53e3e",
+                border:
+                  isLoading || !connectedInstitution
+                    ? "1px solid #cbd5e0"
+                    : "1px solid #e53e3e",
+                borderRadius: "8px",
+                fontSize: "14px",
+                fontWeight: "600",
+                cursor:
+                  isLoading || !connectedInstitution
+                    ? "not-allowed"
+                    : "pointer",
+                transition: "all 0.2s",
+              }}
+            >
+              Disconnect Bank
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
