@@ -1,46 +1,104 @@
-# Getting Started with Create React App
+# Clarifi - Advanced Personal Finance Dashboard
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+![Clarifi Preview](./preview.jpg) <!-- Update with your actual project screenshot -->
 
-## Available Scripts
+[![Frontend Mentor Challenge](https://img.shields.io/badge/Frontend%20Mentor-Premium%20Challenge-brightgreen)](https://www.frontendmentor.io)
+[![React](https://img.shields.io/badge/React-20232A?style=flat&logo=react&logoColor=61DAFB)](#)
+[![Go](https://img.shields.io/badge/Go-00ADD8?style=flat&logo=go&logoColor=white)](#)
+[![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=flat&logo=firebase&logoColor=white)](#)
+[![Plaid](https://img.shields.io/badge/Plaid-111111?style=flat&logo=plaid&logoColor=white)](#)
 
-In the project directory, you can run:
+## Welcome to Clarifi 👋
 
-### `npm start`
+**Clarifi** is a production-ready, full-stack personal finance application designed to help users take total control of their money. 
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Originally inspired by the [Frontend Mentor Personal Finance App challenge](https://www.frontendmentor.io), Clarifi goes far beyond the original UI/UX scope. It features a custom **Golang backend**, **Google Cloud Firestore** data persistence, robust **Firebase Authentication**, and live bank data syncing via the **Plaid API**. 
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## 📋 Table of Contents
+- [Features](#-features)
+- [Tech Stack & Architecture](#-tech-stack--architecture)
+- [Deep Dive: Engineering Highlights](#-deep-dive-engineering-highlights)
+  - [Live Bank Sync (Plaid API)](#1-live-bank-sync-plaid-api)
+  - [Secure Authentication Flow](#2-secure-authentication-flow)
+  - [Advanced Expense Analysis Engine](#3-advanced-expense-analysis-engine)
+  - [Smart Recurring Bills Logic](#4-smart-recurring-bills-logic)
+- [Getting Started](#-getting-started)
+- [Acknowledgements](#-acknowledgements)
 
-### `npm test`
+---
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## ✨ Features
 
-### `npm run build`
+- **Live Financial Data:** Securely link bank accounts via Plaid to instantly fetch balances, transactions, and recurring streams.
+- **Comprehensive Overview:** A high-level dashboard displaying income, expenses, savings, and upcoming bill summaries at-a-glance.
+- **Budgeting System:** Full CRUD functionality for custom budgets. Tracks monthly spending and displays the latest transactions per category.
+- **Saving Pots:** Set financial goals, add/withdraw funds, and visualize progress dynamically. Balances automatically sync with the user's linked accounts.
+- **Custom Auth Forms:** Highly controlled client-side validation paired with secure backend JWT verification.
+- **Accessibility & UX:** Fully responsive layout, interactive onboarding carousels, active hover/focus states, and 100% keyboard navigable.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 🛠 Tech Stack & Architecture
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Frontend (Client)
+- **React.js** (Custom Hooks, Context API for state management)
+- **react-plaid-link** (Bank authentication UI)
+- **Chart.js / react-chartjs-2** (Data visualization)
+- **Firebase Auth SDK** (Client-side user management)
+- **CSS3** (Custom styling, CSS Variables, Flexbox/Grid)
 
-### `npm run eject`
+### Backend (Server)
+- **Go (Golang)** (High-performance backend logic)
+- **Gin Web Framework** (RESTful API routing and middleware)
+- **Plaid Go SDK** (Financial data retrieval)
+- **Firebase Admin SDK** (Token verification and user profile updates)
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### Database
+- **Google Cloud Firestore (NoSQL)** 
+  - Hierarchical data modeling (`users/{uid}/budgets`, `users/{uid}/pots`).
+  - Stores user preferences, Plaid access tokens, and custom targets.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+---
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## 🧠 Deep Dive: Engineering Highlights
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### 1. Live Bank Sync (Plaid API)
+Instead of relying on static JSON files, Clarifi connects to real bank accounts. 
+- **The Onboarding Flow:** A polished `WelcomeView` component guides new users through a value-prop carousel before initializing `react-plaid-link`.
+- **Token Exchange:** The frontend securely retrieves a Plaid `public_token`, which the Go backend (`SetAccessToken`) exchanges for a permanent `access_token` and stores securely in Firestore.
+- **Data Aggregation:** The backend's `GetOverviewSummary` endpoint concurrently syncs transactions (`TransactionsSync`) and fetches live account balances (`AccountsBalanceGet`), mapping complex Plaid payloads into clean, lightweight DTOs for the React frontend.
 
-## Learn More
+### 2. Secure Authentication Flow
+Security is handled at both the client and server levels:
+- **Client-Side Validation:** A custom `AuthValidationContext` provides granular, real-time feedback (empty fields, short passwords, email formatting) without relying on heavy external form libraries.
+- **JWT Protection:** Every backend API request passes through a custom Go `FirebaseAuthMiddleware`. This middleware intercepts the `Authorization: Bearer <token>` header, uses the Firebase Admin SDK to verify the JWT, and injects the verified `uid` into the Gin context, ensuring users can only access their own Firestore sub-collections.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### 3. Advanced Expense Analysis Engine
+The `ExpenseTrackerContext` acts as a dynamic financial advisor:
+- **Context-Aware Baselines:** Calculates a user's typical daily average spend based on historical data, filtering out non-expenses like transfers.
+- **Temporal Narratives:** Generates human-readable insights (e.g., "Trending above baseline", peak spending days) based on the user's selected date range (7 days, 30 days, custom).
+- **Needs vs. Wants:** Automatically categorizes spending into essentials and lifestyle choices, visualized via a custom `react-chartjs-2` Doughnut chart.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 4. Smart Recurring Bills Logic
+Tracking subscriptions isn't just about listing transactions. The Go backend features a custom recurring bills engine:
+- Parses Plaid `TransactionStream` data to infer frequency (Weekly, Bi-Weekly, Monthly, Annually).
+- Calculates the exact `nextDate` and `daysUntilDue` by comparing the last payment date against the current UTC time.
+- Categorizes bills into actionable statuses (`paid`, `upcoming`, `due_soon`, `past_due`) based on custom day-threshold logic.
+
+---
+
+## 🚀 Getting Started
+
+To get a local copy up and running, follow these steps.
+
+### Prerequisites
+- Node.js (v16+)
+- Go (v1.20+)
+- Firebase Project (with Firestore and Authentication enabled)
+- Plaid Developer Account
+
+### Installation
+
+1. **Clone the repo**
+   ```sh
+   git clone https://github.com/your-username/clarifi.git
